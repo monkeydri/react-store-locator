@@ -1,6 +1,6 @@
 {
   "name": "react-component-boilerplate",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "dist",
   "module": "dist",
   "author": "Kennedy Rose <krose@escaladesports.com>",
@@ -9,7 +9,7 @@
     "dev": "webpack-dev-server --hot --open --open-page \"/dev\"",
     "analyze": "cross-env ANALYZE=1 webpack -p",
     "build": "del-cli ./dist && babel ./src --out-dir ./dist",
-	 "postinstall": "npm run build"
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
