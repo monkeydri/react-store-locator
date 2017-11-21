@@ -1,4 +1,7 @@
 {
+	"presets": [
+		"react"
+	],
 	"env": {
 		"es5": {
 			"presets": [
