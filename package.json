@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --hot --open",
-    "analyze": "del-cli ./dist && cross-env ANALYZE=1 webpack -p",
-    "build": "del-cli ./dist && webpack -p",
+    "analyze": "cross-env ANALYZE=1 webpack -p",
+    "build": "del-cli ./dist && babel ./src --out-dir ./dist",
 	 "postinstall": "npm run build"
   },
   "devDependencies": {
