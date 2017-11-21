@@ -1,18 +1,16 @@
 {
   "name": "react-component-boilerplate",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "dist-modules",
+  "module": "dist-es6",
   "author": "Kennedy Rose <krose@escaladesports.com>",
   "license": "MIT",
   "scripts": {
-	 "dev": "",
-	 "build": "run-p build:es6 build:module",
-	 "build:es6": "del-cli ./dist-es6 && cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
-	 "build:module": "del-cli ./dist-modules && cross-env BABEL_ENV=modules babel ./src --out-dir ./dist-modules"
+    "dev": "",
+    "build": "run-p build:es6 build:module",
+    "build:es6": "del-cli ./dist-es6 && cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
+    "build:module": "del-cli ./dist-modules && cross-env BABEL_ENV=modules babel ./src --out-dir ./dist-modules"
   },
-  "pre-commit": [
-    "build"
-  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -23,7 +21,6 @@
     "cross-env": "^5.1.1",
     "del-cli": "^1.1.0",
     "npm-run-all": "^4.1.2",
-    "pre-commit": "^1.2.2",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "webpack": "^3.8.1"
