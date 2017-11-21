@@ -1,5 +1,7 @@
 # React Component Boilerplate
 
+A simple React boilerplate that outputs to ES5 and ES6.
+
 ## Getting started
 
 ```bash
