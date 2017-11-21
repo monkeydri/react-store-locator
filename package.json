@@ -6,8 +6,8 @@
   "author": "Kennedy Rose <krose@escaladesports.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --hot --open-page \"dev/index.html\"",
-    "analyze": "",
+    "dev": "webpack-dev-server --hot --open",
+    "analyze": "cross-env ANALYZE=1 webpack",
     "build": "run-p build:es6 build:module",
     "build:es6": "del-cli ./dist-es6 && cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
     "build:module": "del-cli ./dist-modules && cross-env BABEL_ENV=modules babel ./src --out-dir ./dist-modules"

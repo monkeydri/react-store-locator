@@ -1,19 +1,29 @@
 const path = require('path')
 const webpack = require('webpack')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
+const plugins = []
+if (process.env.ANALYZE) {
+	plugins.push(new BundleAnalyzerPlugin({
+		analyzerMode: 'server',
+		openAnalyzer: true
+	}))
+}
+else{
+	plugins.push(new webpack.HotModuleReplacementPlugin())
+}
 
 module.exports = {
 	devtool: 'eval',
 	entry: [
-		'./dev/index'
+		'./dev'
 	],
 	output: {
 		path: path.join(__dirname, 'dist'),
-		filename: 'index.js',
+		filename: 'bundle.js',
 		publicPath: '/'
 	},
-	plugins: [
-		new webpack.HotModuleReplacementPlugin()
-	],
+	plugins: plugins,
 	resolve: {
 		extensions: ['.js', '.jsx']
 	},
@@ -23,7 +33,7 @@ module.exports = {
 			use: [{
 				loader: 'babel-loader'
 			}],
-			include: path.join(__dirname, 'dev')
+			include: path.join(__dirname, '/')
 		}]
 	}
 }
