@@ -16,12 +16,12 @@ else{
 module.exports = {
 	devtool: 'eval',
 	entry: [
-		'./dev'
+		'./dev/dev.js'
 	],
 	output: {
 		path: path.join(__dirname, 'dist'),
 		filename: 'index.js',
-		publicPath: '/'
+		publicPath: '/dev/'
 	},
 	plugins: plugins,
 	resolve: {

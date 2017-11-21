@@ -6,7 +6,7 @@
   "author": "Kennedy Rose <krose@escaladesports.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --hot --open",
+    "dev": "webpack-dev-server --hot --open --open-page \"/dev\"",
     "analyze": "cross-env ANALYZE=1 webpack -p",
     "build": "del-cli ./dist && babel ./src --out-dir ./dist",
 	 "postinstall": "npm run build"

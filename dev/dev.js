@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Img from './src/index'
+import Img from '../src/index'
 
 const containerEl = document.createElement('div')
 document.body.appendChild(containerEl)
