@@ -18,10 +18,10 @@
   "license": "MIT",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 webpack -p",
-    "build": "run-p build:es5 build:es6",
-    "build:dev": "cross-env NODE_ENV=production webpack -p && cp dev/index.html dist/index.html",
-    "build:es6": "cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
-    "build:es5": "cross-env BABEL_ENV=es5 babel ./src --out-dir ./dist-es5",
+    "build": "cross-env NODE_ENV=production webpack -p && cp dev/index.html dist/index.html",
+    "dist": "run-p build:es5 build:es6",
+    "dist:es6": "cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
+    "dist:es5": "cross-env BABEL_ENV=es5 babel ./src --out-dir ./dist-es5",
     "dev": "webpack-dev-server --hot --open --open-page \"/dev\"",
     "prepublishOnly": "npm run dist",
     "serve": "cd dist && static-server --open"
