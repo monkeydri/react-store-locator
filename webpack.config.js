@@ -13,6 +13,12 @@ else{
 	plugins.push(new webpack.HotModuleReplacementPlugin())
 }
 
+if(process.env.NODE_ENV === 'production'){
+	new webpack.DefinePlugin({
+		'process.env.NODE_ENV': 'production'
+	})
+}
+
 module.exports = {
 	devtool: 'eval',
 	entry: [
