@@ -1,6 +1,6 @@
 {
   "name": "react-component-boilerplate",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "keywords": [
     "react",
     "component",
@@ -18,8 +18,8 @@
   "license": "MIT",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 webpack -p",
-	 "build": "run-p build:es5 build:es6",
-	 "build:dev": "webpack -p && cp dev/index.html dist/index.html",
+    "build": "run-p build:es5 build:es6",
+    "build:dev": "webpack -p && cp dev/index.html dist/index.html",
     "build:es6": "cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
     "build:es5": "cross-env BABEL_ENV=es5 babel ./src --out-dir ./dist-es5",
     "dev": "webpack-dev-server --hot --open --open-page \"/dev\"",
