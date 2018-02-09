@@ -6,10 +6,7 @@
     "component",
     "boilerplate"
   ],
-  "main": "dist-es5/index.js",
-  "browser": "dist-es5/index.js",
-  "module": "dist-es6/index.js",
-  "jsnext:main": "dist-es6/index.js",
+  "main": "dist/index.js",
   "author": "Kennedy Rose <krose@escaladesports.com>",
   "repository": {
     "type": "git",
@@ -17,33 +14,18 @@
   },
   "license": "MIT",
   "scripts": {
-    "analyze": "cross-env ANALYZE=1 webpack -p",
-    "build": "cross-env NODE_ENV=production webpack -p && cp dev/index.html dist/index.html",
-    "dist": "run-p build:es5 build:es6",
-    "dist:es6": "cross-env BABEL_ENV=es6 babel ./src --out-dir ./dist-es6",
-    "dist:es5": "cross-env BABEL_ENV=es5 babel ./src --out-dir ./dist-es5",
-    "dev": "webpack-dev-server --hot --open --open-page \"/dev\"",
-    "prepublishOnly": "npm run dist",
-    "serve": "cd dist && static-server --open"
+    "analyze": "esca-scripts analyze --react --component --input ./src/index.js",
+    "build": "esca-scripts build --react --component --input ./src/index.js --output ./dist/index.js",
+    "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-minify-webpack-plugin": "^0.2.0",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.10",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "cross-env": "^5.1.1",
-    "npm-run-all": "^4.1.2",
+    "esca-scripts": "^0.12.1",
     "opn-cli": "^3.1.0",
     "react": "^16.1.1",
-    "react-dom": "^16.1.1",
-    "static-server": "escaladesports/static-server",
-    "webpack": "^3.8.1",
-    "webpack-bundle-analyzer": "^2.9.1",
-    "webpack-dev-server": "^2.9.4"
+    "react-dom": "^16.1.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "styled-jsx": "^2.2.4"
+  }
 }
