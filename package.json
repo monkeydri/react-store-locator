@@ -1,6 +1,6 @@
 {
   "name": "react-component-boilerplate",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "keywords": [
     "react",
     "component",
@@ -17,8 +17,8 @@
     "analyze": "esca-scripts analyze --react --component --input ./src/index.js",
     "build": "esca-scripts build --react --component --babel --input ./src/index.js --output ./dist/index.js",
     "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
-	 "prepublishOnly": "npm run build",
-	 "reset": "esca-scripts reset"
+    "prepublishOnly": "npm run build",
+    "reset": "esca-scripts reset"
   },
   "devDependencies": {
     "esca-scripts": "^0.12.1",
