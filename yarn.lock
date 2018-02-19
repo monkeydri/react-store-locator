@@ -516,11 +516,21 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-dynamic-import-node@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-1.2.0.tgz#f91631e703e0595e47d4beafbb088576c87fbeee"
+  dependencies:
+    babel-plugin-syntax-dynamic-import "^6.18.0"
+
 babel-plugin-external-helpers@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-external-helpers/-/babel-plugin-external-helpers-6.22.0.tgz#2285f48b02bd5dede85175caf8c62e86adccefa1"
   dependencies:
     babel-runtime "^6.22.0"
+
+babel-plugin-shebang@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-shebang/-/babel-plugin-shebang-0.0.0.tgz#50b1676aae9d681fa3cadff3531304d96e1d47bc"
 
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
@@ -2291,15 +2301,17 @@ es6-weak-map@^2.0.1:
     es6-iterator "^2.0.1"
     es6-symbol "^3.1.1"
 
-esca-scripts@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/esca-scripts/-/esca-scripts-0.12.1.tgz#4f7e1678ba295eab1e00dd9ac7ed514a88a5efc8"
+esca-scripts@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/esca-scripts/-/esca-scripts-0.14.1.tgz#54329314240ae72448bbfac9ebda88573f1b4c47"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
     babel-loader "^7.1.2"
     babel-plugin-add-module-exports "^0.2.1"
+    babel-plugin-dynamic-import-node "^1.2.0"
     babel-plugin-external-helpers "^6.22.0"
+    babel-plugin-shebang "^0.0.0"
     babel-plugin-syntax-dynamic-import "^6.18.0"
     babel-plugin-transform-react-remove-prop-types "^0.4.12"
     babel-plugin-transform-runtime "^6.23.0"
@@ -5946,7 +5958,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-static-server@escaladesports/static-server:
+"static-server@github:escaladesports/static-server":
   version "3.0.0"
   resolved "https://codeload.github.com/escaladesports/static-server/tar.gz/0ef140cc5af48cba5249575df2bce1a6ca702f6f"
   dependencies:

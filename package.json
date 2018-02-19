@@ -18,10 +18,11 @@
     "build": "esca-scripts build --react --component --babel --input ./src/index.js --output ./dist/index.js",
     "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
     "prepublishOnly": "npm run build",
-    "reset": "esca-scripts reset"
+    "reset": "esca-scripts reset",
+	 "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
   },
   "devDependencies": {
-    "esca-scripts": "^0.12.1",
+    "esca-scripts": "^0.14.1",
     "opn-cli": "^3.1.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
