@@ -1,6 +1,6 @@
 {
   "name": "react-component-boilerplate",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "keywords": [
     "react",
     "component",
@@ -19,7 +19,7 @@
     "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
     "prepublishOnly": "npm run build",
     "reset": "esca-scripts reset",
-	 "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
+    "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
   },
   "devDependencies": {
     "esca-scripts": "^0.14.1",
