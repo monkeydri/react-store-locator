@@ -2301,9 +2301,9 @@ es6-weak-map@^2.0.1:
     es6-iterator "^2.0.1"
     es6-symbol "^3.1.1"
 
-esca-scripts@^0.14.3:
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/esca-scripts/-/esca-scripts-0.14.3.tgz#c276708d9f6034db9388b849f5f292902acaa3d4"
+esca-scripts@^0.14.4:
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/esca-scripts/-/esca-scripts-0.14.4.tgz#c904c4fe443b8f586df6a3db15d8dcc5cc382d07"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
@@ -5960,7 +5960,7 @@ static-extend@^0.1.1:
 
 "static-server@github:escaladesports/static-server":
   version "3.0.0"
-  resolved "https://codeload.github.com/escaladesports/static-server/tar.gz/0ef140cc5af48cba5249575df2bce1a6ca702f6f"
+  resolved "https://codeload.github.com/escaladesports/static-server/tar.gz/cba4e0a7d56129badeb55963a2414c88531ca8bb"
   dependencies:
     chalk "^0.5.1"
     commander "^2.3.0"
@@ -6109,7 +6109,7 @@ styled-jsx-plugin-postcss@^0.1.2:
     postcss "^6.0.13"
     postcss-load-plugins "^2.3.0"
 
-styled-jsx@^2.2.3, styled-jsx@^2.2.4:
+styled-jsx@^2.2.3:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/styled-jsx/-/styled-jsx-2.2.4.tgz#aac903fd0a4240c356af335261183aa8f8673075"
   dependencies:
