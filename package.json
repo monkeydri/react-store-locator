@@ -23,7 +23,7 @@
     "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
   },
   "devDependencies": {
-    "esca-scripts": "^0.14.4",
+    "esca-scripts": "^0.14.7",
     "opn-cli": "^3.1.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
