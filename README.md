@@ -22,7 +22,7 @@ render(){
     <Map
       zoom={10}
       center={{ lat: 53, lng: -7.77 }}
-      style={{}}
+      styles={{}}
       height={'100vh'}
       width={'100%'}
       markers={markersArr} // --> pass markers array through here

@@ -30,7 +30,6 @@
     "react-dom": "^16.1.1"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "google-map-react": "^0.34.0"
   }
 }
