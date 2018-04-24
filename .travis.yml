@@ -4,7 +4,7 @@ cache:
     - node_modules
 deploy:
   provider: npm
-  email: kennedyianrose@gmail.com
+  email: taustin@escaladesports.com
   api_key: $NPM_TOKEN
   on:
     tags: true
