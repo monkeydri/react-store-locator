@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Map from '../src/containers/Map';
-import Marker from '../src/containers/Marker';
+import Marker from './Marker';
 import axios from 'axios';
 
 const containerEl = document.createElement('div');
