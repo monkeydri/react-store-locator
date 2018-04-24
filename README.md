@@ -1,18 +1,32 @@
-# React Component Boilerplate
+# React Store Locator
 
-A simple React boilerplate that outputs to ES5 and ES6.
+Simple google map component used to locate stores within your viewing window
 
 ## Getting started
 
 ```bash
-git clone git@github.com:escaladesports/react-component-boilerplate.git --depth=1 your-component
-cd your-component
-rm -rf .git
+yarn add react-store-locator
+
+npm install --save react-store-locator
 ```
 
-Also make sure to edit the `package.json` file with a new name, version number, author, and anything else you might need.
+Make sure you have yarn installed if you wish to use it
 
 ## Usage
 
-- `yarn dev`: Runs a local dev server from the `dev` directory
-- `yarn analyze`: View bundle sizes
+```jsx
+import StoreMap from 'react-store-locator';
+
+<StoreMap
+  zoom={10}
+  center={{ lat: 53, lng: -7.77 }}
+  style={{}}
+  height={'100vh'}
+  width={'100%'}
+  markers={markersArr} // --> pass markers array through here
+  markerComponent={MarkerComp} // --> pass the marker component here
+  markersInBounds={myFunc} // --> pass function here and call it with param of markers , i.e ( myFunc(markers) { console.log(markers)}) This will tell you what markers are in your screen
+/>;
+```
+
+Most of these will have defaults if you don't pass anything through. You must pass a marker component in if you wish to see anything on the map.
