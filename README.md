@@ -15,11 +15,11 @@ Make sure you have yarn installed if you wish to use it
 ## Usage
 
 ```jsx
-import StoreLocator from 'react-store-locator';
+import { Map } from 'react-store-locator';
 
 render(){
   return(
-    <StoreLocator.map
+    <Map
       zoom={10}
       center={{ lat: 53, lng: -7.77 }}
       style={{}}
