@@ -15,11 +15,11 @@ Make sure you have yarn installed if you wish to use it
 ## Usage
 
 ```jsx
-import StoreMap from 'react-store-locator';
+import StoreLocator from 'react-store-locator';
 
 render(){
   return(
-    <StoreMap
+    <StoreLocator.map
       zoom={10}
       center={{ lat: 53, lng: -7.77 }}
       style={{}}
@@ -28,7 +28,7 @@ render(){
       markers={markersArr} // --> pass markers array through here
       markerComponent={MarkerComp} // --> pass the marker component here
       markersInBounds={myFunc} // --> pass function here and call it with param of markers , i.e ( myFunc(markers) { console.log(markers)}) This will tell you what markers are in your screen
-    />;
+    />
   )
 }
 ```
