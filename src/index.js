@@ -1,4 +1,4 @@
-import { Map } from './containers';
+import Map from './containers/Map';
 
 module.exports = {
   Map
