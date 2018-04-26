@@ -1,5 +1,7 @@
-import Map from './containers/Map';
+import Map from './containers/MapContainer';
+import Info from './containers/Info';
 
 module.exports = {
-  Map
+  Map,
+  Info
 };

@@ -7,26 +7,13 @@ export default class Marker extends Component {
         style={{
           cursor: 'pointer',
           backgroundColor: 'purple',
-          height: '100px',
-          width: '20px'
+          height: '25px',
+          width: '25px',
+          border: '2px solid white'
         }}
-        onClick={() => this.props.handleMarkerClick(this.props.id)}
+        onClick={() => this.props.handleDealerClick(this.props.id)}
       >
-        <div
-          style={
-            this.props.show
-              ? {
-                  display: 'block',
-                  height: '40px',
-                  width: '100px',
-                  backgroundColor: 'white',
-                  color: 'blue'
-                }
-              : { display: 'none' }
-          }
-        >
-          {this.props.name}
-        </div>
+        {this.props.children}
       </div>
     );
   }

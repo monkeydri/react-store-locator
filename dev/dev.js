@@ -1,52 +1,54 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Map from '../src/containers/Map';
+import Map from '../src/containers/MapContainer';
+import Info from '../src/containers/Info';
 import Marker from './Marker';
-import axios from 'axios';
 
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
 
-const markers = [
+const dealers = [
   {
     id: 1,
-    lat: 53,
-    lng: -7.77,
-    show: true,
+    lat: 50,
+    lng: 25.1,
+    show: false,
     name: 'First Marker'
   },
   {
     id: 2,
-    lat: 53.1,
-    lng: -7.77,
+    lat: 50,
+    lng: 25.2,
     show: true,
     name: 'Second Marker'
   },
   {
     id: 3,
-    lat: 53.2,
-    lng: -7.77,
-    show: true,
+    lat: 50,
+    lng: 25.3,
+    show: false,
     name: 'Third Marker'
   }
 ];
 
-const markersInBounds = markers => {
-  console.log('Markers inside bounds --> ', markers);
+const onChange = dealers => {
+  // console.log(dealers);
 };
 
+const style = {};
+
 render(
-  <div style={{ height: '100vh', width: '100%' }}>
-    <Map
-      zoom={10}
-      center={{ lat: 53, lng: -7.77 }}
-      style={{}}
-      height={'100vh'}
-      width={'100%'}
-      markers={markers}
-      markerComponent={Marker}
-      markersInBounds={markersInBounds}
-    />
+  <div>
+    <Map dealers={dealers} onChange={onChange}>
+      {(dealer, closeDealer) => {
+        return (
+          <Info show={dealer.show}>
+            <div style={style.main}>{dealer.name}</div>
+            <div onClick={() => closeDealer(dealer.id)}>Close Dealer</div>
+          </Info>
+        );
+      }}
+    </Map>
   </div>,
   containerEl
 );
