@@ -31,16 +31,25 @@ const dealers = [
   }
 ];
 
-const onChange = dealers => {
-  // console.log(dealers);
-};
-
-const style = {};
+const myPin = props => (
+  <div
+    style={{
+      cursor: 'pointer',
+      backgroundColor: 'purple',
+      height: '25px',
+      width: '25px',
+      border: '2px solid white'
+    }}
+    onClick={() => props.handleDealerClick(props.id)}
+  >
+    {props.children}
+  </div>
+);
 
 render(
   <div>
-    <Map dealers={dealers} onChange={onChange}>
-      {(dealer, closeDealer) => {
+    <Map pin={myPin} dealers={dealers}>
+      {/* {(dealer, closeDealer) => {
         return (
           <Info show={dealer.show}>
             <div style={{ background: 'red' }}>
@@ -49,7 +58,7 @@ render(
             </div>
           </Info>
         );
-      }}
+      }} */}
     </Map>
   </div>,
   containerEl
