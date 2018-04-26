@@ -43,8 +43,10 @@ render(
       {(dealer, closeDealer) => {
         return (
           <Info show={dealer.show}>
-            <div style={style.main}>{dealer.name}</div>
-            <div onClick={() => closeDealer(dealer.id)}>Close Dealer</div>
+            <div style={{ background: 'red' }}>
+              {dealer.name}
+              <div onClick={() => closeDealer(dealer.id)}>[x]</div>
+            </div>
           </Info>
         );
       }}

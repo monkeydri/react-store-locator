@@ -1,6 +1,8 @@
 # React Store Locator
 
-Simple google map component used to locate stores within your viewing window. This uses the google-map-react module.
+## Short Description
+
+This module is used for when you have a list of stores/dealers that you wish to put on a map and show information about each store/dealer.
 
 ## Getting started
 
@@ -14,23 +16,76 @@ Make sure you have yarn installed if you wish to use it
 
 ## Usage
 
+### Basic
+
 ```jsx
 import { Map } from 'react-store-locator';
 
 render(){
+  const dealers = [
+    {
+    id: 1,
+    lat: 50,
+    lng: 25.1,
+    show: false,
+    name: 'First Marker'
+  },
+  {
+    id: 2,
+    lat: 50,
+    lng: 25.2,
+    show: true,
+    name: 'Second Marker'
+  },
+  {
+    id: 3,
+    lat: 50,
+    lng: 25.3,
+    show: false,
+    name: 'Third Marker'
+  }
+  ]
   return(
-    <Map
-      zoom={10}
-      center={{ lat: 53, lng: -7.77 }}
-      styles={{}}
-      height={'100vh'}
-      width={'100%'}
-      markers={markersArr} // --> pass markers array through here
-      markerComponent={MarkerComp} // --> pass the marker component here
-      markersInBounds={myFunc} // --> pass function here and call it with param of markers , i.e ( myFunc(markers) { console.log(markers)}) This will tell you what markers are in your screen
-    />
+    <Map dealers={dealers}/>
   )
 }
 ```
 
-Most of these will have defaults if you don't pass anything through. You must pass a marker component in if you wish to see anything on the map.
+This will show a map with default markers and default info windows.
+
+You will need to include all of these props for a minimum for each of your markers. If you wish your information to `show` by default then set `show` to true otherwise set `show` to false.
+
+### Start customizing
+
+You can add your own custom pin and information window. Examples below.
+
+```jsx
+import { Info } from 'react-store-locator';
+
+\\...
+
+return (
+  <Map dealers={dealers}>
+    {(dealer, closeDealer) => {
+        return (
+         <Info show={dealer.show}>
+            <div style={{ background: 'red' }}>
+              {dealer.name}
+              <div onClick={() => closeDealer(dealer.id)}>[x]</div>
+            </div>
+          </Info>
+        );
+      }}
+  </Map>
+)
+```
+
+You must pass `show` prop if you want your info window to work correctly. Pass any jsx through the `Info` tag and it will be displayed. There you can style this however you wish.
+
+Here is what you get:
+
+Without any styles:
+![customInfo](customInfo.png)
+
+With styles:
+![customInfoRed](customInfoRed.png)

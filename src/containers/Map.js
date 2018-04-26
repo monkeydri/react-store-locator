@@ -206,7 +206,13 @@ export default class Map extends Component {
                   <Info show={dealer.show} style={this.props.infoStyle}>
                     <div style={style.main}>
                       {Object.keys(dealer).map((k, i) => {
-                        if (k === 'id' || k === 'lat' || k === 'lng') return;
+                        if (
+                          k === 'id' ||
+                          k === 'lat' ||
+                          k === 'lng' ||
+                          k === 'show'
+                        )
+                          return;
                         return (
                           <div key={k}>
                             {k}: {`${dealer[k]}`}
