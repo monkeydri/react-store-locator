@@ -3,7 +3,8 @@ import { render } from 'react-dom';
 import Map from '../src/containers/MapContainer';
 import Info from '../src/containers/Info';
 import Marker from './Marker';
-
+const markerIcon =
+  'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
 
@@ -48,7 +49,13 @@ const myPin = props => (
 
 render(
   <div>
-    <Map pin={myPin} dealers={dealers}>
+    <Map
+      pin={myPin}
+      dealers={dealers}
+      // googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
+      googleMapIcon={markerIcon}
+      customIcon={{ color: 'red', borderColor: 'blue' }}
+    >
       {/* {(dealer, closeDealer) => {
         return (
           <Info show={dealer.show}>

@@ -46,10 +46,12 @@ render(){
   }
   ]
   return(
-    <Map dealers={dealers}/>
+    <Map dealers={dealers} googleApiKey={'Your Key Here'}/> // Pass google maps api key through here
   )
 }
 ```
+
+Note: The map seems to work without a key ( you will get a warning ). Without a key you also may recieve less request than with a key. This is up to you.
 
 Default map:
 
@@ -176,6 +178,43 @@ You can pass through map style like so. This uses a JSON object from https://map
 ```jsx
 <Map mapStyle={mapStyleObject} />
 ```
+
+### Adding custom google map Icons or customizing the default Icon
+
+```jsx
+//...
+
+<Map googleMapIcon={markerIcon} customIcon={{ color: 'red', borderColor: 'blue', path: 'SVG PATH HERE' }}>
+```
+
+Note: If you include both a `googleMapIcon` and `customIcon`, `googleMapIcon` will render first.
+
+The `googlemapIcon` takes an image url. You can also pass a local image through if you just import it like so:
+
+```jsx
+import image from '../img/myimage.png';
+//...
+
+<Map googleMapIcon={image} />;
+```
+
+With custom image:
+
+![imageIcon](imageIcon.png)
+
+The `customIcon` is google's default icon, but you can change the `color`, `borderColor`, and `path`. If you do not include one of these 3 props then it will have a default so do not worry.
+
+(From a stackoverflow post about this topic)
+You can also create the paths using a visual tool like https://inkscape.org/en/ (GNU-GPL, multiplatform). Some useful hints:
+
+1.  Google API just accepts a single path, so you have to turn any other object (square, cercle...) into a path and join them as a single one. Both commands at the Path menu.
+2.  To move the path to the (0,0), go to the Path Edit mode (F2) select all the control nodes and drag them. Moving the object with F1, won't change the path node coords.
+3.  To ensure the reference point is at (0,0), you can select it alone and edit the coords by hand on the top toolbar.
+4.  After saving the SVG file, which is an XML, open it with an editor, look for the svg:path element and copy the content of the 'd' attribute.
+
+With custom icon:
+
+![customIcon](customIcon.png)
 
 ### Grabing stores/dealers within window
 
