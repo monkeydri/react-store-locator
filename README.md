@@ -41,7 +41,7 @@ render(){
     id: 3,
     lat: 50,
     lng: 25.3,
-    show: false,
+    show: true,
     name: 'Third Marker'
   }
   ]
@@ -167,17 +167,19 @@ const infoStyle = {
 
 ### Search
 
-There will be a custom search bar to search your map. This will recenter and zoom the map to what location you search. It will place a google marker that you can customize you like on your current location.
+There will be a custom search bar to search your map. This will recenter and zoom the map to what location you search. It will place a google marker, that you can customize how you like, on your current location.
 
 Note: on map load there will not be a current location marker until you search, also when you search a new location your old marker will disappear.
 
 ### Adding Map styles
 
-You can pass through map style like so. This uses a JSON object from https://mapstyle.withgoogle.com/. You can go here and copy and paste this through the `mapStyle` prop.
+You can pass through map style like so:
 
 ```jsx
 <Map mapStyle={mapStyleObject} />
 ```
+
+This uses a JSON object from https://mapstyle.withgoogle.com/. You can go here and copy and paste this through the `mapStyle` prop.
 
 ### Adding custom google map Icons or customizing the default Icon
 
