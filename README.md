@@ -3,6 +3,7 @@
 ## Demo
 
 [Demo](https://react-store-locator-demo.netlify.com/)
+
 [Demo Github](https://github.com/escaladesports/react-store-locator-demo)
 
 ## Short Description
