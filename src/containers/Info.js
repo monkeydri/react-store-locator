@@ -22,7 +22,7 @@ export default class Info extends Component {
     const nopxWidth = width.slice(0, width.indexOf('p'));
     const right = (nopxWidth - pinWidth) / 2;
 
-    return (
+    return this.props.show ? (
       <div
         onClick={e => e.stopPropagation()}
         style={{
@@ -37,9 +37,9 @@ export default class Info extends Component {
           right: `${right}px`
         }}
       >
-        {this.props.show ? this.props.children : null}
+        {this.props.children}
       </div>
-    );
+    ) : null;
   }
 }
 

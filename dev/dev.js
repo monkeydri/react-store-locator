@@ -20,7 +20,7 @@ const dealers = [
     id: 2,
     lat: 37.9,
     lng: -87.3,
-    show: true,
+    show: false,
     name: 'Second Marker'
   },
   {
@@ -61,16 +61,16 @@ render(
       customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
     >
-      {/* {(dealer, closeDealer) => {
+      {(dealer, closeDealer) => {
         return (
-          <Info show={dealer.show}>
+          <Info show={dealer.show} style={{ height: '30px' }}>
             <div style={{ background: 'red' }}>
               {dealer.name}
               <div onClick={() => closeDealer(dealer.id)}>[x]</div>
             </div>
           </Info>
         );
-      }} */}
+      }}
     </Map>
   </div>,
   containerEl
