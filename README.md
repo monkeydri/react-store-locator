@@ -1,5 +1,10 @@
 # React Store Locator
 
+## Demo
+
+[Demo](https://react-store-locator-demo.netlify.com/)
+[Demo Github](https://github.com/escaladesports/react-store-locator-demo)
+
 ## Short Description
 
 This module is used for when you have a list of stores/dealers that you wish to put on a map and show information about each store/dealer.

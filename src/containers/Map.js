@@ -36,7 +36,6 @@ export default class Map extends Component {
   }
 
   changeMap(props) {
-    console.log(props);
     const {
       bounds: { ne, nw, se, sw }
     } = props;
@@ -71,7 +70,6 @@ export default class Map extends Component {
   }
 
   toggleDealer(id) {
-    console.log(id);
     const index = findDealerIndex(id, this.state.dealers);
     if (index !== null) {
       const dealers = this.state.dealers;
