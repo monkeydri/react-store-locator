@@ -48,7 +48,7 @@ const myPin = props => (
 );
 
 const getDealers = dealers => {
-  console.log(dealers);
+  // console.log(dealers);
 };
 
 render(
@@ -63,7 +63,7 @@ render(
     >
       {(dealer, closeDealer) => {
         return (
-          <Info show={dealer.show} style={{ height: '30px' }}>
+          <Info show={dealer.show} style={{ width: '145px', fontSize: '2em' }}>
             <div style={{ background: 'red' }}>
               {dealer.name}
               <div onClick={() => closeDealer(dealer.id)}>[x]</div>
