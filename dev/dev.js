@@ -27,7 +27,7 @@ const dealers = [
     id: 3,
     lat: 37.9,
     lng: -87.5,
-    show: false,
+    show: true,
     name: 'Third Marker'
   }
 ];
@@ -54,7 +54,7 @@ const getDealers = dealers => {
 render(
   <div>
     <Map
-      pin={myPin}
+      // pin={myPin}
       dealers={dealers}
       googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       googleMapIcon={markerIcon}
@@ -68,6 +68,11 @@ render(
               {dealer.name}
               <div onClick={() => closeDealer(dealer.id)}>[x]</div>
             </div>
+            <div>red</div>
+            <div>red</div>
+            <div>red</div>
+            <div>red</div>
+            <div>redß</div>
           </Info>
         );
       }}

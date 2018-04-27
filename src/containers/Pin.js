@@ -10,15 +10,17 @@ export default class Pin extends Component {
         width: '25px',
         borderRadius: '50%',
         border: '1.5px solid white',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        transform: 'translate(-50%, -50%)'
       }
     };
     return (
-      <div
-        style={styles.mapMarker}
-        onClick={() => this.props.handleDealerClick(this.props.id)}
-      >
+      <div>
         {this.props.children}
+        <div
+          style={styles.mapMarker}
+          onClick={() => this.props.handleDealerClick(this.props.id)}
+        />
       </div>
     );
   }

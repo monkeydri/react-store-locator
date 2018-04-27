@@ -149,7 +149,7 @@ With styles:
 
 ![customInfoRed](customInfoRed.png)
 
-If you want to change the size of the window itself please pass through a style object through as a prop into `Info`. The style prop of the `Info` window will take five props.
+If you want to change the size of the window itself please pass through a style object through as a prop into `Info`. The style prop of the `Info` window will take three props.
 
 ```jsx
 //...
@@ -157,8 +157,7 @@ const infoStyle = {
   width: '150px',
   height: '30px',
   backgroundColor: 'yellow',
-  fontSize: '1rem/1em/12px', // pass which ever unit you would like, this helps with centering
-  pinWidth: 25  // width of your pin to help center Info window - Don't add if you aren't passing through a pin
+
 }
 <Info show={dealer.show} style={infoStyle}>
 // Content here
