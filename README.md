@@ -226,6 +226,10 @@ You will pass through a function through the `onChange` props and pass through `
 
 Note: If you cover part of your map this will still count markers that you may end up covering. If this is the case, it would be best to resize your map instead.
 
+#### New feature for this "feature"
+
+The returned stores/dealers now will have a `distanceFromCenter` prop that will tell you the distance in miles they are from the center of your map. This way you can tell your user how far each store/dealer is.
+
 ```jsx
 //...
 

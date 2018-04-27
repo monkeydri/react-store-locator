@@ -11,22 +11,22 @@ document.body.appendChild(containerEl);
 const dealers = [
   {
     id: 1,
-    lat: 50,
-    lng: 25.1,
+    lat: 37.9,
+    lng: -87.7,
     show: false,
     name: 'First Marker'
   },
   {
     id: 2,
-    lat: 50,
-    lng: 25.2,
+    lat: 37.9,
+    lng: -87.3,
     show: true,
     name: 'Second Marker'
   },
   {
     id: 3,
-    lat: 50,
-    lng: 25.3,
+    lat: 37.9,
+    lng: -87.5,
     show: false,
     name: 'Third Marker'
   }
@@ -47,14 +47,19 @@ const myPin = props => (
   </div>
 );
 
+const getDealers = dealers => {
+  console.log(dealers);
+};
+
 render(
   <div>
     <Map
       pin={myPin}
       dealers={dealers}
-      // googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
+      googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       googleMapIcon={markerIcon}
       customIcon={{ color: 'red', borderColor: 'blue' }}
+      onChange={getDealers}
     >
       {/* {(dealer, closeDealer) => {
         return (

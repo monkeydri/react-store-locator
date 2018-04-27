@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import GoogleMap from 'google-map-react';
 import { fitBounds } from 'google-map-react/utils';
+import geolib from 'geolib';
 import Pin from './Pin';
 import Info from './Info';
 import GoogleMarker from './GoogleMarker';
+import infoStyle from './InfoStyle';
+import searchStyle from './SearchStyle';
 
 function findDealerIndex(id, dealers) {
   for (let i = dealers.length; i--; ) {
@@ -33,6 +36,7 @@ export default class Map extends Component {
   }
 
   changeMap(props) {
+    console.log(props);
     const {
       bounds: { ne, nw, se, sw }
     } = props;
@@ -49,6 +53,15 @@ export default class Map extends Component {
         ) {
           return dealer;
         }
+      });
+      foundDealers.map(dealer => {
+        const distanceMeters = geolib.getDistance(props.center, {
+          lat: dealer.lat,
+          lng: dealer.lng
+        });
+        const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
+        dealer.distanceFromCenter = distanceMiles;
+        return dealer;
       });
       this.setState({ foundDealers });
       if (this.props.onChange) {
@@ -182,7 +195,7 @@ export default class Map extends Component {
         >
           <input
             className="storeLocatorInput"
-            style={style.searchInput}
+            style={searchStyle.searchInput}
             onChange={this.onPlacesChanged}
             ref={input => (this.searchInput = input)}
             type="text"
@@ -207,7 +220,7 @@ export default class Map extends Component {
               >
                 {!this.props.children ? (
                   <Info show={dealer.show} style={this.props.infoStyle}>
-                    <div style={style.main}>
+                    <div style={infoStyle.main}>
                       {Object.keys(dealer).map((k, i) => {
                         if (
                           k === 'id' ||
@@ -220,13 +233,13 @@ export default class Map extends Component {
                           <div key={k}>
                             {k}: {`${dealer[k]}`}
                             {i + 1 === Object.keys(dealer).length ? null : (
-                              <hr style={style.hr} />
+                              <hr style={infoStyle.hr} />
                             )}
                           </div>
                         );
                       })}
                       <div
-                        style={style.close}
+                        style={infoStyle.close}
                         onClick={() => this.closeDealer(dealer.id)}
                       >
                         x
@@ -244,43 +257,6 @@ export default class Map extends Component {
     );
   }
 }
-
-const style = {
-  main: {
-    fontSize: '1.2em',
-    padding: '3px',
-    border: '1px solid #444',
-    whiteSpace: 'nowrap'
-  },
-  close: {
-    position: 'absolute',
-    top: 0,
-    right: 5,
-    cursor: 'pointer'
-  },
-  hr: {
-    border: '0',
-    margin: '0',
-    marginTop: '2px',
-    marginBottom: '2px',
-    padding: '0',
-    height: '0',
-    borderTop: '1px solid rgba(0, 0, 0, 0.1)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.3)'
-  },
-  searchInput: {
-    backgroundColor: '#fff',
-    fontFamily: 'Roboto',
-    fontSize: '15px',
-    fontWeight: 300,
-    marginLeft: '12px',
-    padding: '0 11px 0 13px',
-    textOverflow: 'ellipsis',
-    width: '300px',
-    outline: 'none',
-    height: '25px'
-  }
-};
 
 Map.defaultProps = {
   pin: Pin,
