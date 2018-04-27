@@ -197,7 +197,7 @@ export default class Map extends Component {
             onChange={this.onPlacesChanged}
             ref={input => (this.searchInput = input)}
             type="text"
-            placeholder="Search Dealers..."
+            placeholder="Enter Your Location..."
           />
         </div>
         <GoogleMap
