@@ -63,8 +63,8 @@ render(
     >
       {(dealer, closeDealer) => {
         return (
-          <Info show={dealer.show} style={{ width: '145px', fontSize: '2em' }}>
-            <div style={{ background: 'red' }}>
+          <Info show={dealer.show} style={{ width: '15rem', fontSize: '1rem' }}>
+            <div style={{ background: 'red', fontSize: '1rem' }}>
               {dealer.name}
               <div onClick={() => closeDealer(dealer.id)}>[x]</div>
             </div>
