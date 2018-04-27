@@ -1,7 +1,12 @@
 {
   "name": "react-store-locator",
-  "version": "0.3.0",
-  "keywords": ["react", "map", "store", "locator"],
+  "version": "0.3.1",
+  "keywords": [
+    "react",
+    "map",
+    "store",
+    "locator"
+  ],
   "main": "dist/index.js",
   "author": "Taylor Austin <taustin@escaladesports.com>",
   "repository": {
@@ -10,17 +15,13 @@
   },
   "license": "MIT",
   "scripts": {
-    "analyze":
-      "esca-scripts analyze --react --component --input ./src/index.js",
-    "build":
-      "esca-scripts build --react --component --babel --input src --output dist --multiple",
-    "dev":
-      "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
+    "analyze": "esca-scripts analyze --react --component --input ./src/index.js",
+    "build": "esca-scripts build --react --component --babel --input src --output dist --multiple",
+    "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
     "prepublishOnly": "npm run build",
     "reset": "esca-scripts reset",
     "test": "echo 'no test'",
-    "travis":
-      "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
+    "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
   },
   "devDependencies": {
     "esca-scripts": "^0.14.7",
