@@ -34,7 +34,8 @@ export default class Info extends Component {
           transform: 'translateY(-100%)',
           position: 'relative',
           bottom: '10px',
-          right: `${right}px`
+          right: `${right}px`,
+          zIndex: 100
         }}
       >
         {this.props.children}
