@@ -39,10 +39,7 @@ export default props => {
       type="text"
       className="storeLocatorSearchInput"
       placeholder={props.placeholder || 'Enter Your Location'}
-      style={
-        { ...searchStyle.searchInput, ...props.style } ||
-        searchStyle.searchInput
-      }
+      style={props.style || searchStyle.searchInput}
     />
   );
 };

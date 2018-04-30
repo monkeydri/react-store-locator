@@ -54,10 +54,7 @@ const getDealers = dealers => {
 
 render(
   <div>
-    <Search
-      placeholder={'Fly to this location'}
-      style={{ color: 'blue', textTransform: 'uppercase' }}
-    />
+    <Search placeholder={'Fly to this location'} />
     <Map
       // pin={myPin}
       dealers={dealers}
