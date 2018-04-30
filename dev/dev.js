@@ -62,6 +62,7 @@ render(
       googleMapIcon={markerIcon}
       customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
+      initSearch={'47711'}
     >
       {(dealer, closeDealer) => {
         return (
@@ -79,6 +80,17 @@ render(
         );
       }}
     </Map>
+    <style>{`
+    .storeLocatorSearchInput {
+      width: 300px;
+      height: 40px;
+      background: #fff;
+      font-size: 16px;
+      border: 1px solid #444;
+      outline: none;
+      text-align: center;
+    }
+    `}</style>
   </div>,
   containerEl
 );

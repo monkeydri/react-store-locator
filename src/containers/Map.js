@@ -28,6 +28,8 @@ export default class Map extends Component {
     this.closeDealer = this.closeDealer.bind(this);
     this.onPlacesChanged = this.onPlacesChanged.bind(this);
     this.initCenterMap = this.initCenterMap.bind(this);
+    this.checkGoogleMarker = this.checkGoogleMarker.bind(this);
+    this.handleMapLoad = this.handleMapLoad.bind(this);
 
     this.state = {
       dealers: [],
@@ -36,6 +38,17 @@ export default class Map extends Component {
       zoom: null,
       googleMarkers: []
     };
+  }
+
+  checkGoogleMarker() {
+    if (this.state.googleMarkers.length > 0) {
+      for (let i = this.state.googleMarkers.length; i--; ) {
+        this.state.googleMarkers[i].setMap(null);
+      }
+      this.setState({
+        googleMarkers: []
+      });
+    }
   }
 
   changeMap(props) {
@@ -97,24 +110,20 @@ export default class Map extends Component {
   }
 
   initCenterMap() {
+    const { google } = this.props;
+
     const { newBounds } = mapState.state;
     const size = {
       width: this.mapEl.offsetWidth,
       height: this.mapEl.offsetHeight
     };
     const { center, zoom } = fitBounds(newBounds, size);
-    if (this.state.googleMarkers.length > 0) {
-      for (let i = this.state.googleMarkers.length; i--; ) {
-        this.state.googleMarkers[i].setMap(null);
-      }
-      this.setState({
-        googleMarkers: []
-      });
-    }
+    this.checkGoogleMarker();
+
     const marker = GoogleMarker(
       this.props.customIcon,
       this.props.googleMapIcon,
-      this.map.map_,
+      this.map,
       center
     );
     this.setState({
@@ -147,18 +156,11 @@ export default class Map extends Component {
         };
 
         const { center, zoom } = fitBounds(newBounds, size);
-        if (this.state.googleMarkers.length > 0) {
-          for (let i = this.state.googleMarkers.length; i--; ) {
-            this.state.googleMarkers[i].setMap(null);
-          }
-          this.setState({
-            googleMarkers: []
-          });
-        }
+        this.checkGoogleMarker();
         const marker = GoogleMarker(
           this.props.customIcon,
           this.props.googleMapIcon,
-          this.map.map_,
+          this.map,
           center
         );
         this.setState({
@@ -178,6 +180,7 @@ export default class Map extends Component {
         }
       });
     }
+
     const { google } = this.props;
     const input = this.searchInput;
     this.searchBox = new google.maps.places.SearchBox(input);
@@ -213,6 +216,51 @@ export default class Map extends Component {
     mapState.unsubscribe();
   }
 
+  handleMapLoad({ map, maps }) {
+    if (this.props.initSearch) {
+      const service = new google.maps.places.PlacesService(map);
+      service.textSearch(
+        {
+          location: map.getCenter(),
+          query: this.props.initSearch
+        },
+        (results, status) => {
+          const result = results[0];
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            this.checkGoogleMarker();
+            const { geometry } = result;
+            const newBounds = {
+              ne: {
+                lat: geometry.viewport.getNorthEast().lat(),
+                lng: geometry.viewport.getNorthEast().lng()
+              },
+              sw: {
+                lat: geometry.viewport.getSouthWest().lat(),
+                lng: geometry.viewport.getSouthWest().lng()
+              }
+            };
+            const size = {
+              width: this.mapEl.offsetWidth,
+              height: this.mapEl.offsetHeight
+            };
+            const { center, zoom } = fitBounds(newBounds, size);
+            const marker = GoogleMarker(
+              this.props.customIcon,
+              this.props.googleMapIcon,
+              map,
+              center
+            );
+            this.setState({
+              center: center,
+              zoom: zoom,
+              googleMarkers: [...this.state.googleMarkers, marker]
+            });
+          }
+        }
+      );
+    }
+  }
+
   render() {
     let Pin = this.props.pin;
 
@@ -243,7 +291,9 @@ export default class Map extends Component {
           />
         </div>
         <GoogleMap
-          ref={ref => (this.map = ref)}
+          // ref={ref => console.log(ref.map_)}
+          onGoogleApiLoaded={this.handleMapLoad}
+          yesIWantToUseGoogleMapApiInternals
           center={this.props.center || this.state.center}
           zoom={this.props.zoom || this.state.zoom}
           options={this.createMapOptions}

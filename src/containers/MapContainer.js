@@ -5,7 +5,7 @@ import Search from './Search';
 
 class MapContainer extends Component {
   componentDidMount() {
-    Search(this.props.google);
+    Search({ ...this.props });
   }
 
   render() {

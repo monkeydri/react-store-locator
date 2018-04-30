@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
-import searchStyle from '../containers/SearchStyle';
 
 function initSearch(google) {
   const input = document.querySelector('.storeLocatorSearchInput');
   const searchBox = new google.maps.places.SearchBox(input);
+
   searchBox.addListener('places_changed', function() {
     const places = searchBox.getPlaces();
     places.forEach(place => {
@@ -13,6 +13,7 @@ function initSearch(google) {
         console.warn('Returned place contains no geometry');
         return;
       }
+
       const { geometry } = place;
       const newBounds = {
         ne: {
@@ -30,8 +31,8 @@ function initSearch(google) {
 }
 
 export default props => {
-  if (props.maps) {
-    initSearch(props);
+  if (props.google) {
+    initSearch(props.google);
   }
 
   return (
