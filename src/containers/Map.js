@@ -113,11 +113,14 @@ export default class Map extends Component {
     const { google } = this.props;
 
     const { newBounds } = mapState.state;
-    console.log(this.mapEl);
-    const size = {
-      width: this.mapEl.offsetWidth,
-      height: this.mapEl.offsetHeight
-    };
+    let size = {};
+    if (this.mapEl) {
+      size = {
+        width: this.mapEl.offsetWidth,
+        height: this.mapEl.offsetHeight
+      };
+    }
+
     const { center, zoom } = fitBounds(newBounds, size);
     this.checkGoogleMarker();
 
@@ -151,10 +154,13 @@ export default class Map extends Component {
             lng: geometry.viewport.getSouthWest().lng()
           }
         };
-        const size = {
-          width: this.mapEl.offsetWidth,
-          height: this.mapEl.offsetHeight
-        };
+        let size = {};
+        if (this.mapEl) {
+          size = {
+            width: this.mapEl.offsetWidth,
+            height: this.mapEl.offsetHeight
+          };
+        }
 
         const { center, zoom } = fitBounds(newBounds, size);
         this.checkGoogleMarker();
@@ -201,10 +207,13 @@ export default class Map extends Component {
         lng: bounds.getSouthWest().lng()
       }
     };
-    const size = {
-      width: this.mapEl.offsetWidth,
-      height: this.mapEl.offsetHeight
-    };
+    let size = {};
+    if (this.mapEl) {
+      size = {
+        width: this.mapEl.offsetWidth,
+        height: this.mapEl.offsetHeight
+      };
+    }
     const { center, zoom } = fitBounds(newBounds, size);
     this.setState({
       dealers: this.props.dealers,
