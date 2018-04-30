@@ -43,6 +43,7 @@ export default props => {
       className="storeLocatorSearchInput"
       placeholder={props.placeholder || 'Enter Your Location'}
       style={props.style || {}}
+      onChange={props.onChange}
     />
   );
 };

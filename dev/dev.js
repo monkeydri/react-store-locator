@@ -52,9 +52,13 @@ const getDealers = dealers => {
   // console.log(dealers);
 };
 
+function getSearchInput(e) {
+  console.log(e.target.value);
+}
+
 render(
   <div>
-    {/* <Search placeholder={'Fly to this location'} /> */}
+    <Search placeholder={'Fly to this location'} onChange={getSearchInput} />
     <Map
       // pin={myPin}
       dealers={dealers}
