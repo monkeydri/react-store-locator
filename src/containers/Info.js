@@ -33,7 +33,7 @@ export default class Info extends Component {
           transform: 'translate(-50%, -100%)',
           position: 'absolute',
           marginTop: '-20px',
-          zIndex: 10000
+          zIndex: 5
         }}
         ref={el => (this.infoDiv = el)}
       >
