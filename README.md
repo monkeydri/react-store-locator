@@ -204,6 +204,16 @@ render(){
 }
 ```
 
+### Initial map location
+
+```jsx
+import { Map } from 'react-store-locator';
+//...
+<Map
+  initSearch={'Any search string here'} // Can take any search string and will load map with this value
+>
+```
+
 ### Adding Map styles
 
 You can pass through map style like so:
