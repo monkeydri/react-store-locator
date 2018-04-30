@@ -177,6 +177,33 @@ There will be a custom search bar to search your map. This will recenter and zoo
 
 Note: on map load there will not be a current location marker until you search, also when you search a new location your old marker will disappear.
 
+### Custom Search
+
+As of version `0.5.0` there will now be a `Search` component you can bring in. This will allow you to have your own input and call it anywhere in your project. It should have the autocompletion and once searched update your map as well.
+
+This is for searching outside of your map and then "routing" to it after. An example would be showing an input and once you search popping up a modal of your map with the search location already updated in your map.
+
+There are two props you can pass through: `style`, `placeholder`. The style prop passes through a react `style` object and `placeholder` takes a string. The className is `storeLocatorSearchInput` if you wish to use pure css instead.
+
+```jsx
+import { Search } from 'react-store-locator';
+
+//...
+render(){
+  return(
+    <div>
+      <Map
+      //  any props being called here
+       />
+       <Search
+        style={{background: 'red', color: 'blue', textTransform: 'uppercase'}}
+        placeholder={'Fly to your location'}
+       />
+    </div>
+  )
+}
+```
+
 ### Adding Map styles
 
 You can pass through map style like so:
