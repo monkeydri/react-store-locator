@@ -136,6 +136,7 @@ export default class Map extends Component {
   onPlacesChanged() {
     const { google } = this.props;
     let places = this.searchBox.getPlaces();
+    console.log('Places ', places);
     if (places) {
       if (places.length > 0) {
         const firstLocation = places[0];
@@ -183,8 +184,10 @@ export default class Map extends Component {
 
     const { google } = this.props;
     const input = this.searchInput;
+    console.log('SearchInput ', input);
     this.searchBox = new google.maps.places.SearchBox(input);
     this.searchBox.addListener('places_changed', this.onPlacesChanged);
+    console.log('SearchBox ', this.searchBox);
 
     const bounds = new google.maps.LatLngBounds();
     this.props.dealers.map(dealer => {
