@@ -217,6 +217,7 @@ export default class Map extends Component {
   }
 
   handleMapLoad({ map, maps }) {
+    this.map = map;
     if (this.props.initSearch) {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
@@ -291,7 +292,7 @@ export default class Map extends Component {
           />
         </div>
         <GoogleMap
-          // ref={ref => console.log(ref.map_)}
+          // ref={ref => (this.map = ref)}
           onGoogleApiLoaded={this.handleMapLoad}
           yesIWantToUseGoogleMapApiInternals
           center={this.props.center || this.state.center}

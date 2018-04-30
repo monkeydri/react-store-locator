@@ -4,30 +4,32 @@ import { mapState } from '../state';
 
 function initSearch(google) {
   const input = document.querySelector('.storeLocatorSearchInput');
-  const searchBox = new google.maps.places.SearchBox(input);
+  if (input) {
+    const searchBox = new google.maps.places.SearchBox(input);
 
-  searchBox.addListener('places_changed', function() {
-    const places = searchBox.getPlaces();
-    places.forEach(place => {
-      if (!place.geometry) {
-        console.warn('Returned place contains no geometry');
-        return;
-      }
-
-      const { geometry } = place;
-      const newBounds = {
-        ne: {
-          lat: geometry.viewport.getNorthEast().lat(),
-          lng: geometry.viewport.getNorthEast().lng()
-        },
-        sw: {
-          lat: geometry.viewport.getSouthWest().lat(),
-          lng: geometry.viewport.getSouthWest().lng()
+    searchBox.addListener('places_changed', function() {
+      const places = searchBox.getPlaces();
+      places.forEach(place => {
+        if (!place.geometry) {
+          console.warn('Returned place contains no geometry');
+          return;
         }
-      };
-      mapState.setState({ newBounds });
+
+        const { geometry } = place;
+        const newBounds = {
+          ne: {
+            lat: geometry.viewport.getNorthEast().lat(),
+            lng: geometry.viewport.getNorthEast().lng()
+          },
+          sw: {
+            lat: geometry.viewport.getSouthWest().lat(),
+            lng: geometry.viewport.getSouthWest().lng()
+          }
+        };
+        mapState.setState({ newBounds });
+      });
     });
-  });
+  }
 }
 
 export default props => {
