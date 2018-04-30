@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Map from '../src/containers/MapContainer';
+import Search from '../src/containers/Search';
 import Info from '../src/containers/Info';
 import Marker from './Marker';
 const markerIcon =
@@ -53,6 +54,10 @@ const getDealers = dealers => {
 
 render(
   <div>
+    <Search
+      placeholder={'Fly to this location'}
+      style={{ color: 'blue', textTransform: 'uppercase' }}
+    />
     <Map
       // pin={myPin}
       dealers={dealers}

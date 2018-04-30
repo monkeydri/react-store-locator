@@ -7,6 +7,8 @@ import Info from './Info';
 import GoogleMarker from './GoogleMarker';
 import infoStyle from './InfoStyle';
 import searchStyle from './SearchStyle';
+import { Subscribe } from 'statable';
+import { mapState } from '../state';
 
 function findDealerIndex(id, dealers) {
   for (let i = dealers.length; i--; ) {
@@ -25,6 +27,7 @@ export default class Map extends Component {
     this.toggleDealer = this.toggleDealer.bind(this);
     this.closeDealer = this.closeDealer.bind(this);
     this.onPlacesChanged = this.onPlacesChanged.bind(this);
+    this.initCenterMap = this.initCenterMap.bind(this);
 
     this.state = {
       dealers: [],
@@ -93,6 +96,34 @@ export default class Map extends Component {
     };
   }
 
+  initCenterMap() {
+    const { newBounds } = mapState.state;
+    const size = {
+      width: this.mapEl.offsetWidth,
+      height: this.mapEl.offsetHeight
+    };
+    const { center, zoom } = fitBounds(newBounds, size);
+    if (this.state.googleMarkers.length > 0) {
+      for (let i = this.state.googleMarkers.length; i--; ) {
+        this.state.googleMarkers[i].setMap(null);
+      }
+      this.setState({
+        googleMarkers: []
+      });
+    }
+    const marker = GoogleMarker(
+      this.props.customIcon,
+      this.props.googleMapIcon,
+      this.map.map_,
+      center
+    );
+    this.setState({
+      center: center,
+      zoom: zoom,
+      googleMarkers: [...this.state.googleMarkers, marker]
+    });
+  }
+
   onPlacesChanged() {
     const { google } = this.props;
     let places = this.searchBox.getPlaces();
@@ -140,6 +171,13 @@ export default class Map extends Component {
   }
 
   componentDidMount() {
+    if (mapState.state) {
+      mapState.subscribe(state => {
+        if (state.newBounds) {
+          this.initCenterMap();
+        }
+      });
+    }
     const { google } = this.props;
     const input = this.searchInput;
     this.searchBox = new google.maps.places.SearchBox(input);
@@ -169,6 +207,10 @@ export default class Map extends Component {
       zoom: zoom,
       center: center
     });
+  }
+
+  componentWillUnmount() {
+    mapState.unsubscribe();
   }
 
   render() {
