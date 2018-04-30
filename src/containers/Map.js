@@ -113,6 +113,7 @@ export default class Map extends Component {
     const { google } = this.props;
 
     const { newBounds } = mapState.state;
+    console.log(this.mapEl);
     const size = {
       width: this.mapEl.offsetWidth,
       height: this.mapEl.offsetHeight
