@@ -9,30 +9,18 @@ const markerIcon =
   'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
-
-const dealers = [
-  {
-    id: 1,
-    lat: 37.9,
-    lng: -87.7,
+const number = 800;
+let dealers = [];
+for (let i = number; i--; ) {
+  const dealer = {
+    id: i,
+    lat: Math.random() * 10,
+    lng: Math.random() * 100,
     show: false,
-    name: 'First Marker'
-  },
-  {
-    id: 2,
-    lat: 37.9,
-    lng: -87.3,
-    show: false,
-    name: 'Second Marker'
-  },
-  {
-    id: 3,
-    lat: 37.9,
-    lng: -87.5,
-    show: true,
-    name: 'Third Marker'
-  }
-];
+    name: `Marker ${i}`
+  };
+  dealers.push(dealer);
+}
 
 const myPin = props => (
   <div

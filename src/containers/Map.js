@@ -193,32 +193,39 @@ export default class Map extends Component {
     this.searchBox = new google.maps.places.SearchBox(input);
     this.searchBox.addListener('places_changed', this.onPlacesChanged);
 
-    const bounds = new google.maps.LatLngBounds();
-    this.props.dealers.map(dealer => {
-      bounds.extend(new google.maps.LatLng(dealer.lat, dealer.lng));
-    });
-    const newBounds = {
-      ne: {
-        lat: bounds.getNorthEast().lat(),
-        lng: bounds.getNorthEast().lng()
-      },
-      sw: {
-        lat: bounds.getSouthWest().lat(),
-        lng: bounds.getSouthWest().lng()
-      }
-    };
-    let size = {};
-    if (this.mapEl) {
-      size = {
-        width: this.mapEl.offsetWidth,
-        height: this.mapEl.offsetHeight
+    let defaultZoom = 8,
+      defaultCenter = { lat: 0, lng: 180 };
+    if (!this.props.initSearch) {
+      const bounds = new google.maps.LatLngBounds();
+      this.props.dealers.map(dealer => {
+        bounds.extend(new google.maps.LatLng(dealer.lat, dealer.lng));
+      });
+      const newBounds = {
+        ne: {
+          lat: bounds.getNorthEast().lat(),
+          lng: bounds.getNorthEast().lng()
+        },
+        sw: {
+          lat: bounds.getSouthWest().lat(),
+          lng: bounds.getSouthWest().lng()
+        }
       };
+      let size = {};
+      if (this.mapEl) {
+        size = {
+          width: this.mapEl.offsetWidth,
+          height: this.mapEl.offsetHeight
+        };
+      }
+      const { center, zoom } = fitBounds(newBounds, size);
+      defaultZoom = zoom;
+      defaultCenter = center;
     }
-    const { center, zoom } = fitBounds(newBounds, size);
+
     this.setState({
       dealers: this.props.dealers,
-      zoom: zoom,
-      center: center
+      zoom: defaultZoom,
+      center: defaultCenter
     });
   }
 
