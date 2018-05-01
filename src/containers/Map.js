@@ -289,7 +289,7 @@ export default class Map extends Component {
             position: 'absolute',
             top: 5,
             left: 5,
-            zIndex: 100
+            zIndex: 5
           }}
         >
           <input

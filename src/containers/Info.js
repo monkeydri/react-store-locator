@@ -7,9 +7,7 @@ export default class Info extends Component {
       style: {
         width: '175px',
         height: 'auto',
-        backgroundColor: '#fff',
-        pinWidth: 25,
-        fontSize: '12px'
+        backgroundColor: '#fff'
       }
     };
   }
@@ -33,7 +31,7 @@ export default class Info extends Component {
           transform: 'translate(-50%, -100%)',
           position: 'absolute',
           marginTop: '-20px',
-          zIndex: 5
+          zIndex: 6
         }}
         ref={el => (this.infoDiv = el)}
       >
@@ -47,8 +45,6 @@ Info.defaultProps = {
   style: {
     width: '175px',
     height: 'auto',
-    backgroundColor: '#fff',
-    pinWidth: 25,
-    fontSize: '12px'
+    backgroundColor: '#fff'
   }
 };
