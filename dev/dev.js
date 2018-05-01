@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Map from '../src/containers/MapContainer';
+import AutoComplete from '../src/containers/AutoComplete';
 import Search from '../src/containers/Search';
 import Info from '../src/containers/Info';
 import Marker from './Marker';
@@ -56,9 +57,13 @@ function getSearchInput(e) {
   console.log(e.target.value);
 }
 
+function updateAuto(value) {
+  console.log(value);
+}
+
 render(
   <div>
-    <Search placeholder={'Fly to this location'} onChange={getSearchInput} />
+    <AutoComplete getValue={updateAuto} />
     <Map
       // pin={myPin}
       dealers={dealers}

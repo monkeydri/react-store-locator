@@ -181,8 +181,6 @@ Note: on map load there will not be a current location marker until you search, 
 
 As of version `0.5.0` there will now be a `Search` component you can bring in. This will allow you to have your own input and call it anywhere in your project. It should have the autocompletion and once searched update your map as well.
 
-This is for searching outside of your map and then "routing" to it after. An example would be showing an input and once you search popping up a modal of your map with the search location already updated in your map.
-
 There are two props you can pass through: `style`, `placeholder`. The style prop passes through a react `style` object and `placeholder` takes a string. The className is `storeLocatorSearchInput` if you wish to use pure css instead.
 
 ```jsx
@@ -281,4 +279,30 @@ onChange(dealers) {
 }
 
 <Map onChange={this.onChange}>
+```
+
+### Autocomplete Input
+
+This will not update the map at all. This input is strictly for returning a location object and having google's autocomplete functionality.
+
+All the props are listed below. You can also use pure css to style if you wish by targeting the class `storeLocatorAutocomplete`.
+
+```jsx
+import { AutoComplete } from 'react-store-locator';
+
+myFunc(value){
+  console.log(value) // place object returned
+}
+
+render(){
+  return(
+    <div>
+      <AutoComplete
+        style={{color: 'red'}}
+        getValue={this.myFunc.bind(this)}
+        placeholder="My placeholder string"
+      />
+    </div>
+  )
+}
 ```
