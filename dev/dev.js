@@ -59,7 +59,7 @@ render(
       googleMapIcon={markerIcon}
       customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
-      initSearch={'47711'}
+      initSearch={'471'}
     >
       {(dealer, closeDealer) => {
         return (

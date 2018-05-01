@@ -10,13 +10,15 @@ class AutoComplete extends Component {
         'place_changed',
         function() {
           const place = autocomplete.getPlace();
-          if (!place.geometry) {
-            alert('No details available for input: ' + place.name + '');
+          if (place.formatted_address) {
+            if (this.props.getValue) {
+              this.props.getValue(place.formatted_address);
+            }
             return;
           }
-          if (place) {
+          if (place.name) {
             if (this.props.getValue) {
-              this.props.getValue(place);
+              this.props.getValue(place.name);
             }
           }
         }.bind(this)
