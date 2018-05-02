@@ -132,7 +132,7 @@ export default class Map extends Component {
     );
     this.setState({
       center: center,
-      zoom: zoom.toString().length > 1 ? zoom - 1 : zoom,
+      zoom: zoom.toString().length > 1 ? zoom - 3 : zoom,
       googleMarkers: [...this.state.googleMarkers, marker]
     });
   }
@@ -170,10 +170,9 @@ export default class Map extends Component {
           this.map,
           center
         );
-        console.log(zoom);
         this.setState({
           center: center,
-          zoom: zoom.toString().length > 1 ? zoom - 1 : zoom,
+          zoom: zoom.toString().length > 1 ? zoom - 3 : zoom,
           googleMarkers: [...this.state.googleMarkers, marker]
         });
       }
@@ -276,7 +275,7 @@ export default class Map extends Component {
             if (newZoom > 15) newZoom = newZoom - 2;
             this.setState({
               center: center,
-              zoom: zoom.toString().length > 1 ? newZoom - 1 : zoom,
+              zoom: zoom.toString().length > 1 ? newZoom - 3 : zoom,
               googleMarkers: [...this.state.googleMarkers, marker]
             });
           }
