@@ -190,6 +190,9 @@ export default class Map extends Component {
 
     const { google } = this.props;
     const input = this.searchInput;
+    if (this.props.initSearch) {
+      input.value = this.props.initSearch;
+    }
     this.searchBox = new google.maps.places.SearchBox(input);
     this.searchBox.addListener('places_changed', this.onPlacesChanged);
 
