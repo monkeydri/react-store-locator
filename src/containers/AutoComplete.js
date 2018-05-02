@@ -2,27 +2,46 @@ import React, { Component } from 'react';
 import { GoogleApiWrapper } from 'google-maps-react';
 
 class AutoComplete extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      place: null
+    };
+
+    this.updateInput = this.updateInput.bind(this);
+  }
+
   componentDidMount() {
     if (this.props.loaded) {
       const { google } = this.props;
-      const autocomplete = new google.maps.places.Autocomplete(this.input);
-      autocomplete.addListener(
-        'place_changed',
-        function() {
-          const place = autocomplete.getPlace();
-          if (place.formatted_address) {
-            if (this.props.getValue) {
-              this.props.getValue(place.formatted_address);
-            }
-            return;
-          }
-          if (place.name) {
-            if (this.props.getValue) {
-              this.props.getValue(place.name);
-            }
-          }
-        }.bind(this)
-      );
+      this.autocomplete = new google.maps.places.Autocomplete(this.input);
+      this.autocomplete.addListener('place_changed', this.updateInput);
+    }
+  }
+
+  updateInput(e) {
+    let place = this.autocomplete.getPlace();
+    if (place === this.state.place) place = undefined;
+    if (place) {
+      if (place.formatted_address) {
+        if (this.props.getValue) {
+          this.props.getValue(place.formatted_address);
+          this.setState({
+            place: place
+          });
+        }
+        return;
+      }
+      if (place.name) {
+        if (this.props.getValue) {
+          this.props.getValue(place.name);
+          this.setState({
+            place: place
+          });
+        }
+      }
+    } else if (!place) {
+      this.props.getValue(e.target.value);
     }
   }
 
@@ -34,11 +53,12 @@ class AutoComplete extends Component {
         className="storeLocatorAutocomplete"
         style={this.props.style}
         placeholder={this.props.placeholder}
+        onChange={this.updateInput}
       />
     );
   }
 }
 
 export default GoogleApiWrapper(props => ({
-  apiKey: 'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'
+  apiKey: props.googleApiKey || 'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'
 }))(AutoComplete);
