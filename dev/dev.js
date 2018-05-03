@@ -56,11 +56,10 @@ render(
       pin={myPin}
       dealers={[]}
       googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
-      googleMapIcon={markerIcon}
-      customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
       initSearch={'90210'}
-      centerMarkerOnMove
+      searchMarker={{ color: 'red' }}
+      centerMarker={{ color: 'blue' }}
     >
       {(dealer, closeDealer) => {
         return (

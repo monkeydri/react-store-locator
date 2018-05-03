@@ -59,11 +59,13 @@ export default class Map extends Component {
   changeMap(props) {
     if (this.state.loading) return;
 
-    if (this.props.centerMarkerOnMove) {
+    if (this.props.centerMarker) {
       let movingMarkers = [...this.state.movingMarkers];
+      if (movingMarkers.length > 0) {
+        this.checkGoogleMarker();
+      }
       const marker = GoogleMarker(
-        this.props.customIconM,
-        this.props.googleMapIconM,
+        this.props.centerMarker,
         this.map,
         props.center
       );
@@ -165,18 +167,23 @@ export default class Map extends Component {
     }
 
     const { center, zoom } = fitBounds(newBounds, size);
-    this.checkGoogleMarker();
 
-    const marker = GoogleMarker(
-      this.props.customIcon,
-      this.props.googleMapIcon,
-      this.map,
-      center
-    );
+    if (this.props.searchMarker) {
+      this.checkGoogleMarker();
+
+      const marker = GoogleMarker(
+        this.props.searchMarker,
+        this.map,
+        props.center
+      );
+      this.setState({
+        googleMarkers: [...this.state.googleMarkers, marker]
+      });
+    }
+
     this.setState({
       center: center,
-      zoom: zoom.toString().length > 1 ? 9 : zoom,
-      googleMarkers: [...this.state.googleMarkers, marker]
+      zoom: zoom.toString().length > 1 ? 9 : zoom
     });
   }
 
@@ -208,18 +215,22 @@ export default class Map extends Component {
         }
 
         const { center, zoom } = fitBounds(newBounds, size);
-        this.checkGoogleMarker();
+        if (this.props.searchMarker) {
+          this.checkGoogleMarker();
 
-        const marker = GoogleMarker(
-          this.props.customIcon,
-          this.props.googleMapIcon,
-          this.map,
-          center
-        );
+          const marker = GoogleMarker(
+            this.props.searchMarker,
+            this.map,
+            center
+          );
+          this.setState({
+            googleMarkers: [...this.state.googleMarkers, marker]
+          });
+        }
+
         this.setState({
           center: center,
-          zoom: zoom.toString().length > 1 ? 9 : zoom,
-          googleMarkers: [...this.state.googleMarkers, marker]
+          zoom: zoom.toString().length > 1 ? 9 : zoom
         });
       }
     }
@@ -314,17 +325,16 @@ export default class Map extends Component {
               height: this.mapEl.offsetHeight
             };
             const { center, zoom } = fitBounds(newBounds, size);
-            const marker = GoogleMarker(
-              this.props.customIcon,
-              this.props.googleMapIcon,
-              map,
-              center
-            );
+            if (this.props.searchMarker) {
+              const marker = GoogleMarker(this.props.searchMarker, map, center);
+              this.setState({
+                googleMarkers: [...this.state.googleMarkers, marker]
+              });
+            }
 
             this.setState({
               center: center,
               zoom: zoom.toString().length > 1 ? 9 : zoom,
-              googleMarkers: [...this.state.googleMarkers, marker],
               loading: false
             });
           }
@@ -370,63 +380,51 @@ export default class Map extends Component {
           options={this.createMapOptions}
           onChange={this.changeMap}
         >
-          {Array.isArray(this.props.dealers) &&
-          this.props.dealers.length > 0 ? (
-            this.props.dealers.map(dealer => {
-              return (
-                <Pin
-                  key={dealer.id}
-                  handleDealerClick={this.toggleDealer}
-                  lat={dealer.lat}
-                  lng={dealer.lng}
-                  {...dealer}
-                >
-                  {!this.props.children ? (
-                    <Info show={dealer.show} style={this.props.infoStyle}>
-                      <div style={infoStyle.main}>
-                        {Object.keys(dealer).map((k, i) => {
-                          if (
-                            k === 'id' ||
-                            k === 'lat' ||
-                            k === 'lng' ||
-                            k === 'show'
-                          )
-                            return;
-                          return (
-                            <div key={k}>
-                              {k}: {`${dealer[k]}`}
-                              {i + 1 === Object.keys(dealer).length ? null : (
-                                <hr style={infoStyle.hr} />
-                              )}
-                            </div>
-                          );
-                        })}
-                        <div
-                          style={infoStyle.close}
-                          onClick={() => this.closeDealer(dealer.id)}
-                        >
-                          x
+          {Array.isArray(this.props.dealers) && this.props.dealers.length > 0
+            ? this.props.dealers.map(dealer => {
+                return (
+                  <Pin
+                    key={dealer.id}
+                    handleDealerClick={this.toggleDealer}
+                    lat={dealer.lat}
+                    lng={dealer.lng}
+                    {...dealer}
+                  >
+                    {!this.props.children ? (
+                      <Info show={dealer.show} style={this.props.infoStyle}>
+                        <div style={infoStyle.main}>
+                          {Object.keys(dealer).map((k, i) => {
+                            if (
+                              k === 'id' ||
+                              k === 'lat' ||
+                              k === 'lng' ||
+                              k === 'show'
+                            )
+                              return;
+                            return (
+                              <div key={k}>
+                                {k}: {`${dealer[k]}`}
+                                {i + 1 === Object.keys(dealer).length ? null : (
+                                  <hr style={infoStyle.hr} />
+                                )}
+                              </div>
+                            );
+                          })}
+                          <div
+                            style={infoStyle.close}
+                            onClick={() => this.closeDealer(dealer.id)}
+                          >
+                            x
+                          </div>
                         </div>
-                      </div>
-                    </Info>
-                  ) : (
-                    this.props.children(dealer, this.closeDealer)
-                  )}
-                </Pin>
-              );
-            })
-          ) : (
-            <div
-              style={{
-                position: 'absolute',
-                top: 35,
-                left: 25,
-                color: '#000'
-              }}
-            >
-              <h1>No dealers/stores on the map</h1>
-            </div>
-          )}
+                      </Info>
+                    ) : (
+                      this.props.children(dealer, this.closeDealer)
+                    )}
+                  </Pin>
+                );
+              })
+            : null}
         </GoogleMap>
       </div>
     );
