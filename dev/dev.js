@@ -54,12 +54,12 @@ render(
     <AutoComplete getValue={updateAuto} />
     <Map
       // pin={myPin}
-      dealers={dealers}
+      dealers={[]}
       googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       googleMapIcon={markerIcon}
       customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
-      initSearch={'90210'}
+      // initSearch={'90210'}
       centerMarkerOnMove
     >
       {(dealer, closeDealer) => {

@@ -244,7 +244,11 @@ export default class Map extends Component {
 
     let defaultZoom = 8,
       defaultCenter = { lat: 0, lng: 180 };
-    if (!this.props.initSearch) {
+    if (
+      !this.props.initSearch &&
+      (this.props.dealers && this.props.dealers.length > 0)
+    ) {
+      console.log(this.props.dealers);
       const bounds = new google.maps.LatLngBounds();
       this.props.dealers.map(dealer => {
         bounds.extend(new google.maps.LatLng(dealer.lat, dealer.lng));
