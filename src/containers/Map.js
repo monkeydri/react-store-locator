@@ -5,7 +5,6 @@ import geolib from 'geolib';
 import Pin from './Pin';
 import Info from './Info';
 import GoogleMarker from './GoogleMarker';
-import MovingGoogleMarker from './MovingGoogleMarker';
 import infoStyle from './InfoStyle';
 import searchStyle from './SearchStyle';
 import { Subscribe } from 'statable';
@@ -37,23 +36,31 @@ export default class Map extends Component {
       foundDealers: [],
       center: null,
       zoom: null,
-      googleMarkers: []
+      googleMarkers: [],
+      places: null,
+      loading: true,
+      movingMarkers: []
     };
   }
 
   checkGoogleMarker() {
-    if (this.state.googleMarkers.length > 0) {
-      for (let i = this.state.googleMarkers.length; i--; ) {
-        this.state.googleMarkers[i].setMap(null);
-      }
-      this.setState({
-        googleMarkers: [...this.state.googleMarkers.pop()]
-      });
+    for (let i = this.state.googleMarkers.length; i--; ) {
+      this.state.googleMarkers[i].setMap(null);
     }
+    for (let i = this.state.movingMarkers.length; i--; ) {
+      this.state.movingMarkers[i].setMap(null);
+    }
+    this.setState({
+      googleMarkers: [],
+      movingMarkers: []
+    });
   }
 
   changeMap(props) {
+    if (this.state.loading) return;
+
     if (this.props.centerMarkerOnMove) {
+      let movingMarkers = [...this.state.movingMarkers];
       const marker = GoogleMarker(
         this.props.customIconM,
         this.props.googleMapIconM,
@@ -76,17 +83,16 @@ export default class Map extends Component {
           marker.setMap(null);
         }
       }
-
-      if (this.state.googleMarkers.length === 2) {
-        this.state.googleMarkers[1].setMap(null);
+      movingMarkers.push(marker);
+      this.setState({
+        movingMarkers
+      });
+      if (this.state.movingMarkers.length > 1) {
+        this.state.movingMarkers[0].setMap(null);
         this.setState({
-          googleMarkers: [this.state.googleMarkers.pop()]
+          movingMarkers: this.state.movingMarkers.slice(1)
         });
       }
-
-      this.setState({
-        googleMarkers: [...this.state.googleMarkers, marker]
-      });
     }
 
     const {
@@ -177,7 +183,9 @@ export default class Map extends Component {
   onPlacesChanged() {
     const { google } = this.props;
     let places = this.searchBox.getPlaces();
+    if (places === this.state.places) places = undefined;
     if (places) {
+      this.setState({ places });
       if (places.length > 0) {
         const firstLocation = places[0];
         const { geometry } = firstLocation;
@@ -201,6 +209,7 @@ export default class Map extends Component {
 
         const { center, zoom } = fitBounds(newBounds, size);
         this.checkGoogleMarker();
+
         const marker = GoogleMarker(
           this.props.customIcon,
           this.props.googleMapIcon,
@@ -285,7 +294,6 @@ export default class Map extends Component {
         (results, status) => {
           const result = results[0];
           if (status == google.maps.places.PlacesServiceStatus.OK) {
-            this.checkGoogleMarker();
             const { geometry } = result;
             const newBounds = {
               ne: {
@@ -312,7 +320,8 @@ export default class Map extends Component {
             this.setState({
               center: center,
               zoom: zoom.toString().length > 1 ? 9 : zoom,
-              googleMarkers: [...this.state.googleMarkers, marker]
+              googleMarkers: [...this.state.googleMarkers, marker],
+              loading: false
             });
           }
         }
