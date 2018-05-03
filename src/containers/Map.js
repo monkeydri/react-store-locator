@@ -5,6 +5,7 @@ import geolib from 'geolib';
 import Pin from './Pin';
 import Info from './Info';
 import GoogleMarker from './GoogleMarker';
+import MovingGoogleMarker from './MovingGoogleMarker';
 import infoStyle from './InfoStyle';
 import searchStyle from './SearchStyle';
 import { Subscribe } from 'statable';
@@ -46,12 +47,48 @@ export default class Map extends Component {
         this.state.googleMarkers[i].setMap(null);
       }
       this.setState({
-        googleMarkers: []
+        googleMarkers: [...this.state.googleMarkers.pop()]
       });
     }
   }
 
   changeMap(props) {
+    if (this.props.centerMarkerOnMove) {
+      const marker = GoogleMarker(
+        this.props.customIconM,
+        this.props.googleMapIconM,
+        this.map,
+        props.center
+      );
+      if (this.state.googleMarkers.length > 0) {
+        const newMarker = {
+          lat: marker.position.lat().toFixed(4),
+          lng: marker.position.lng().toFixed(4)
+        };
+        const currentMarker = {
+          lat: this.state.googleMarkers[0].position.lat().toFixed(4),
+          lng: this.state.googleMarkers[0].position.lng().toFixed(4)
+        };
+        if (
+          newMarker.lng === currentMarker.lng &&
+          newMarker.lat === currentMarker.lat
+        ) {
+          marker.setMap(null);
+        }
+      }
+
+      if (this.state.googleMarkers.length === 2) {
+        this.state.googleMarkers[1].setMap(null);
+        this.setState({
+          googleMarkers: [this.state.googleMarkers.pop()]
+        });
+      }
+
+      this.setState({
+        googleMarkers: [...this.state.googleMarkers, marker]
+      });
+    }
+
     const {
       bounds: { ne, nw, se, sw }
     } = props;
@@ -285,7 +322,6 @@ export default class Map extends Component {
 
   render() {
     let Pin = this.props.pin;
-
     return (
       <div
         style={{

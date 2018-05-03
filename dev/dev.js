@@ -9,7 +9,7 @@ const markerIcon =
   'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
-const number = 800;
+const number = 2;
 let dealers = [];
 for (let i = number; i--; ) {
   const dealer = {
@@ -60,6 +60,7 @@ render(
       customIcon={{ color: 'red', borderColor: 'blue' }}
       onChange={getDealers}
       initSearch={'90210'}
+      centerMarkerOnMove
     >
       {(dealer, closeDealer) => {
         return (

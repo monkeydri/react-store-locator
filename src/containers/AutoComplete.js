@@ -60,5 +60,5 @@ class AutoComplete extends Component {
 }
 
 export default GoogleApiWrapper(props => ({
-  apiKey: props.googleApiKey || 'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'
+  apiKey: props.googleApiKey
 }))(AutoComplete);

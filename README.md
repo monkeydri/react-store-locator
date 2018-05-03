@@ -287,6 +287,8 @@ This will not update the map at all. This input is strictly for returning a loca
 
 All the props are listed below. You can also use pure css to style if you wish by targeting the class `storeLocatorAutocomplete`.
 
+Note: This is a seperate component from the map so you should pass your api key in here as well if you wish to use this.
+
 ```jsx
 import { AutoComplete } from 'react-store-locator';
 
@@ -300,9 +302,26 @@ render(){
       <AutoComplete
         style={{color: 'red'}}
         getValue={this.myFunc.bind(this)}
+        googleApiKey={'googleapikey'}
         placeholder="My placeholder string"
       />
     </div>
   )
 }
+```
+
+### Center Marker on Move
+
+This will put a marker in the center of the map when you move the map.
+
+Note: You should make this a different icon than your search centered marker. These are two different markers and should be different. An `M` is added for the icons to make these different.
+
+```jsx
+//...
+
+<Map
+centerMarkerOnMove
+customIconM={{ color: 'red', borderColor: 'blue', path: 'SVG PATH HERE' }}
+googleMapIconM={image}
+>
 ```
