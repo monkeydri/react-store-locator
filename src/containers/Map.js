@@ -370,49 +370,63 @@ export default class Map extends Component {
           options={this.createMapOptions}
           onChange={this.changeMap}
         >
-          {this.props.dealers.map(dealer => {
-            return (
-              <Pin
-                key={dealer.id}
-                handleDealerClick={this.toggleDealer}
-                lat={dealer.lat}
-                lng={dealer.lng}
-                {...dealer}
-              >
-                {!this.props.children ? (
-                  <Info show={dealer.show} style={this.props.infoStyle}>
-                    <div style={infoStyle.main}>
-                      {Object.keys(dealer).map((k, i) => {
-                        if (
-                          k === 'id' ||
-                          k === 'lat' ||
-                          k === 'lng' ||
-                          k === 'show'
-                        )
-                          return;
-                        return (
-                          <div key={k}>
-                            {k}: {`${dealer[k]}`}
-                            {i + 1 === Object.keys(dealer).length ? null : (
-                              <hr style={infoStyle.hr} />
-                            )}
-                          </div>
-                        );
-                      })}
-                      <div
-                        style={infoStyle.close}
-                        onClick={() => this.closeDealer(dealer.id)}
-                      >
-                        x
+          {Array.isArray(this.props.dealers) &&
+          this.props.dealers.length > 0 ? (
+            this.props.dealers.map(dealer => {
+              return (
+                <Pin
+                  key={dealer.id}
+                  handleDealerClick={this.toggleDealer}
+                  lat={dealer.lat}
+                  lng={dealer.lng}
+                  {...dealer}
+                >
+                  {!this.props.children ? (
+                    <Info show={dealer.show} style={this.props.infoStyle}>
+                      <div style={infoStyle.main}>
+                        {Object.keys(dealer).map((k, i) => {
+                          if (
+                            k === 'id' ||
+                            k === 'lat' ||
+                            k === 'lng' ||
+                            k === 'show'
+                          )
+                            return;
+                          return (
+                            <div key={k}>
+                              {k}: {`${dealer[k]}`}
+                              {i + 1 === Object.keys(dealer).length ? null : (
+                                <hr style={infoStyle.hr} />
+                              )}
+                            </div>
+                          );
+                        })}
+                        <div
+                          style={infoStyle.close}
+                          onClick={() => this.closeDealer(dealer.id)}
+                        >
+                          x
+                        </div>
                       </div>
-                    </div>
-                  </Info>
-                ) : (
-                  this.props.children(dealer, this.closeDealer)
-                )}
-              </Pin>
-            );
-          })}
+                    </Info>
+                  ) : (
+                    this.props.children(dealer, this.closeDealer)
+                  )}
+                </Pin>
+              );
+            })
+          ) : (
+            <div
+              style={{
+                position: 'absolute',
+                top: 35,
+                left: 25,
+                color: '#000'
+              }}
+            >
+              <h1>No dealers/stores on the map</h1>
+            </div>
+          )}
         </GoogleMap>
       </div>
     );
