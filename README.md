@@ -227,18 +227,20 @@ This uses a JSON object from https://mapstyle.withgoogle.com/. You can go here a
 ```jsx
 //...
 
-<Map googleMapIcon={markerIcon} customIcon={{ color: 'red', borderColor: 'blue', path: 'SVG PATH HERE' }}>
+<Map
+searchMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color', borderColor: 'border color'}}
+>
 ```
 
-Note: If you include both a `googleMapIcon` and `customIcon`, `googleMapIcon` will render first.
+Note: If you include both an `icon`, `icon` will render first. If no props are passed it will default to the default marker.
 
-The `googlemapIcon` takes an image url. You can also pass a local image through if you just import it like so:
+The `icon` takes an image url. You can also pass a local image through if you just import it like so:
 
 ```jsx
 import image from '../img/myimage.png';
 //...
 
-<Map googleMapIcon={image} />;
+<Map searchMarker={{icon: image} />;
 ```
 
 With custom image:
@@ -312,7 +314,7 @@ render(){
 
 ### Center Marker on Move
 
-This will put a marker in the center of the map when you move the map.
+This will put a marker in the center of the map when you move the map. If no props are passed it will default to the default marker.
 
 Note: You should make this a different icon than your search centered marker. These are two different markers and should be different. An `M` is added for the icons to make these different.
 
@@ -320,8 +322,6 @@ Note: You should make this a different icon than your search centered marker. Th
 //...
 
 <Map
-centerMarkerOnMove
-customIconM={{ color: 'red', borderColor: 'blue', path: 'SVG PATH HERE' }}
-googleMapIconM={image}
+centerMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color', borderColor: 'border color'}}
 >
 ```

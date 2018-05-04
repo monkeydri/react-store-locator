@@ -259,7 +259,6 @@ export default class Map extends Component {
       !this.props.initSearch &&
       (this.props.dealers && this.props.dealers.length > 0)
     ) {
-      console.log(this.props.dealers);
       const bounds = new google.maps.LatLngBounds();
       this.props.dealers.map(dealer => {
         bounds.extend(new google.maps.LatLng(dealer.lat, dealer.lng));
@@ -341,6 +340,7 @@ export default class Map extends Component {
         }
       );
     }
+    this.setState({ loading: false });
   }
 
   render() {
@@ -359,7 +359,7 @@ export default class Map extends Component {
             position: 'absolute',
             top: 5,
             left: 5,
-            zIndex: 5
+            zIndex: 2
           }}
         >
           <input

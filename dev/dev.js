@@ -9,7 +9,7 @@ const markerIcon =
   'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
-const number = 2;
+const number = 800;
 let dealers = [];
 for (let i = number; i--; ) {
   const dealer = {
@@ -54,10 +54,9 @@ render(
     <AutoComplete getValue={updateAuto} />
     <Map
       pin={myPin}
-      dealers={[]}
+      dealers={dealers}
       googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       onChange={getDealers}
-      initSearch={'90210'}
       searchMarker={{ color: 'red' }}
       centerMarker={{ color: 'blue' }}
     >
