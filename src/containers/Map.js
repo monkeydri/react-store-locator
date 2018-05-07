@@ -297,7 +297,15 @@ export default class Map extends Component {
   }
 
   handleMapLoad({ map, maps }) {
+    if (this.props.onChange) {
+      this.props.onChange(
+        this.state.foundDealers.length > 0
+          ? this.state.foundDealers
+          : this.props.dealers
+      );
+    }
     this.map = map;
+    this.changeMap();
     if (this.props.initSearch) {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(

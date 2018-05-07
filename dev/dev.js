@@ -38,7 +38,7 @@ const myPin = props => (
 );
 
 const getDealers = dealers => {
-  // console.log(dealers);
+  console.log(dealers);
 };
 
 function getSearchInput(e) {
