@@ -20,6 +20,11 @@ class AutoComplete extends Component {
   }
 
   updateInput(e) {
+    if (!this.props.getValue) {
+      console.warn(
+        'Use the prop getValue to get the location back from AutoComplete.'
+      );
+    }
     let place = this.autocomplete.getPlace();
     if (place === this.state.place) place = undefined;
     if (place) {
@@ -41,7 +46,9 @@ class AutoComplete extends Component {
         }
       }
     } else if (!place) {
-      this.props.getValue(e.target.value);
+      if (this.props.getValue) {
+        this.props.getValue(e.target.value);
+      }
     }
   }
 
