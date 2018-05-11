@@ -390,6 +390,7 @@ export default class Map extends Component {
                     lat={dealer.lat}
                     lng={dealer.lng}
                     {...dealer}
+                    {...this.props}
                   >
                     {!this.props.children ? (
                       <Info show={dealer.show} style={this.props.infoStyle}>

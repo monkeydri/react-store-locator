@@ -9,7 +9,7 @@ const markerIcon =
   'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
 const containerEl = document.createElement('div');
 document.body.appendChild(containerEl);
-const number = 800;
+const number = 5;
 let dealers = [];
 for (let i = number; i--; ) {
   const dealer = {
@@ -22,38 +22,36 @@ for (let i = number; i--; ) {
   dealers.push(dealer);
 }
 
-const myPin = props => (
-  <div
-    style={{
-      cursor: 'pointer',
-      backgroundColor: 'purple',
-      height: '25px',
-      width: '25px',
-      border: '2px solid white'
-    }}
-    onClick={() => props.handleDealerClick(props.id)}
-  >
-    {props.children}
-  </div>
-);
-
-const getDealers = dealers => {
-  console.log(dealers);
+const myPin = props => {
+  console.log(props);
+  return (
+    <div
+      style={{
+        cursor: 'pointer',
+        backgroundColor: 'purple',
+        height: '25px',
+        width: '25px',
+        border: '2px solid white'
+      }}
+      onClick={() => props.handleDealerClick(props.id)}
+    >
+      {props.children}
+    </div>
+  );
 };
 
-function getSearchInput(e) {
-  console.log(e.target.value);
-}
+const getDealers = dealers => {};
 
-function updateAuto(value) {
-  console.log(value);
-}
+function getSearchInput(e) {}
+
+function updateAuto(value) {}
 
 render(
   <div>
     <AutoComplete getValue={updateAuto} />
     <Map
       pin={myPin}
+      images={{ image: 'hedllo' }}
       dealers={dealers}
       googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       onChange={getDealers}
