@@ -23,7 +23,6 @@ for (let i = number; i--; ) {
 }
 
 const myPin = props => {
-  console.log(props);
   return (
     <div
       style={{
@@ -53,7 +52,6 @@ render(
       pin={myPin}
       images={{ image: 'hedllo' }}
       dealers={dealers}
-      googleApiKey={'AIzaSyCl5euNmDvFzhI7sNxXj7GdYC6lOALQGZE'}
       onChange={getDealers}
       searchMarker={{ color: 'red' }}
       centerMarker={{ color: 'blue' }}
