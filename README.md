@@ -8,7 +8,7 @@
 
 ## Short Description
 
-This module is used for when you have a list of stores/dealers that you wish to put on a map and show information about each store/dealer.
+This module is used for when you have a list of stores/locations that you wish to put on a map and show information about each store/location.
 
 ## Getting started
 
@@ -28,7 +28,7 @@ Make sure you have yarn installed if you wish to use it
 import { Map } from 'react-store-locator';
 
 render(){
-  const dealers = [
+  const locations = [
     {
     id: 1,
     lat: 50,
@@ -52,7 +52,7 @@ render(){
   }
   ]
   return(
-    <Map dealers={dealers} googleApiKey={'Your Key Here'}/> // Pass google maps api key through here
+    <Map locations={locations} googleApiKey={'Your Key Here'}/> // Pass google maps api key through here
   )
 }
 ```
@@ -65,7 +65,7 @@ Default map:
 
 This will show a map with default markers and default info windows.
 
-You will need to include all of these props for a minimum for each of your stores/dealers. If you wish your information to `show` by default then set `show` to true otherwise set `show` to false.
+You will need to include all of these props for a minimum for each of your stores/locations. If you wish your information to `show` by default then set `show` to true otherwise set `show` to false.
 
 By default the map will have a height of 800px and width of 100%. You can change these by passing through these values as props.
 
@@ -82,11 +82,11 @@ You can add your own custom pin and information window. Examples below.
 
 Adding your own pin is super easy and with little set up you can have an awesome looking pin.
 
-We will pass through a function called `handleDealerClick` through props. If you wish to use the toggle feature for the `Info` window you will want to attach this to the parent element of your pin. If you wish for only a certain part of your pin to work then add it to that element. Make sure you pass through the id so the correct window will be toggled.
+We will pass through a function called `handleLocationClick` through props. If you wish to use the toggle feature for the `Info` window you will want to attach this to the parent element of your pin. If you wish for only a certain part of your pin to work then add it to that element. Make sure you pass through the id so the correct window will be toggled.
 
 You will also need to pass through the children through the inside of your component, this way you can render the `Info` component. Style this component however you like or add an image instead.
 
-Make sure you include the function `handleDealerClick` and pass through `id`.
+Make sure you include the function `handleLocationClick` and pass through `id`.
 
 Note: If you are using a class based component then you will use `this.props...` instead.
 
@@ -101,13 +101,13 @@ const myPin = (props) => (
           width: '25px',
           border: '2px solid white'
         }}
-        onClick={() => props.handleDealerClick(props.id)}
+        onClick={() => props.handleLocationClick(props.id)}
       >
         {props.children}
       </div>
 )
 
-<Map dealers={dealers} pin={myPin}>
+<Map locations={locations} pin={myPin}>
 ```
 
 Custom Pin:
@@ -122,13 +122,13 @@ import { Info } from 'react-store-locator';
 //...
 
 return (
-  <Map dealers={dealers}>
-    {(dealer, closeDealer) => {
+  <Map locations={locations}>
+    {(location, closeLocation) => {
       return (
-        <Info show={dealer.show}>
+        <Info show={location.show}>
           <div style={{ background: 'red' }}>
-            {dealer.name}
-            <div onClick={() => closeDealer(dealer.id)}>[x]</div>
+            {location.name}
+            <div onClick={() => closeLocation(location.id)}>[x]</div>
           </div>
         </Info>
       );
@@ -137,7 +137,7 @@ return (
 );
 ```
 
-`closeDealer` is a function that you must call on whatever you wish to close the `Info` window. Above we wrap `[x]` inside a div and apply an onClick to this div. When you click this it will close the `Info` window. We recommend adding a style of `cursor`: `pointer` to this element as well to make it more obvious that it does close the `Info` window.
+`closeLocation` is a function that you must call on whatever you wish to close the `Info` window. Above we wrap `[x]` inside a div and apply an onClick to this div. When you click this it will close the `Info` window. We recommend adding a style of `cursor`: `pointer` to this element as well to make it more obvious that it does close the `Info` window.
 
 You must pass `show` prop through the `Info` component if you want your info window to work correctly. Pass any jsx through the `Info` tag and it will be displayed. There you can style this however you wish.
 
@@ -159,14 +159,14 @@ const infoStyle = {
   backgroundColor: 'yellow',
 
 }
-<Info show={dealer.show} style={infoStyle}>
+<Info show={location.show} style={infoStyle}>
 // Content here
 </Info>
 
 
 // If not using custom Info component
 
-<Map dealers={dealers} infoStyle={infoStyle} />
+<Map locations={locations} infoStyle={infoStyle} />
 ```
 
 ## Other Features included
@@ -261,23 +261,23 @@ With custom icon:
 
 ![customIcon](customIcon.png)
 
-### Grabing stores/dealers within window
+### Grabing stores/locations within window
 
-This is a feature that is very useful when wanting to get information about the dealers in your current window.
+This is a feature that is very useful when wanting to get information about the locations in your current window.
 
-You will pass through a function through the `onChange` props and pass through `dealers` as param. The function will be called on map load and any other time you move the map.
+You will pass through a function through the `onChange` props and pass through `locations` as param. The function will be called on map load and any other time you move the map.
 
 Note: If you cover part of your map this will still count markers that you may end up covering. If this is the case, it would be best to resize your map instead.
 
 #### New feature for this "feature"
 
-The returned stores/dealers now will have a `distanceFromCenter` prop that will tell you the distance in miles they are from the center of your map. This way you can tell your user how far each store/dealer is.
+The returned stores/locations now will have a `distanceFromCenter` prop that will tell you the distance in miles they are from the center of your map. This way you can tell your user how far each store/location is.
 
 ```jsx
 //...
 
-onChange(dealers) {
- console.log(dealers) // dealers inside of current window
+onChange(locations) {
+ console.log(locations) // locations inside of current window
 }
 
 <Map onChange={this.onChange}>
