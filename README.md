@@ -228,7 +228,7 @@ This uses a JSON object from https://mapstyle.withgoogle.com/. You can go here a
 //...
 
 <Map
-searchMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color', borderColor: 'border color'}}
+searchMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color'}}
 >
 ```
 
@@ -247,7 +247,7 @@ With custom image:
 
 ![imageIcon](imageIcon.png)
 
-The `customIcon` is google's default icon, but you can change the `color`, `borderColor`, and `path`. If you do not include one of these 3 props then it will have a default so do not worry.
+The `customIcon` is google's default icon, but you can change the `color`, and `path`. If you do not include one of these props then it will have a default so do not worry.
 
 (From a stackoverflow post about this topic)
 You can also create the paths using a visual tool like https://inkscape.org/en/ (GNU-GPL, multiplatform). Some useful hints:
@@ -316,12 +316,10 @@ render(){
 
 This will put a marker in the center of the map when you move the map. If no props are passed it will default to the default marker.
 
-Note: You should make this a different icon than your search centered marker. These are two different markers and should be different. An `M` is added for the icons to make these different.
-
 ```jsx
 //...
 
 <Map
-centerMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color', borderColor: 'border color'}}
+centerMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color'}}
 >
 ```
