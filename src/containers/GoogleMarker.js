@@ -3,11 +3,10 @@ export default (props, map, center) => {
     return {
       path:
         props.path ||
-        'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
-      fillColor: props.color || '#FE7569',
+        'm25.6 14.3q0-2.4-1.6-4.1t-4.1-1.6-4 1.6-1.7 4.1 1.7 4 4 1.7 4.1-1.7 1.6-4z m5.8 0q0 2.4-0.8 4l-8.1 17.3q-0.4 0.7-1.1 1.1t-1.5 0.4-1.5-0.4-1-1.1l-8.2-17.3q-0.7-1.6-0.7-4 0-4.7 3.3-8.1t8.1-3.3 8.1 3.3 3.4 8.1z',
+      fillColor: props.color || '#ff671b',
       fillOpacity: 1,
-      strokeColor: props.borderColor || '#000',
-      strokeWeight: 2,
+      strokeWeight: 0,
       scale: 1
     };
   }

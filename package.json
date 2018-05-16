@@ -33,6 +33,7 @@
     "geolib": "^2.0.24",
     "google-map-react": "^0.34.0",
     "google-maps-react": "^2.0.2",
+    "react-icons": "^2.2.7",
     "statable": "^0.2.3"
   }
 }

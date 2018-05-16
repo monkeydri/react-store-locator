@@ -17,7 +17,10 @@ for (let i = number; i--; ) {
     lat: Math.random() * 10,
     lng: Math.random() * 100,
     show: false,
-    name: `Marker ${i}`
+    name: `Marker ${i}`,
+    address: '949 Tulip Ave.',
+    city: 'Evansville',
+    state: 'Indiana'
   };
   dealers.push(dealer);
 }
@@ -39,39 +42,19 @@ const myPin = props => {
   );
 };
 
-const getDealers = dealers => {};
-
-function getSearchInput(e) {}
-
-function updateAuto(value) {}
+const getDealers = dealers => {
+  // console.log(dealers);
+};
 
 render(
   <div>
-    <AutoComplete getValue={updateAuto} />
     <Map
-      pin={myPin}
       images={{ image: 'hedllo' }}
-      dealers={dealers}
+      locations={dealers}
       onChange={getDealers}
-      searchMarker={{ color: 'red' }}
-      centerMarker={{ color: 'blue' }}
-    >
-      {(dealer, closeDealer) => {
-        return (
-          <Info show={dealer.show} style={{ width: '15rem', fontSize: '1rem' }}>
-            <div style={{ background: 'red', fontSize: '1rem' }}>
-              {dealer.name}
-              <div onClick={() => closeDealer(dealer.id)}>[x]</div>
-            </div>
-            <div>red</div>
-            <div>red</div>
-            <div>red</div>
-            <div>red</div>
-            <div>redß</div>
-          </Info>
-        );
-      }}
-    </Map>
+      searchMarker
+      centerMarker
+    />
     <style>{`
     .storeLocatorSearchInput {
       width: 300px;

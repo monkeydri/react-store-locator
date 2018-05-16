@@ -10,9 +10,9 @@ import searchStyle from './SearchStyle';
 import { Subscribe } from 'statable';
 import { mapState } from '../state';
 
-function findDealerIndex(id, dealers) {
-  for (let i = dealers.length; i--; ) {
-    if (dealers[i].id === id) {
+function findLocationIndex(id, locations) {
+  for (let i = locations.length; i--; ) {
+    if (locations[i].id === id) {
       return i;
     }
   }
@@ -24,16 +24,16 @@ export default class Map extends Component {
     super(props);
     this.createMapOptions = this.createMapOptions.bind(this);
     this.changeMap = this.changeMap.bind(this);
-    this.toggleDealer = this.toggleDealer.bind(this);
-    this.closeDealer = this.closeDealer.bind(this);
+    this.toggleLocation = this.toggleLocation.bind(this);
+    this.closeLocation = this.closeLocation.bind(this);
     this.onPlacesChanged = this.onPlacesChanged.bind(this);
     this.initCenterMap = this.initCenterMap.bind(this);
     this.checkGoogleMarker = this.checkGoogleMarker.bind(this);
     this.handleMapLoad = this.handleMapLoad.bind(this);
 
     this.state = {
-      dealers: [],
-      foundDealers: [],
+      locations: [],
+      foundLocations: [],
       center: null,
       zoom: null,
       googleMarkers: [],
@@ -100,51 +100,53 @@ export default class Map extends Component {
     const {
       bounds: { ne, nw, se, sw }
     } = props;
-
-    const { dealers } = this.state;
-    if (dealers) {
-      const foundDealers = dealers.filter(dealer => {
+    const { locations } = this.state;
+    if (locations) {
+      const foundLocations = locations.filter(location => {
         if (
-          dealer.lat > se.lat &&
+          location.lat > se.lat &&
           sw.lat &&
-          (dealer.lat < ne.lat && nw.lat) &&
-          (dealer.lng > nw.lng && sw.lng) &&
-          (dealer.lng < ne.lng && se.lng)
+          (location.lat < ne.lat && nw.lat) &&
+          (location.lng > nw.lng && sw.lng) &&
+          (location.lng < ne.lng && se.lng)
         ) {
-          return dealer;
+          return location;
         }
       });
-      foundDealers.map(dealer => {
+      foundLocations.map(location => {
         const distanceMeters = geolib.getDistance(props.center, {
-          lat: dealer.lat,
-          lng: dealer.lng
+          lat: location.lat,
+          lng: location.lng
         });
         const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
-        dealer.distanceFromCenter = distanceMiles;
-        return dealer;
+        location.distanceFromCenter = distanceMiles;
+        return location;
       });
-      this.setState({ foundDealers });
+      this.setState({ foundLocations });
       if (this.props.onChange) {
-        this.props.onChange(foundDealers);
+        this.props.onChange(foundLocations);
       }
     }
   }
 
-  toggleDealer(id) {
-    const index = findDealerIndex(id, this.state.dealers);
+  toggleLocation(id) {
+    const index = findLocationIndex(id, this.state.locations);
     if (index !== null) {
-      const dealers = this.state.dealers;
-      dealers[index].show = !dealers[index].show;
-      this.setState({ dealers });
+      const locations = this.state.locations;
+      locations.forEach(item => {
+        item.show ? (item.show = false) : (item.show = item.show);
+      });
+      locations[index].show = !locations[index].show;
+      this.setState({ locations });
     }
   }
 
-  closeDealer(id) {
-    const index = findDealerIndex(id, this.state.dealers);
+  closeLocation(id) {
+    const index = findLocationIndex(id, this.state.locations);
     if (index !== null) {
-      const dealers = this.state.dealers;
-      dealers[index].show = false;
-      this.setState({ dealers });
+      const locations = this.state.locations;
+      locations[index].show = false;
+      this.setState({ locations });
     }
   }
 
@@ -237,6 +239,8 @@ export default class Map extends Component {
   }
 
   componentDidMount() {
+    this.changeMap();
+
     if (mapState.state) {
       mapState.subscribe(state => {
         if (state.newBounds) {
@@ -257,11 +261,11 @@ export default class Map extends Component {
       defaultCenter = { lat: 0, lng: 180 };
     if (
       !this.props.initSearch &&
-      (this.props.dealers && this.props.dealers.length > 0)
+      (this.props.locations && this.props.locations.length > 0)
     ) {
       const bounds = new google.maps.LatLngBounds();
-      this.props.dealers.map(dealer => {
-        bounds.extend(new google.maps.LatLng(dealer.lat, dealer.lng));
+      this.props.locations.map(location => {
+        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
       });
       const newBounds = {
         ne: {
@@ -286,9 +290,10 @@ export default class Map extends Component {
     }
 
     this.setState({
-      dealers: this.props.dealers,
+      locations: this.props.locations,
       zoom: defaultZoom,
-      center: defaultCenter
+      center: defaultCenter,
+      loading: false
     });
   }
 
@@ -298,7 +303,6 @@ export default class Map extends Component {
 
   handleMapLoad({ map, maps }) {
     this.map = map;
-    this.changeMap();
     if (this.props.initSearch) {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
@@ -381,21 +385,22 @@ export default class Map extends Component {
           options={this.createMapOptions}
           onChange={this.changeMap}
         >
-          {Array.isArray(this.props.dealers) && this.props.dealers.length > 0
-            ? this.props.dealers.map(dealer => {
+          {Array.isArray(this.props.locations) &&
+          this.props.locations.length > 0
+            ? this.props.locations.map(location => {
                 return (
                   <Pin
-                    key={dealer.id}
-                    handleDealerClick={this.toggleDealer}
-                    lat={dealer.lat}
-                    lng={dealer.lng}
-                    {...dealer}
+                    key={location.id}
+                    handleLocationClick={this.toggleLocation}
+                    lat={location.lat}
+                    lng={location.lng}
+                    {...location}
                     {...this.props}
                   >
                     {!this.props.children ? (
-                      <Info show={dealer.show} style={this.props.infoStyle}>
+                      <Info show={location.show} style={this.props.infoStyle}>
                         <div style={infoStyle.main}>
-                          {Object.keys(dealer).map((k, i) => {
+                          {Object.keys(location).map((k, i) => {
                             if (
                               k === 'id' ||
                               k === 'lat' ||
@@ -404,24 +409,28 @@ export default class Map extends Component {
                             )
                               return;
                             return (
-                              <div key={k}>
-                                {k}: {`${dealer[k]}`}
-                                {i + 1 === Object.keys(dealer).length ? null : (
-                                  <hr style={infoStyle.hr} />
-                                )}
+                              <div
+                                key={k}
+                                style={
+                                  k === 'name'
+                                    ? { marginBottom: '12px' }
+                                    : { marginBottom: '2px' }
+                                }
+                              >
+                                {`${location[k]}`}
                               </div>
                             );
                           })}
                           <div
                             style={infoStyle.close}
-                            onClick={() => this.closeDealer(dealer.id)}
+                            onClick={() => this.closeLocation(location.id)}
                           >
-                            x
+                            ×
                           </div>
                         </div>
                       </Info>
                     ) : (
-                      this.props.children(dealer, this.closeDealer)
+                      this.props.children(location, this.closeLocation)
                     )}
                   </Pin>
                 );
