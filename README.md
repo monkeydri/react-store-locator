@@ -323,3 +323,16 @@ This will put a marker in the center of the map when you move the map. If no pro
 centerMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color'}}
 >
 ```
+
+### Submit search function for search callback
+
+This will allow you to pass a function that will be called after a place has been found by the internal search that comes with the map.
+
+```jsx
+//...
+
+function myFunc() {
+  console.log('Found a location'); // should fire off once a new location has been found
+}
+<Map submitSearch={myFunc}>
+```

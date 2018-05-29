@@ -45,7 +45,9 @@ const myPin = props => {
 const getDealers = dealers => {
   // console.log(dealers);
 };
-
+function myFunc() {
+  console.log('HELLO');
+}
 render(
   <div>
     <Map
@@ -54,6 +56,7 @@ render(
       onChange={getDealers}
       searchMarker
       centerMarker
+      submitSearch={myFunc}
     />
     <style>{`
     .storeLocatorSearchInput {

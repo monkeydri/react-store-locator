@@ -194,6 +194,9 @@ export default class Map extends Component {
     let places = this.searchBox.getPlaces();
     if (places === this.state.places) places = undefined;
     if (places) {
+      if (this.props.submitSearch) {
+        this.props.submitSearch();
+      }
       this.setState({ places });
       if (places.length > 0) {
         const firstLocation = places[0];
