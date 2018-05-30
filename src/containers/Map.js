@@ -306,6 +306,7 @@ export default class Map extends Component {
 
   handleMapLoad({ map, maps }) {
     this.map = map;
+    console.log('Map Loaded');
     if (this.props.initSearch) {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
