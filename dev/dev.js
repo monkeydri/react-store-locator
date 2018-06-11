@@ -46,11 +46,11 @@ const getDealers = dealers => {
   // console.log(dealers);
 }
 function myFunc(value) {
-  // console.log(value)
+  console.log(value)
 }
 
 function update(e) {
-  console.log(e.target.name)
+  console.log(e.target.value)
 }
 render(
   <div>

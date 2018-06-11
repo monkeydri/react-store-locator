@@ -20,9 +20,6 @@ class AutoComplete extends Component {
   }
 
   updateInput(e) {
-    if (this.props.onChange) {
-      this.props.onChange(e)
-    }
     if (!this.props.getValue) {
       console.warn(
         'Use the prop getValue to get the location back from AutoComplete.'
@@ -53,6 +50,7 @@ class AutoComplete extends Component {
         }
       })
       this.props.getValue(updatedAddress)
+
       if (place.formatted_address) {
         if (this.props.getValue) {
           this.setState({
@@ -81,7 +79,6 @@ class AutoComplete extends Component {
     delete updatedInput['google']
     delete updatedInput['googleApiKey']
     delete updatedInput['loaded']
-    delete updatedInput['onChange']
 
     return (
       <input
