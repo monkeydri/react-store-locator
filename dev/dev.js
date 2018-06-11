@@ -1,16 +1,16 @@
-import React from 'react';
-import { render } from 'react-dom';
-import Map from '../src/containers/MapContainer';
-import AutoComplete from '../src/containers/AutoComplete';
-import Search from '../src/containers/Search';
-import Info from '../src/containers/Info';
-import Marker from './Marker';
+import React from 'react'
+import { render } from 'react-dom'
+import Map from '../src/containers/MapContainer'
+import AutoComplete from '../src/containers/AutoComplete'
+import Search from '../src/containers/Search'
+import Info from '../src/containers/Info'
+import Marker from './Marker'
 const markerIcon =
-  'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png';
-const containerEl = document.createElement('div');
-document.body.appendChild(containerEl);
-const number = 5;
-let dealers = [];
+  'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_PushPin_Right_Chartreuse.png'
+const containerEl = document.createElement('div')
+document.body.appendChild(containerEl)
+const number = 5
+let dealers = []
 for (let i = number; i--; ) {
   const dealer = {
     id: i,
@@ -21,8 +21,8 @@ for (let i = number; i--; ) {
     address: '949 Tulip Ave.',
     city: 'Evansville',
     state: 'Indiana'
-  };
-  dealers.push(dealer);
+  }
+  dealers.push(dealer)
 }
 
 const myPin = props => {
@@ -39,25 +39,18 @@ const myPin = props => {
     >
       {props.children}
     </div>
-  );
-};
+  )
+}
 
 const getDealers = dealers => {
   // console.log(dealers);
-};
-function myFunc() {
-  console.log('HELLO');
+}
+function myFunc(value) {
+  // console.log(value)
 }
 render(
   <div>
-    <Map
-      images={{ image: 'hedllo' }}
-      locations={dealers}
-      onChange={getDealers}
-      searchMarker
-      centerMarker
-      submitSearch={myFunc}
-    />
+    <AutoComplete getValue={myFunc} />
     <style>{`
     .storeLocatorSearchInput {
       width: 300px;
@@ -71,4 +64,4 @@ render(
     `}</style>
   </div>,
   containerEl
-);
+)
