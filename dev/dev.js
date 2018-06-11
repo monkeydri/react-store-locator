@@ -48,12 +48,17 @@ const getDealers = dealers => {
 function myFunc(value) {
   // console.log(value)
 }
+
+function update(e) {
+  console.log(e.target.name)
+}
 render(
   <div>
     <AutoComplete
       getValue={myFunc}
+      onChange={update}
+      name="hello"
       googleApiKey={'AIzaSyD2pAEWs2VMApgeuoNhy3dJoPWDvMOm49Y'}
-      value={'hello'}
     />
     <style>{`
     .storeLocatorSearchInput {

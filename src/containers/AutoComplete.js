@@ -76,9 +76,10 @@ class AutoComplete extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <input
-        type="text"
+        type={this.props.type || 'text'}
         ref={ref => (this.input = ref)}
         className="storeLocatorAutocomplete"
         style={this.props.style}
@@ -86,6 +87,7 @@ class AutoComplete extends Component {
         onChange={this.updateInput}
         value={this.props.value}
         defaultValue={this.props.defaultValue}
+        name={this.props.name}
       />
     )
   }
