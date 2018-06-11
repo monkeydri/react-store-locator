@@ -81,7 +81,8 @@ class AutoComplete extends Component {
         style={this.props.style}
         placeholder={this.props.placeholder}
         onChange={this.updateInput}
-        {...this.props}
+        value={this.props.value}
+        defaultValue={this.props.defaultValue}
       />
     )
   }

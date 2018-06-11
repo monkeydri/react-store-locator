@@ -50,7 +50,11 @@ function myFunc(value) {
 }
 render(
   <div>
-    <AutoComplete getValue={myFunc} />
+    <AutoComplete
+      getValue={myFunc}
+      googleApiKey={'AIzaSyD2pAEWs2VMApgeuoNhy3dJoPWDvMOm49Y'}
+      value={'hello'}
+    />
     <style>{`
     .storeLocatorSearchInput {
       width: 300px;
