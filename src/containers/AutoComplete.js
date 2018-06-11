@@ -76,18 +76,20 @@ class AutoComplete extends Component {
   }
 
   render() {
-    console.log(this.props)
+    let updatedInput = { ...this.props }
+    delete updatedInput['getValue']
+    delete updatedInput['google']
+    delete updatedInput['googleApiKey']
+    delete updatedInput['loaded']
+    delete updatedInput['onChange']
+
     return (
       <input
         type={this.props.type || 'text'}
         ref={ref => (this.input = ref)}
         className="storeLocatorAutocomplete"
-        style={this.props.style}
-        placeholder={this.props.placeholder}
         onChange={this.updateInput}
-        value={this.props.value}
-        defaultValue={this.props.defaultValue}
-        name={this.props.name}
+        {...updatedInput}
       />
     )
   }

@@ -58,6 +58,7 @@ render(
       getValue={myFunc}
       onChange={update}
       name="hello"
+      placeholder="hello how are u"
       googleApiKey={'AIzaSyD2pAEWs2VMApgeuoNhy3dJoPWDvMOm49Y'}
     />
     <style>{`
