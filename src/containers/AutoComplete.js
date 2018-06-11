@@ -20,6 +20,9 @@ class AutoComplete extends Component {
   }
 
   updateInput(e) {
+    if (this.props.onChange) {
+      this.props.onChange(e)
+    }
     if (!this.props.getValue) {
       console.warn(
         'Use the prop getValue to get the location back from AutoComplete.'
