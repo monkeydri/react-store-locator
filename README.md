@@ -1,5 +1,7 @@
 # React Store Locator
 
+If you find any bugs/issues please tag me in them :D. Also feel free to recommend something you want or do a PR and inlcude a demo or testing of some sort and I'll accept it. Try not to break the main func of the module though.
+
 ## Demo
 
 [Demo](https://react-store-locator-demo.netlify.com/)
