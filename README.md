@@ -82,6 +82,8 @@ You can add your own custom pin and information window. Examples below.
 
 Adding your own pin is super easy and with little set up you can have an awesome looking pin.
 
+UPDATE: I ran into a problem in react when needing to pass down local props to my pin. In order to tackle this I added an update to let you pass an object instead of just the pin component (see below). In your component you should just be able to now use those local props with either props.pinProps or this.props.pinProps depeneding if you are using a class based component or functional based component.
+
 We will pass through a function called `handleLocationClick` through props. If you wish to use the toggle feature for the `Info` window you will want to attach this to the parent element of your pin. If you wish for only a certain part of your pin to work then add it to that element. Make sure you pass through the id so the correct window will be toggled.
 
 You will also need to pass through the children through the inside of your component, this way you can render the `Info` component. Style this component however you like or add an image instead.
@@ -108,6 +110,10 @@ const myPin = (props) => (
 )
 
 <Map locations={locations} pin={myPin}>
+
+// With pin props
+
+<Map locations={locations} pin={{component: myPin, pinProps: myPinProps}}>
 ```
 
 Custom Pin:
@@ -117,7 +123,7 @@ Custom Pin:
 #### Info
 
 ```jsx
-import { Info } from 'react-store-locator';
+import { Info } from 'react-store-locator'
 
 //...
 
@@ -131,10 +137,10 @@ return (
             <div onClick={() => closeLocation(location.id)}>[x]</div>
           </div>
         </Info>
-      );
+      )
     }}
   </Map>
-);
+)
 ```
 
 `closeLocation` is a function that you must call on whatever you wish to close the `Info` window. Above we wrap `[x]` inside a div and apply an onClick to this div. When you click this it will close the `Info` window. We recommend adding a style of `cursor`: `pointer` to this element as well to make it more obvious that it does close the `Info` window.
