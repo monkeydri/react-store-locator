@@ -125,6 +125,12 @@ export default class Map extends Component {
      this.props.onChange(foundLocations)
     }
    }
+  } else {
+   if (this.props.onChange) {
+    if (this.state.mapLoaded) {
+     this.props.onChange(null)
+    }
+   }
   }
  }
 
