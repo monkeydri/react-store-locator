@@ -130,18 +130,18 @@ import { Info } from 'react-store-locator'
 //...
 
 return (
-  <Map locations={locations}>
-    {(location, closeLocation) => {
-      return (
-        <Info show={location.show}>
-          <div style={{ background: 'red' }}>
-            {location.name}
-            <div onClick={() => closeLocation(location.id)}>[x]</div>
-          </div>
-        </Info>
-      )
-    }}
-  </Map>
+ <Map locations={locations}>
+  {(location, closeLocation) => {
+   return (
+    <Info show={location.show}>
+     <div style={{ background: 'red' }}>
+      {location.name}
+      <div onClick={() => closeLocation(location.id)}>[x]</div>
+     </div>
+    </Info>
+   )
+  }}
+ </Map>
 )
 ```
 
@@ -260,10 +260,10 @@ The `customIcon` is google's default icon, but you can change the `color`, and `
 (From a stackoverflow post about this topic)
 You can also create the paths using a visual tool like https://inkscape.org/en/ (GNU-GPL, multiplatform). Some useful hints:
 
-1.  Google API just accepts a single path, so you have to turn any other object (square, cercle...) into a path and join them as a single one. Both commands at the Path menu.
-2.  To move the path to the (0,0), go to the Path Edit mode (F2) select all the control nodes and drag them. Moving the object with F1, won't change the path node coords.
-3.  To ensure the reference point is at (0,0), you can select it alone and edit the coords by hand on the top toolbar.
-4.  After saving the SVG file, which is an XML, open it with an editor, look for the svg:path element and copy the content of the 'd' attribute.
+1. Google API just accepts a single path, so you have to turn any other object (square, cercle...) into a path and join them as a single one. Both commands at the Path menu.
+2. To move the path to the (0,0), go to the Path Edit mode (F2) select all the control nodes and drag them. Moving the object with F1, won't change the path node coords.
+3. To ensure the reference point is at (0,0), you can select it alone and edit the coords by hand on the top toolbar.
+4. After saving the SVG file, which is an XML, open it with an editor, look for the svg:path element and copy the content of the 'd' attribute.
 
 With custom icon:
 
@@ -343,4 +343,12 @@ function myFunc() {
   console.log('Found a location'); // should fire off once a new location has been found
 }
 <Map submitSearch={myFunc}>
+```
+
+### Map Loaded callback added
+
+```jsx
+//...
+
+<Map mapLoaded={() => console.log('Map Loaded')}>
 ```
