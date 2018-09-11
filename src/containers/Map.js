@@ -345,6 +345,9 @@ export default class Map extends Component {
         }
       )
     }
+    if(this.props.mapLoaded){
+     this.props.mapLoaded()
+    }
     this.setState({ loading: false })
   }
 
