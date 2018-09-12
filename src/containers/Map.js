@@ -59,7 +59,6 @@ export default class Map extends Component {
 
  changeMap(props) {
   if (this.state.loading) return
-
   if (this.props.centerMarker) {
    let movingMarkers = [...this.state.movingMarkers]
    if (movingMarkers.length > 0) {
@@ -127,9 +126,7 @@ export default class Map extends Component {
    }
   } else {
    if (this.props.onChange) {
-    if (this.state.mapLoaded) {
-     this.props.onChange(null)
-    }
+    this.props.onChange(null)
    }
   }
  }
@@ -312,44 +309,82 @@ export default class Map extends Component {
     },
     (results, status) => {
      const result = results[0]
-     if (status == google.maps.places.PlacesServiceStatus.OK) {
-      const { geometry } = result
-      const newBounds = {
-       ne: {
-        lat: geometry.viewport.getNorthEast().lat(),
-        lng: geometry.viewport.getNorthEast().lng()
-       },
-       sw: {
-        lat: geometry.viewport.getSouthWest().lat(),
-        lng: geometry.viewport.getSouthWest().lng()
+     if (!result || results.length < 1) {
+      console.warn('No locations with given query')
+      let defaultZoom = 8,
+       defaultCenter = { lat: 0, lng: 180 }
+      if (this.props.locations && this.props.locations.length > 0) {
+       const bounds = new google.maps.LatLngBounds()
+       this.props.locations.map(location => {
+        bounds.extend(new google.maps.LatLng(location.lat, location.lng))
+       })
+       const newBounds = {
+        ne: {
+         lat: bounds.getNorthEast().lat(),
+         lng: bounds.getNorthEast().lng()
+        },
+        sw: {
+         lat: bounds.getSouthWest().lat(),
+         lng: bounds.getSouthWest().lng()
+        }
        }
+       let size = {}
+       if (this.mapEl) {
+        size = {
+         width: this.mapEl.offsetWidth,
+         height: this.mapEl.offsetHeight
+        }
+       }
+       const { center, zoom } = fitBounds(newBounds, size)
+       defaultZoom = zoom
+       defaultCenter = center
       }
-      const size = {
-       width: this.mapEl.offsetWidth,
-       height: this.mapEl.offsetHeight
-      }
-      const { center, zoom } = fitBounds(newBounds, size)
-      if (this.props.searchMarker) {
-       const marker = GoogleMarker(this.props.searchMarker, map, center)
+      this.setState({
+       locations: this.props.locations,
+       zoom: defaultZoom,
+       center: defaultCenter,
+       loading: false,
+       mapLoaded: true
+      })
+     } else {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+       const { geometry } = result
+       const newBounds = {
+        ne: {
+         lat: geometry.viewport.getNorthEast().lat(),
+         lng: geometry.viewport.getNorthEast().lng()
+        },
+        sw: {
+         lat: geometry.viewport.getSouthWest().lat(),
+         lng: geometry.viewport.getSouthWest().lng()
+        }
+       }
+       const size = {
+        width: this.mapEl.offsetWidth,
+        height: this.mapEl.offsetHeight
+       }
+       const { center, zoom } = fitBounds(newBounds, size)
+       if (this.props.searchMarker) {
+        const marker = GoogleMarker(this.props.searchMarker, map, center)
+        this.setState({
+         googleMarkers: [...this.state.googleMarkers, marker]
+        })
+       }
        this.setState({
-        googleMarkers: [...this.state.googleMarkers, marker]
+        center: center,
+        zoom: zoom.toString().length > 1 ? 9 : zoom,
+        loading: false,
+        mapLoaded: true
        })
       }
-
-      this.setState({
-       center: center,
-       zoom: zoom.toString().length > 1 ? 9 : zoom,
-       loading: false
-      })
      }
     }
    )
   }
   if (this.props.mapLoaded) {
    this.props.mapLoaded()
-   this.setState({ mapLoaded: true })
   }
-  this.setState({ loading: false })
+  this.setState({ loading: false, mapLoaded: true })
  }
 
  render() {
