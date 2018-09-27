@@ -302,13 +302,20 @@ export default class Map extends Component {
   this.map = map
   if (this.props.initSearch) {
    const service = new google.maps.places.PlacesService(map)
-   service.textSearch(
+   service.findPlaceFromQuery(
     {
-     location: map.getCenter(),
-     query: this.props.initSearch
+     query: this.props.initSearch,
+     fields: [
+      'photos',
+      'formatted_address',
+      'name',
+      'rating',
+      'opening_hours',
+      'geometry'
+     ]
     },
     (results, status) => {
-     const result = results[0]
+     const result = results ? results[0] : null
      if (!result || results.length < 1) {
       console.warn('No locations with given query')
       let defaultZoom = 8,
