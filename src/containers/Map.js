@@ -38,8 +38,7 @@ export default class Map extends Component {
    zoom: null,
    googleMarkers: [],
    places: null,
-   loading: true,
-   movingMarkers: [],
+   googleMarkers: [],
    mapLoaded: false
   }
  }
@@ -48,47 +47,45 @@ export default class Map extends Component {
   for (let i = this.state.googleMarkers.length; i--; ) {
    this.state.googleMarkers[i].setMap(null)
   }
-  for (let i = this.state.movingMarkers.length; i--; ) {
-   this.state.movingMarkers[i].setMap(null)
-  }
+
   this.setState({
-   googleMarkers: [],
-   movingMarkers: []
+   googleMarkers: []
   })
  }
 
  changeMap(props) {
-  if (this.state.loading) return
+  if (!this.state.mapLoaded) return
   if (this.props.centerMarker) {
-   let movingMarkers = [...this.state.movingMarkers]
-   if (movingMarkers.length > 0) {
-    this.checkGoogleMarker()
-   }
-   const marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
+   let marker = null
+
+   // check to see if marker already exist at this location for search/center markers
    if (this.state.googleMarkers.length > 0) {
+    let createMarker = true
     const newMarker = {
-     lat: marker.position.lat().toFixed(4),
-     lng: marker.position.lng().toFixed(4)
+     lat: props.center.lat.toFixed(4),
+     lng: props.center.lng.toFixed(4)
     }
-    const currentMarker = {
-     lat: this.state.googleMarkers[0].position.lat().toFixed(4),
-     lng: this.state.googleMarkers[0].position.lng().toFixed(4)
+    this.state.googleMarkers.forEach(googleMarker => {
+     const position = {
+      lat: googleMarker.position.lat().toFixed(4),
+      lng: googleMarker.position.lng().toFixed(4)
+     }
+     if (newMarker.lng === position.lng && newMarker.lat === position.lat) {
+      createMarker = false
+     }
+    })
+    if (createMarker) {
+     marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
     }
-    if (
-     newMarker.lng === currentMarker.lng &&
-     newMarker.lat === currentMarker.lat
-    ) {
-     marker.setMap(null)
-    }
+   } else {
+    marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
    }
-   movingMarkers.push(marker)
-   this.setState({
-    movingMarkers
-   })
-   if (this.state.movingMarkers.length > 1) {
-    this.state.movingMarkers[0].setMap(null)
+
+   // add the new marker to arr of googleMarkers and remove all other ones
+   if (marker) {
+    this.checkGoogleMarker()
     this.setState({
-     movingMarkers: this.state.movingMarkers.slice(1)
+     googleMarkers: [marker]
     })
    }
   }
@@ -177,7 +174,7 @@ export default class Map extends Component {
 
    const marker = GoogleMarker(this.props.searchMarker, this.map, props.center)
    this.setState({
-    googleMarkers: [...this.state.googleMarkers, marker]
+    googleMarkers: [marker, ...this.state.googleMarkers]
    })
   }
 
@@ -223,7 +220,7 @@ export default class Map extends Component {
 
      const marker = GoogleMarker(this.props.searchMarker, this.map, center)
      this.setState({
-      googleMarkers: [...this.state.googleMarkers, marker]
+      googleMarkers: [marker, ...this.state.googleMarkers]
      })
     }
 
@@ -289,8 +286,7 @@ export default class Map extends Component {
   this.setState({
    locations: this.props.locations,
    zoom: defaultZoom,
-   center: defaultCenter,
-   loading: false
+   center: defaultCenter
   })
  }
 
@@ -350,7 +346,6 @@ export default class Map extends Component {
        locations: this.props.locations,
        zoom: defaultZoom,
        center: defaultCenter,
-       loading: false,
        mapLoaded: true
       })
      } else {
@@ -372,15 +367,16 @@ export default class Map extends Component {
        }
        const { center, zoom } = fitBounds(newBounds, size)
        if (this.props.searchMarker) {
+        this.checkGoogleMarker()
+
         const marker = GoogleMarker(this.props.searchMarker, map, center)
         this.setState({
-         googleMarkers: [...this.state.googleMarkers, marker]
+         googleMarkers: [marker, ...this.state.googleMarkers]
         })
        }
        this.setState({
         center: center,
         zoom: zoom.toString().length > 1 ? 9 : zoom,
-        loading: false,
         mapLoaded: true
        })
       }
@@ -391,7 +387,7 @@ export default class Map extends Component {
   if (this.props.mapLoaded) {
    this.props.mapLoaded()
   }
-  this.setState({ loading: false, mapLoaded: true })
+  this.setState({ mapLoaded: true })
  }
 
  render() {
