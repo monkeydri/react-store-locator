@@ -20,6 +20,10 @@ export default (props, map, center) => {
       scaledSize: new google.maps.Size(50, 50)
      }
    : pinSymbol(props)
+  // draggable: true
+ })
+ marker.addListener('click', () => {
+  console.log('You clicked the center')
  })
 
  return marker

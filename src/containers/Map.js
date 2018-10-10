@@ -56,12 +56,47 @@ export default class Map extends Component {
 
  changeMap(props) {
   if (!this.state.mapLoaded) return
+  const {
+   bounds: { ne, nw, se, sw }
+  } = props
+  const { locations } = this.state
+  // locations within the map bounds
+  const foundLocations = locations.filter(location => {
+   if (
+    location.lat > se.lat &&
+    sw.lat &&
+    (location.lat < ne.lat && nw.lat) &&
+    (location.lng > nw.lng && sw.lng) &&
+    (location.lng < ne.lng && se.lng)
+   ) {
+    return location
+   }
+  })
+  foundLocations.map(location => {
+   const distanceMeters = geolib.getDistance(props.center, {
+    lat: location.lat,
+    lng: location.lng
+   })
+   const distanceMiles = (distanceMeters * 0.000621371).toFixed(2)
+   location.distanceFromCenter = distanceMiles
+   return { ...location }
+  })
+  this.setState({ foundLocations })
+  if (this.props.onChange) {
+   // this prevents empty array being passed before map has loaded
+   if (this.state.mapLoaded) {
+    this.props.onChange(foundLocations)
+   } else {
+    this.props.onChange(null)
+   }
+  }
   if (this.props.centerMarker) {
+   console.warn('centerMarker will be depreciated in future versions')
    let marker = null
-
    // check to see if marker already exist at this location for search/center markers
+   let createMarker = true
+
    if (this.state.googleMarkers.length > 0) {
-    let createMarker = true
     const newMarker = {
      lat: props.center.lat.toFixed(4),
      lng: props.center.lng.toFixed(4)
@@ -75,58 +110,32 @@ export default class Map extends Component {
       createMarker = false
      }
     })
-    if (createMarker) {
-     marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
-    }
-   } else {
+   }
+   if (foundLocations.length > 0) {
+    foundLocations.forEach(foundLocation => {
+     const distance = (
+      geolib.getDistance(props.center, {
+       lat: foundLocation.lat,
+       lng: foundLocation.lng
+      }) * 0.000621371
+     ).toFixed(2)
+     if (distance <= 6.5) {
+      createMarker = false
+     }
+    })
+   }
+   if (createMarker) {
     marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
    }
 
    // add the new marker to arr of googleMarkers and remove all other ones
+   this.checkGoogleMarker()
    if (marker) {
     // this needs to be done to set the markers to null on the map, removing them
     // from the array will not remove them from the map
-    this.checkGoogleMarker()
     this.setState({
      googleMarkers: [marker]
     })
-   }
-  }
-
-  const {
-   bounds: { ne, nw, se, sw }
-  } = props
-  const { locations } = this.state
-  if (locations) {
-   const foundLocations = locations.filter(location => {
-    if (
-     location.lat > se.lat &&
-     sw.lat &&
-     (location.lat < ne.lat && nw.lat) &&
-     (location.lng > nw.lng && sw.lng) &&
-     (location.lng < ne.lng && se.lng)
-    ) {
-     return location
-    }
-   })
-   foundLocations.map(location => {
-    const distanceMeters = geolib.getDistance(props.center, {
-     lat: location.lat,
-     lng: location.lng
-    })
-    const distanceMiles = (distanceMeters * 0.000621371).toFixed(2)
-    location.distanceFromCenter = distanceMiles
-    return location
-   })
-   this.setState({ foundLocations })
-   if (this.props.onChange) {
-    if (this.state.mapLoaded) {
-     this.props.onChange(foundLocations)
-    }
-   }
-  } else {
-   if (this.props.onChange) {
-    this.props.onChange(null)
    }
   }
  }
@@ -172,12 +181,13 @@ export default class Map extends Component {
 
   const { center, zoom } = fitBounds(newBounds, size)
 
-  if (this.props.searchMarker) {
+  if (this.props.centerMarker) {
+   console.warn('centerMarker will be depreciated in future versions')
    this.checkGoogleMarker()
 
-   const marker = GoogleMarker(this.props.searchMarker, this.map, props.center)
+   const marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
    this.setState({
-    googleMarkers: [marker, ...this.state.googleMarkers]
+    googleMarkers: [...this.state.googleMarkers, marker]
    })
   }
 
@@ -218,12 +228,13 @@ export default class Map extends Component {
     }
 
     const { center, zoom } = fitBounds(newBounds, size)
-    if (this.props.searchMarker) {
+    if (this.props.centerMarker) {
+     console.warn('centerMarker will be depreciated in future versions')
      this.checkGoogleMarker()
 
-     const marker = GoogleMarker(this.props.searchMarker, this.map, center)
+     const marker = GoogleMarker(this.props.centerMarker, this.map, center)
      this.setState({
-      googleMarkers: [marker, ...this.state.googleMarkers]
+      googleMarkers: [...this.state.googleMarkers, marker]
      })
     }
 
@@ -369,14 +380,6 @@ export default class Map extends Component {
         height: this.mapEl.offsetHeight
        }
        const { center, zoom } = fitBounds(newBounds, size)
-       if (this.props.searchMarker) {
-        this.checkGoogleMarker()
-
-        const marker = GoogleMarker(this.props.searchMarker, map, center)
-        this.setState({
-         googleMarkers: [marker, ...this.state.googleMarkers]
-        })
-       }
        this.setState({
         center: center,
         zoom: zoom.toString().length > 1 ? 9 : zoom,
@@ -395,6 +398,10 @@ export default class Map extends Component {
 
  render() {
   let Pin = this.props.pin.component || this.props.pin
+  const { foundLocations } = this.state
+
+  const updatedLocations =
+   foundLocations.length > 0 ? foundLocations : this.props.locations
   return (
    <div
     style={{
@@ -430,8 +437,8 @@ export default class Map extends Component {
      options={this.createMapOptions}
      onChange={this.changeMap}
     >
-     {Array.isArray(this.props.locations) && this.props.locations.length > 0
-      ? this.props.locations.map(location => {
+     {Array.isArray(this.props.locations)
+      ? updatedLocations.map(location => {
          return (
           <Pin
            key={location.id}
@@ -475,7 +482,7 @@ export default class Map extends Component {
           </Pin>
          )
         })
-      : null}
+      : console.warn('Locations must be an array of markers')}
     </GoogleMap>
    </div>
   )
