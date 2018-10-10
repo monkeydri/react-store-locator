@@ -45,6 +45,7 @@ export default class Map extends Component {
 
  checkGoogleMarker() {
   for (let i = this.state.googleMarkers.length; i--; ) {
+   // this removes each marker from the map
    this.state.googleMarkers[i].setMap(null)
   }
 
@@ -83,6 +84,8 @@ export default class Map extends Component {
 
    // add the new marker to arr of googleMarkers and remove all other ones
    if (marker) {
+    // this needs to be done to set the markers to null on the map, removing them
+    // from the array will not remove them from the map
     this.checkGoogleMarker()
     this.setState({
      googleMarkers: [marker]
