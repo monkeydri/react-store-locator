@@ -230,45 +230,6 @@ You can pass through map style like so:
 
 This uses a JSON object from https://mapstyle.withgoogle.com/. You can go here and copy and paste this through the `mapStyle` prop.
 
-### Adding custom google map Icons or customizing the default Icon
-
-```jsx
-//...
-
-<Map
-searchMarker={{icon: 'image path here', path: 'svg path here', color: 'fill color'}}
->
-```
-
-Note: If you include both an `icon`, `icon` will render first. If no props are passed it will default to the default marker.
-
-The `icon` takes an image url. You can also pass a local image through if you just import it like so:
-
-```jsx
-import image from '../img/myimage.png';
-//...
-
-<Map searchMarker={{icon: image} />;
-```
-
-With custom image:
-
-![imageIcon](imageIcon.png)
-
-The `customIcon` is google's default icon, but you can change the `color`, and `path`. If you do not include one of these props then it will have a default so do not worry.
-
-(From a stackoverflow post about this topic)
-You can also create the paths using a visual tool like https://inkscape.org/en/ (GNU-GPL, multiplatform). Some useful hints:
-
-1. Google API just accepts a single path, so you have to turn any other object (square, cercle...) into a path and join them as a single one. Both commands at the Path menu.
-2. To move the path to the (0,0), go to the Path Edit mode (F2) select all the control nodes and drag them. Moving the object with F1, won't change the path node coords.
-3. To ensure the reference point is at (0,0), you can select it alone and edit the coords by hand on the top toolbar.
-4. After saving the SVG file, which is an XML, open it with an editor, look for the svg:path element and copy the content of the 'd' attribute.
-
-With custom icon:
-
-![customIcon](customIcon.png)
-
 ### Grabing stores/locations within window
 
 This is a feature that is very useful when wanting to get information about the locations in your current window.
@@ -322,6 +283,8 @@ render(){
 
 ### Center Marker on Move
 
+**NOTE:** This will be removed in future versions, unless it is wanted we don't really see the point of having this marker. It causes confusion for the most part.
+
 This will put a marker in the center of the map when you move the map. If no props are passed it will default to the default marker.
 
 ```jsx
@@ -352,3 +315,9 @@ function myFunc() {
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
 ```
+
+### Optimizations done:
+
+- Only rendering markers in current window bounds (Greatly improved performance overall)
+- Reduce re-renders by waiting for mapload
+- Remove redundant `setState` calls
