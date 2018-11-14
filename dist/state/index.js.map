@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/state/index.js"],"names":["mapState","State","newBounds"],"mappings":";;;;;;;AAAA;;AAEA,IAAMA,WAAW,IAAIC,eAAJ,CAAU;AACzBC,aAAW;AADc,CAAV,CAAjB;;QAISF,Q,GAAAA,Q","file":"index.js","sourcesContent":["import { State } from 'statable';\n\nconst mapState = new State({\n  newBounds: null\n});\n\nexport { mapState };\n"]}

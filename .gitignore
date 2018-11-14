@@ -11,7 +11,7 @@ node_modules/
 
 # Development/Environment
 .env
-dist
+# dist
 .next
 json
 static
