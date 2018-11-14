@@ -41,7 +41,9 @@ class AutoComplete extends Component {
      updatedAddress.address = comp.short_name
     }
     if (comp.types.includes('route')) {
-     updatedAddress.address += ` ${comp.short_name}`
+     updatedAddress.address
+      ? (updatedAddress.address += ` ${comp.short_name}`)
+      : (updatedAddress.address = comp.short_name)
     }
     if (comp.types.includes('locality')) {
      updatedAddress.city = comp.short_name
@@ -53,6 +55,10 @@ class AutoComplete extends Component {
      updatedAddress.country = comp.short_name
     }
    })
+   if (place.formatted_address) {
+    updatedAddress.formatted_address = place.formatted_address
+   }
+   // console.log(updatedAddress)
    this.props.getValue(updatedAddress)
 
    if (place.formatted_address) {

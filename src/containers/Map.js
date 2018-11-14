@@ -2,22 +2,14 @@ import React, { Component } from 'react'
 import GoogleMap from 'google-map-react'
 import { fitBounds } from 'google-map-react/utils'
 import geolib from 'geolib'
+
 import Pin from './Pin'
+import ClusterPin from './ClusterPin'
 import Info from './Info'
-import GoogleMarker from './GoogleMarker'
 import infoStyle from './InfoStyle'
 import searchStyle from './SearchStyle'
-import { Subscribe } from 'statable'
 import { mapState } from '../state'
-
-function findLocationIndex(id, locations) {
- for (let i = locations.length; i--; ) {
-  if (locations[i].id === id) {
-   return i
-  }
- }
- return null
-}
+import { createClusters } from '../utils/clustering'
 
 export default class Map extends Component {
  constructor(props) {
@@ -28,38 +20,25 @@ export default class Map extends Component {
   this.closeLocation = this.closeLocation.bind(this)
   this.onPlacesChanged = this.onPlacesChanged.bind(this)
   this.initCenterMap = this.initCenterMap.bind(this)
-  this.checkGoogleMarker = this.checkGoogleMarker.bind(this)
   this.handleMapLoad = this.handleMapLoad.bind(this)
+  this.updateMapState = this.updateMapState.bind(this)
 
   this.state = {
-   locations: [],
+   updatedLocations: this.props.locations,
    foundLocations: [],
    center: null,
    zoom: null,
-   googleMarkers: [],
    places: null,
-   googleMarkers: [],
    mapLoaded: false
   }
  }
 
- checkGoogleMarker() {
-  for (let i = this.state.googleMarkers.length; i--; ) {
-   // this removes each marker from the map
-   this.state.googleMarkers[i].setMap(null)
-  }
-
-  this.setState({
-   googleMarkers: []
-  })
- }
-
  changeMap(props) {
-  if (!this.state.mapLoaded) return
+  if (!props) return
   const {
    bounds: { ne, nw, se, sw }
   } = props
-  const { locations } = this.state
+  const { locations } = this.props
   // locations within the map bounds
   const foundLocations = locations.filter(location => {
    if (
@@ -72,6 +51,17 @@ export default class Map extends Component {
     return location
    }
   })
+  // if clusterMarkers is enabled create clusters and set them to the state
+  if (this.props.clusterMarkers) {
+   this.setState({
+    updatedLocations: createClusters(
+     props,
+     foundLocations.length > 0 ? foundLocations : locations
+    )
+   })
+  }
+  if (!this.state.mapLoaded) return
+
   foundLocations.map(location => {
    const distanceMeters = geolib.getDistance(props.center, {
     lat: location.lat,
@@ -81,7 +71,9 @@ export default class Map extends Component {
    location.distanceFromCenter = distanceMiles
    return { ...location }
   })
-  this.setState({ foundLocations })
+  if (!this.props.clusterMarkers) {
+   this.setState({ updatedLocations: foundLocations })
+  }
   if (this.props.onChange) {
    // this prevents empty array being passed before map has loaded
    if (this.state.mapLoaded) {
@@ -90,75 +82,22 @@ export default class Map extends Component {
     this.props.onChange(null)
    }
   }
-  if (this.props.centerMarker) {
-   console.warn('centerMarker will be depreciated in future versions')
-   let marker = null
-   // check to see if marker already exist at this location for search/center markers
-   let createMarker = true
-
-   if (this.state.googleMarkers.length > 0) {
-    const newMarker = {
-     lat: props.center.lat.toFixed(4),
-     lng: props.center.lng.toFixed(4)
-    }
-    this.state.googleMarkers.forEach(googleMarker => {
-     const position = {
-      lat: googleMarker.position.lat().toFixed(4),
-      lng: googleMarker.position.lng().toFixed(4)
-     }
-     if (newMarker.lng === position.lng && newMarker.lat === position.lat) {
-      createMarker = false
-     }
-    })
-   }
-   if (foundLocations.length > 0) {
-    foundLocations.forEach(foundLocation => {
-     const distance = (
-      geolib.getDistance(props.center, {
-       lat: foundLocation.lat,
-       lng: foundLocation.lng
-      }) * 0.000621371
-     ).toFixed(2)
-     if (distance <= 6.5) {
-      createMarker = false
-     }
-    })
-   }
-   if (createMarker) {
-    marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
-   }
-
-   // add the new marker to arr of googleMarkers and remove all other ones
-   this.checkGoogleMarker()
-   if (marker) {
-    // this needs to be done to set the markers to null on the map, removing them
-    // from the array will not remove them from the map
-    this.setState({
-     googleMarkers: [marker]
-    })
-   }
-  }
  }
 
  toggleLocation(id) {
-  const index = findLocationIndex(id, this.state.locations)
-  if (index !== null) {
-   const locations = this.state.locations
-   locations.forEach(item => {
-    item.show ? (item.show = false) : (item.show = item.show)
-   })
-   locations[index].show = !locations[index].show
-   this.setState({ locations })
-  }
+  const locations = this.state.updatedLocations.map(location => ({
+   ...location,
+   show: location.id === id ? !location.show : false
+  }))
+  this.setState({ updatedLocations: locations })
  }
 
  closeLocation(id) {
-  const index = findLocationIndex(id, this.state.locations)
-  if (index !== null) {
-   const locations = this.state.locations
-   locations[index].show = false
-   this.setState({ locations })
-  }
+  const locations = this.state.updatedLocations.map(location => ({
+   ...location,
+   show: false
+  }))
+  this.setState({ updatedLocations: locations })
  }
 
  createMapOptions(maps) {
@@ -180,16 +119,6 @@ export default class Map extends Component {
   }
 
   const { center, zoom } = fitBounds(newBounds, size)
-
-  if (this.props.centerMarker) {
-   console.warn('centerMarker will be depreciated in future versions')
-   this.checkGoogleMarker()
-
-   const marker = GoogleMarker(this.props.centerMarker, this.map, props.center)
-   this.setState({
-    googleMarkers: [...this.state.googleMarkers, marker]
-   })
-  }
 
   this.setState({
    center: center,
@@ -228,15 +157,6 @@ export default class Map extends Component {
     }
 
     const { center, zoom } = fitBounds(newBounds, size)
-    if (this.props.centerMarker) {
-     console.warn('centerMarker will be depreciated in future versions')
-     this.checkGoogleMarker()
-
-     const marker = GoogleMarker(this.props.centerMarker, this.map, center)
-     this.setState({
-      googleMarkers: [...this.state.googleMarkers, marker]
-     })
-    }
 
     this.setState({
      center: center,
@@ -246,15 +166,23 @@ export default class Map extends Component {
   }
  }
 
+ updateMapState(state) {
+  if (state.newBounds) {
+   this.initCenterMap()
+  }
+  if (state.zoom && state.zoom !== this.state.zoom) {
+   this.setState({ zoom: state.zoom })
+  }
+  if (state.center && state.center !== this.state.center) {
+   this.setState({ center: state.center })
+  }
+ }
+
  componentDidMount() {
   this.changeMap()
 
   if (mapState.state) {
-   mapState.subscribe(state => {
-    if (state.newBounds) {
-     this.initCenterMap()
-    }
-   })
+   mapState.subscribe(this.updateMapState)
   }
 
   const { google } = this.props
@@ -298,14 +226,13 @@ export default class Map extends Component {
   }
 
   this.setState({
-   locations: this.props.locations,
    zoom: defaultZoom,
    center: defaultCenter
   })
  }
 
  componentWillUnmount() {
-  mapState.unsubscribe()
+  mapState.unsubscribe(this.updateMapState)
  }
 
  handleMapLoad({ map, maps }) {
@@ -357,7 +284,6 @@ export default class Map extends Component {
        defaultCenter = center
       }
       this.setState({
-       locations: this.props.locations,
        zoom: defaultZoom,
        center: defaultCenter,
        mapLoaded: true
@@ -398,10 +324,7 @@ export default class Map extends Component {
 
  render() {
   let Pin = this.props.pin.component || this.props.pin
-  const { foundLocations } = this.state
-
-  const updatedLocations =
-   foundLocations.length > 0 ? foundLocations : this.props.locations
+  const { updatedLocations } = this.state
   return (
    <div
     style={{
@@ -437,52 +360,58 @@ export default class Map extends Component {
      options={this.createMapOptions}
      onChange={this.changeMap}
     >
-     {Array.isArray(this.props.locations)
-      ? updatedLocations.map(location => {
-         return (
-          <Pin
-           key={location.id}
-           handleLocationClick={this.toggleLocation}
-           lat={location.lat}
-           lng={location.lng}
-           {...location}
-           {...this.props}
-           pinProps={this.props.pin.pinProps || null}
-          >
-           {!this.props.children ? (
-            <Info show={location.show} style={this.props.infoStyle}>
-             <div style={infoStyle.main}>
-              {Object.keys(location).map((k, i) => {
-               if (k === 'id' || k === 'lat' || k === 'lng' || k === 'show')
-                return
-               return (
-                <div
-                 key={k}
-                 style={
-                  k === 'name'
-                   ? { marginBottom: '12px' }
-                   : { marginBottom: '2px' }
-                 }
-                >
-                 {`${location[k]}`}
-                </div>
-               )
-              })}
-              <div
-               style={infoStyle.close}
-               onClick={() => this.closeLocation(location.id)}
-              >
-               ×
-              </div>
+     {updatedLocations.map(location => {
+      if (location.cluster_id) {
+       return (
+        <ClusterPin
+         key={location.id}
+         lat={location.lat}
+         lng={location.lng}
+         {...location}
+         pinProps={this.props.pin.pinProps || null}
+        />
+       )
+      }
+      return (
+       <Pin
+        key={location.id}
+        handleLocationClick={this.toggleLocation}
+        lat={location.lat}
+        lng={location.lng}
+        {...location}
+        {...this.props}
+        pinProps={this.props.pin.pinProps || null}
+       >
+        {!this.props.children ? (
+         <Info show={location.show} style={this.props.infoStyle}>
+          <div style={infoStyle.main}>
+           {Object.keys(location).map((k, i) => {
+            if (k === 'id' || k === 'lat' || k === 'lng' || k === 'show') return
+            return (
+             <div
+              key={k}
+              style={
+               k === 'name' ? { marginBottom: '12px' } : { marginBottom: '2px' }
+              }
+             >
+              {`${location[k]}`}
              </div>
-            </Info>
-           ) : (
-            this.props.children(location, this.closeLocation)
-           )}
-          </Pin>
-         )
-        })
-      : console.warn('Locations must be an array of markers')}
+            )
+           })}
+           <div
+            style={infoStyle.close}
+            onClick={() => this.closeLocation(location.id)}
+           >
+            ×
+           </div>
+          </div>
+         </Info>
+        ) : (
+         this.props.children(location, this.closeLocation)
+        )}
+       </Pin>
+      )
+     })}
     </GoogleMap>
    </div>
   )
@@ -493,11 +422,5 @@ Map.defaultProps = {
  pin: Pin,
  mapStyle: {},
  height: '800px',
- width: '100%',
- customIcon: {
-  path:
-   'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
-  color: '#FE7569',
-  borderColor: '#000'
- }
+ width: '100%'
 }

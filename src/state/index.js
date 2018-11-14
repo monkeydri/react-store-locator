@@ -1,7 +1,9 @@
-import { State } from 'statable';
+import { State } from 'statable'
 
 const mapState = new State({
-  newBounds: null
-});
+ newBounds: null,
+ zoom: null,
+ center: null
+})
 
-export { mapState };
+export { mapState }
