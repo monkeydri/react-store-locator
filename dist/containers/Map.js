@@ -338,13 +338,15 @@ var Map = function (_Component) {
         });
       }
 
-      var google = this.props.google;
+      var _props = this.props,
+          google = _props.google,
+          options = _props.options;
 
       var input = this.searchInput;
       if (this.props.initSearch) {
         input.value = this.props.initSearch;
       }
-      this.searchBox = new google.maps.places.SearchBox(input);
+      this.searchBox = new google.maps.places.Autocomplete(this.input, options);
       this.searchBox.addListener('places_changed', this.onPlacesChanged);
 
       var defaultZoom = 8,

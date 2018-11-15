@@ -14,10 +14,10 @@ var _state = require('../state');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function initSearch(google) {
+function initSearch(google, options) {
   var input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
-    var searchBox = new google.maps.places.SearchBox(input);
+    var searchBox = new google.maps.places.Autocomplete(input, options);
 
     searchBox.addListener('places_changed', function () {
       var places = searchBox.getPlaces();
@@ -47,7 +47,7 @@ function initSearch(google) {
 
 exports.default = function (props) {
   if (props.google) {
-    initSearch(props.google);
+    initSearch(props.google, props.options);
   }
 
   return _react2.default.createElement('input', {
