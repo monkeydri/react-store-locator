@@ -81,6 +81,18 @@ function findLocationIndex(id, locations) {
   return null;
 }
 
+function arraysAreIdentical(array1, array2) {
+  if (array1.length != array2.length) return false;else {
+    var array2IncludesArray1 = array1.every(function (element) {
+      return array2.includes(element);
+    });
+    var array1IncludesArray2 = array2.every(function (element) {
+      return array1.includes(element);
+    });
+    return array1IncludesArray2 && array2IncludesArray1;
+  }
+}
+
 var Map = function (_Component) {
   (0, _inherits3.default)(Map, _Component);
 
@@ -445,6 +457,30 @@ var Map = function (_Component) {
       // update map place changes
       if (prevProps.place !== this.props.place) {
         this.updateMap(this.props.place);
+      }
+
+      // update locations copy in state
+      // get ids of previous and current locations (props)
+      var prevLocationsIds = prevProps.locations.map(function (location) {
+        return location.id;
+      });
+      var updatedLocationsIds = this.props.locations.map(function (location) {
+        return location.id;
+      });
+      // check if arrays differs
+      if (!arraysAreIdentical(prevLocationsIds, updatedLocationsIds)) {
+        // get any additional locations (that were not in previous props)
+        var additionalLocations = this.props.locations.filter(function (updatedLocation) {
+          return !prevLocationsIds.includes(updatedLocation.id);
+        });
+        // add any location 
+        var previousAndAdditionalLocations = [].concat((0, _toConsumableArray3.default)(prevProps.locations), (0, _toConsumableArray3.default)(additionalLocations));
+        // remove any location that were in state before and not in updated props
+        var updatedLocations = previousAndAdditionalLocations.filter(function (location) {
+          return updatedLocationsIds.includes(location.id);
+        });
+        // update state
+        this.setState({ locations: updatedLocations });
       }
     }
   }, {
