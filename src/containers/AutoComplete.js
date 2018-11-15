@@ -53,7 +53,9 @@ class AutoComplete extends Component {
     if (comp.types.includes('country')) {
      updatedAddress.country = comp.short_name
     }
-   })
+	 })
+	 updatedAddress.latitude = place.geometry.location.lat();
+	 updatedAddress.longitude = place.geometry.location.lng();
    this.props.getValue(updatedAddress)
 
    if (place.formatted_address) {
