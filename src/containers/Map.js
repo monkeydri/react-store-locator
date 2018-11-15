@@ -198,13 +198,56 @@ export default class Map extends Component {
  }
 
  onPlaceChanged() {
-  const { google } = this.props
   let place = this.searchBox.getPlace()
   if (place === this.state.place) place = undefined
   if (place) {
    if (this.props.submitSearch) {
     this.props.submitSearch()
    }
+   this.setState({ place })
+  const { geometry } = place
+  const newBounds = {
+    ne: {
+    lat: geometry.viewport.getNorthEast().lat(),
+    lng: geometry.viewport.getNorthEast().lng()
+    },
+    sw: {
+    lat: geometry.viewport.getSouthWest().lat(),
+    lng: geometry.viewport.getSouthWest().lng()
+    }
+  }
+  let size = {}
+  if (this.mapEl) {
+    size = {
+    width: this.mapEl.offsetWidth,
+    height: this.mapEl.offsetHeight
+    }
+  }
+
+  const { center, zoom } = fitBounds(newBounds, size)
+  if (this.props.centerMarker) {
+    console.warn('centerMarker will be depreciated in future versions')
+    this.checkGoogleMarker()
+
+    const marker = GoogleMarker(this.props.centerMarker, this.map, center)
+    this.setState({
+    googleMarkers: [...this.state.googleMarkers, marker]
+    })
+  }
+
+  this.setState({
+    center: center,
+    zoom: zoom.toString().length > 1 ? 9 : zoom
+  })
+  }
+ }
+
+ updateMap(place) {
+  if (place === this.state.place) place = undefined
+  if (place) {
+  //  if (this.props.submitSearch) {
+  //   this.props.submitSearch()
+  //  }
    this.setState({ place })
   const { geometry } = place
   const newBounds = {
