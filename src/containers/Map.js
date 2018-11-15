@@ -19,6 +19,16 @@ function findLocationIndex(id, locations) {
  return null
 }
 
+function arraysAreIdentical(array1, array2) {
+  if (array1.length != array2.length) return false;
+  else
+  {
+   const array2IncludesArray1 = array1.every(element => array2.includes(element));
+   const array1IncludesArray2 = array2.every(element => array1.includes(element));
+   return array1IncludesArray2 && array2IncludesArray1;
+  }
+}
+
 export default class Map extends Component {
  constructor(props) {
   super(props)
@@ -354,6 +364,23 @@ export default class Map extends Component {
    if (prevProps.place !== this.props.place)
    {
      this.updateMap(this.props.place);
+   }
+
+   // update locations copy in state
+   // get ids of previous and current locations (props)
+   const prevLocationsIds = prevProps.locations.map(location => location.id);
+   const updatedLocationsIds = this.props.locations.map(location => location.id);
+   // check if arrays differs
+   if (!arraysAreIdentical(prevLocationsIds,updatedLocationsIds))
+   {
+     // get any additional locations (that were not in previous props)
+     const additionalLocations = this.props.locations.filter(updatedLocation => !prevLocationsIds.includes(updatedLocation.id));
+     // add any location 
+     const previousAndAdditionalLocations = [...prevProps.locations, ...additionalLocations];
+     // remove any location that were in state before and not in updated props
+     const updatedLocations = previousAndAdditionalLocations.filter(location => updatedLocationsIds.includes(location.id));
+     // update state
+     this.setState({ locations: updatedLocations });
    }
  }
 
