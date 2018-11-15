@@ -19,9 +19,9 @@ function initSearch(google, options) {
   if (input) {
     var searchBox = new google.maps.places.Autocomplete(input, options);
 
-    searchBox.addListener('places_changed', function () {
-      var places = searchBox.getPlaces();
-      places.forEach(function (place) {
+    searchBox.addListener('place_changed', function () {
+      var place = searchBox.getPlace();
+      if (place) {
         if (!place.geometry) {
           console.warn('Returned place contains no geometry');
           return;
@@ -40,7 +40,7 @@ function initSearch(google, options) {
           }
         };
         _state.mapState.setState({ newBounds: newBounds });
-      });
+      }
     });
   }
 }

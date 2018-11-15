@@ -95,7 +95,7 @@ var Map = function (_Component) {
     _this.changeMap = _this.changeMap.bind(_this);
     _this.toggleLocation = _this.toggleLocation.bind(_this);
     _this.closeLocation = _this.closeLocation.bind(_this);
-    _this.onPlacesChanged = _this.onPlacesChanged.bind(_this);
+    _this.onPlaceChanged = _this.onPlaceChanged.bind(_this);
     _this.initCenterMap = _this.initCenterMap.bind(_this);
     _this.checkGoogleMarker = _this.checkGoogleMarker.bind(_this);
     _this.handleMapLoad = _this.handleMapLoad.bind(_this);
@@ -106,7 +106,7 @@ var Map = function (_Component) {
       center: null,
       zoom: null,
       googleMarkers: [],
-      places: null
+      place: null
     }, (0, _defineProperty3.default)(_this$state, 'googleMarkers', []), (0, _defineProperty3.default)(_this$state, 'mapLoaded', false), _this$state);
     return _this;
   }
@@ -269,58 +269,56 @@ var Map = function (_Component) {
       });
     }
   }, {
-    key: 'onPlacesChanged',
-    value: function onPlacesChanged() {
+    key: 'onPlaceChanged',
+    value: function onPlaceChanged() {
       var google = this.props.google;
 
-      var places = this.searchBox.getPlaces();
-      if (places === this.state.places) places = undefined;
-      if (places) {
+      var place = this.searchBox.getPlace();
+      if (place === this.state.place) place = undefined;
+      if (place) {
         if (this.props.submitSearch) {
           this.props.submitSearch();
         }
-        this.setState({ places: places });
-        if (places.length > 0) {
-          var firstLocation = places[0];
-          var geometry = firstLocation.geometry;
+        this.setState({ place: place });
+        var _place = place,
+            geometry = _place.geometry;
 
-          var newBounds = {
-            ne: {
-              lat: geometry.viewport.getNorthEast().lat(),
-              lng: geometry.viewport.getNorthEast().lng()
-            },
-            sw: {
-              lat: geometry.viewport.getSouthWest().lat(),
-              lng: geometry.viewport.getSouthWest().lng()
-            }
+        var newBounds = {
+          ne: {
+            lat: geometry.viewport.getNorthEast().lat(),
+            lng: geometry.viewport.getNorthEast().lng()
+          },
+          sw: {
+            lat: geometry.viewport.getSouthWest().lat(),
+            lng: geometry.viewport.getSouthWest().lng()
+          }
+        };
+        var size = {};
+        if (this.mapEl) {
+          size = {
+            width: this.mapEl.offsetWidth,
+            height: this.mapEl.offsetHeight
           };
-          var size = {};
-          if (this.mapEl) {
-            size = {
-              width: this.mapEl.offsetWidth,
-              height: this.mapEl.offsetHeight
-            };
-          }
+        }
 
-          var _fitBounds2 = (0, _utils.fitBounds)(newBounds, size),
-              center = _fitBounds2.center,
-              zoom = _fitBounds2.zoom;
+        var _fitBounds2 = (0, _utils.fitBounds)(newBounds, size),
+            center = _fitBounds2.center,
+            zoom = _fitBounds2.zoom;
 
-          if (this.props.centerMarker) {
-            console.warn('centerMarker will be depreciated in future versions');
-            this.checkGoogleMarker();
+        if (this.props.centerMarker) {
+          console.warn('centerMarker will be depreciated in future versions');
+          this.checkGoogleMarker();
 
-            var marker = (0, _GoogleMarker2.default)(this.props.centerMarker, this.map, center);
-            this.setState({
-              googleMarkers: [].concat((0, _toConsumableArray3.default)(this.state.googleMarkers), [marker])
-            });
-          }
-
+          var marker = (0, _GoogleMarker2.default)(this.props.centerMarker, this.map, center);
           this.setState({
-            center: center,
-            zoom: zoom.toString().length > 1 ? 9 : zoom
+            googleMarkers: [].concat((0, _toConsumableArray3.default)(this.state.googleMarkers), [marker])
           });
         }
+
+        this.setState({
+          center: center,
+          zoom: zoom.toString().length > 1 ? 9 : zoom
+        });
       }
     }
   }, {
@@ -347,7 +345,7 @@ var Map = function (_Component) {
         input.value = this.props.initSearch;
       }
       this.searchBox = new google.maps.places.Autocomplete(this.input, options);
-      this.searchBox.addListener('places_changed', this.onPlacesChanged);
+      this.searchBox.addListener('place_changed', this.onPlaceChanged);
 
       var defaultZoom = 8,
           defaultCenter = { lat: 0, lng: 180 };
@@ -521,7 +519,7 @@ var Map = function (_Component) {
           _react2.default.createElement('input', {
             className: 'storeLocatorInput',
             style: _SearchStyle2.default.searchInput,
-            onChange: this.onPlacesChanged,
+            onChange: this.onPlaceChanged,
             ref: function ref(input) {
               return _this4.searchInput = input;
             },
