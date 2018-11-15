@@ -271,8 +271,6 @@ var Map = function (_Component) {
   }, {
     key: 'onPlaceChanged',
     value: function onPlaceChanged() {
-      var google = this.props.google;
-
       var place = this.searchBox.getPlace();
       if (place === this.state.place) place = undefined;
       if (place) {
@@ -304,6 +302,56 @@ var Map = function (_Component) {
         var _fitBounds2 = (0, _utils.fitBounds)(newBounds, size),
             center = _fitBounds2.center,
             zoom = _fitBounds2.zoom;
+
+        if (this.props.centerMarker) {
+          console.warn('centerMarker will be depreciated in future versions');
+          this.checkGoogleMarker();
+
+          var marker = (0, _GoogleMarker2.default)(this.props.centerMarker, this.map, center);
+          this.setState({
+            googleMarkers: [].concat((0, _toConsumableArray3.default)(this.state.googleMarkers), [marker])
+          });
+        }
+
+        this.setState({
+          center: center,
+          zoom: zoom.toString().length > 1 ? 9 : zoom
+        });
+      }
+    }
+  }, {
+    key: 'updateMap',
+    value: function updateMap(place) {
+      if (place === this.state.place) place = undefined;
+      if (place) {
+        //  if (this.props.submitSearch) {
+        //   this.props.submitSearch()
+        //  }
+        this.setState({ place: place });
+        var _place2 = place,
+            geometry = _place2.geometry;
+
+        var newBounds = {
+          ne: {
+            lat: geometry.viewport.getNorthEast().lat(),
+            lng: geometry.viewport.getNorthEast().lng()
+          },
+          sw: {
+            lat: geometry.viewport.getSouthWest().lat(),
+            lng: geometry.viewport.getSouthWest().lng()
+          }
+        };
+        var size = {};
+        if (this.mapEl) {
+          size = {
+            width: this.mapEl.offsetWidth,
+            height: this.mapEl.offsetHeight
+          };
+        }
+
+        var _fitBounds3 = (0, _utils.fitBounds)(newBounds, size),
+            center = _fitBounds3.center,
+            zoom = _fitBounds3.zoom;
 
         if (this.props.centerMarker) {
           console.warn('centerMarker will be depreciated in future versions');
@@ -372,9 +420,9 @@ var Map = function (_Component) {
           };
         }
 
-        var _fitBounds3 = (0, _utils.fitBounds)(newBounds, size),
-            center = _fitBounds3.center,
-            zoom = _fitBounds3.zoom;
+        var _fitBounds4 = (0, _utils.fitBounds)(newBounds, size),
+            center = _fitBounds4.center,
+            zoom = _fitBounds4.zoom;
 
         defaultZoom = zoom;
         defaultCenter = center;
@@ -434,9 +482,9 @@ var Map = function (_Component) {
                 };
               }
 
-              var _fitBounds4 = (0, _utils.fitBounds)(newBounds, size),
-                  center = _fitBounds4.center,
-                  zoom = _fitBounds4.zoom;
+              var _fitBounds5 = (0, _utils.fitBounds)(newBounds, size),
+                  center = _fitBounds5.center,
+                  zoom = _fitBounds5.zoom;
 
               defaultZoom = zoom;
               defaultCenter = center;
@@ -466,9 +514,9 @@ var Map = function (_Component) {
                 height: _this3.mapEl.offsetHeight
               };
 
-              var _fitBounds5 = (0, _utils.fitBounds)(_newBounds, _size),
-                  _center = _fitBounds5.center,
-                  _zoom = _fitBounds5.zoom;
+              var _fitBounds6 = (0, _utils.fitBounds)(_newBounds, _size),
+                  _center = _fitBounds6.center,
+                  _zoom = _fitBounds6.zoom;
 
               _this3.setState({
                 center: _center,
