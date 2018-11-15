@@ -348,6 +348,15 @@ export default class Map extends Component {
   mapState.unsubscribe()
  }
 
+ componentDidUpdate(prevProps, prevState)
+ {
+   // update map place changes
+   if (prevProps.place !== this.props.place)
+   {
+     this.updateMap(this.props.place);
+   }
+ }
+
  handleMapLoad({ map, maps }) {
   this.map = map
   if (this.props.initSearch) {
