@@ -440,6 +440,14 @@ var Map = function (_Component) {
       _state.mapState.unsubscribe();
     }
   }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      // update map place changes
+      if (prevProps.place !== this.props.place) {
+        this.updateMap(this.props.place);
+      }
+    }
+  }, {
     key: 'handleMapLoad',
     value: function handleMapLoad(_ref) {
       var _this3 = this;
