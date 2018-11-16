@@ -330,6 +330,11 @@ var Map = function (_Component) {
           zoom: zoom.toString().length > 1 ? 9 : zoom
         });
       }
+
+      // callback
+      if (this.props.onSearchChange) {
+        this.props.onSearchChange(place);
+      }
     }
   }, {
     key: 'updateMap',

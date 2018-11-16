@@ -14,7 +14,7 @@ var _state = require('../state');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function initSearch(google, options) {
+function initSearch(google, options, onSearchChange) {
   var input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
     var searchBox = new google.maps.places.Autocomplete(input, options);
@@ -40,6 +40,11 @@ function initSearch(google, options) {
           }
         };
         _state.mapState.setState({ newBounds: newBounds });
+
+        // callback
+        if (onSearchChange) {
+          onSearchChange(place);
+        }
       }
     });
   }
@@ -47,7 +52,7 @@ function initSearch(google, options) {
 
 exports.default = function (props) {
   if (props.google) {
-    initSearch(props.google, props.options);
+    initSearch(props.google, props.options || {}, props.onSearchChange);
   }
 
   return _react2.default.createElement('input', {

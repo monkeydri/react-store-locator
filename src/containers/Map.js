@@ -251,9 +251,30 @@ export default class Map extends Component {
   })
   }
 
-  // callback
-  if (this.props.onSearchChange) {
-    this.props.onSearchChange(place)
+  let updatedAddress = {}
+  place.address_components.map(comp => {
+   if (comp.types.includes('postal_code')) {
+    updatedAddress.zip = comp.short_name
+   }
+   if (comp.types.includes('street_number')) {
+    updatedAddress.address = comp.short_name
+   }
+   if (comp.types.includes('route')) {
+    updatedAddress.address += ` ${comp.short_name}`
+   }
+   if (comp.types.includes('locality')) {
+    updatedAddress.city = comp.short_name
+   }
+   if (comp.types.includes('administrative_area_level_1')) {
+    updatedAddress.state = comp.short_name
+   }
+   if (comp.types.includes('country')) {
+    updatedAddress.country = comp.short_name
+   }
+  })
+  updatedAddress.place = place;
+  if (this.props.getValue) {
+    this.props.getValue(updatedAddress)
    }
  }
 
