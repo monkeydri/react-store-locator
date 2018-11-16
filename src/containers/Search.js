@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
 
-function initSearch(google, options) {
+function initSearch(google, options, onSearchChange) {
   const input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
     const searchBox = new google.maps.places.Autocomplete(input, options);
@@ -27,6 +27,11 @@ function initSearch(google, options) {
           }
         };
         mapState.setState({ newBounds });
+
+        // callback
+        if (onSearchChange) {
+          onSearchChange(place)
+        }
       }
     });
   }
@@ -34,7 +39,7 @@ function initSearch(google, options) {
 
 export default props => {
   if (props.google) {
-    initSearch(props.google, props.options);
+    initSearch(props.google, props.options || {}, props.onSearchChange);
   }
 
   return (

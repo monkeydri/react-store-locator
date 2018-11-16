@@ -250,6 +250,11 @@ export default class Map extends Component {
     zoom: zoom.toString().length > 1 ? 9 : zoom
   })
   }
+
+  // callback
+  if (this.props.onSearchChange) {
+    this.props.onSearchChange(place)
+   }
  }
 
  updateMap(place) {
