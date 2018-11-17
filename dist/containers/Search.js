@@ -14,7 +14,7 @@ var _state = require('../state');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function initSearch(google, options, onSearchChange) {
+function initSearch(google, options, getValue) {
   var input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
     var searchBox = new google.maps.places.Autocomplete(input, options);
@@ -41,9 +41,30 @@ function initSearch(google, options, onSearchChange) {
         };
         _state.mapState.setState({ newBounds: newBounds });
 
-        // callback
-        if (onSearchChange) {
-          onSearchChange(place);
+        var updatedAddress = {};
+        place.address_components.map(function (comp) {
+          if (comp.types.includes('postal_code')) {
+            updatedAddress.zip = comp.short_name;
+          }
+          if (comp.types.includes('street_number')) {
+            updatedAddress.address = comp.short_name;
+          }
+          if (comp.types.includes('route')) {
+            updatedAddress.address += ' ' + comp.short_name;
+          }
+          if (comp.types.includes('locality')) {
+            updatedAddress.city = comp.short_name;
+          }
+          if (comp.types.includes('administrative_area_level_1')) {
+            updatedAddress.state = comp.short_name;
+          }
+          if (comp.types.includes('country')) {
+            updatedAddress.country = comp.short_name;
+          }
+        });
+        updatedAddress.place = place;
+        if (getValue) {
+          getValue(updatedAddress);
         }
       }
     });
@@ -52,7 +73,7 @@ function initSearch(google, options, onSearchChange) {
 
 exports.default = function (props) {
   if (props.google) {
-    initSearch(props.google, props.options || {}, props.onSearchChange);
+    initSearch(props.google, props.options || {}, props.getValue);
   }
 
   return _react2.default.createElement('input', {
