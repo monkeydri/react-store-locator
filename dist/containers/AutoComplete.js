@@ -128,6 +128,7 @@ var AutoComplete = function (_Component) {
       delete updatedInput['google'];
       delete updatedInput['googleApiKey'];
       delete updatedInput['loaded'];
+      delete updatedInput['customOptions'];
 
       return _react2.default.createElement('input', (0, _extends3.default)({
         type: this.props.type || 'text',
