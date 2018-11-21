@@ -257,10 +257,10 @@ export default class Map extends Component {
     updatedAddress.zip = comp.short_name
    }
    if (comp.types.includes('street_number')) {
-    updatedAddress.address = comp.short_name
+    updatedAddress.number = comp.short_name
    }
    if (comp.types.includes('route')) {
-    updatedAddress.address += ` ${comp.short_name}`
+    updatedAddress.street = comp.short_name
    }
    if (comp.types.includes('locality')) {
     updatedAddress.city = comp.short_name
