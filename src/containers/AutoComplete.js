@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { GoogleApiWrapper } from 'google-maps-react'
+import enableEnterKey from '../helpers'
 
 class AutoComplete extends Component {
  constructor(props) {
@@ -21,6 +22,7 @@ class AutoComplete extends Component {
    }
    this.autocomplete = new google.maps.places.Autocomplete(this.input, options)
    this.autocomplete.addListener('place_changed', this.updateInput)
+   enableEnterKey(this.input); 
   }
  }
 
@@ -53,8 +55,8 @@ class AutoComplete extends Component {
     if (comp.types.includes('country')) {
      updatedAddress.country = comp.short_name
     }
-	 })
-	 updatedAddress.place = place;
+   })
+   updatedAddress.place = place;
    this.props.getValue(updatedAddress)
 
    if (place.formatted_address) {
@@ -73,7 +75,7 @@ class AutoComplete extends Component {
     }
    }
   } else if (!place) {
-   if (this.props.getValue) {
+   if (this.props.getValue && e) {
     this.props.getValue(e.target.value)
    }
   }
