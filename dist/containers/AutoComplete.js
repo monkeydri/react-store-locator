@@ -30,6 +30,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _googleMapsReact = require('google-maps-react');
 
+var _helpers = require('../helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AutoComplete = function (_Component) {
@@ -62,6 +66,7 @@ var AutoComplete = function (_Component) {
         }, customOptions);
         this.autocomplete = new google.maps.places.Autocomplete(this.input, options);
         this.autocomplete.addListener('place_changed', this.updateInput);
+        (0, _helpers2.default)(this.input);
       }
     }
   }, {
@@ -113,7 +118,7 @@ var AutoComplete = function (_Component) {
           }
         }
       } else if (!place) {
-        if (this.props.getValue) {
+        if (this.props.getValue && e) {
           this.props.getValue(e.target.value);
         }
       }
