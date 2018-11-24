@@ -63,8 +63,7 @@ var AutoComplete = function (_Component) {
         }, customOptions);
         this.autocomplete = new google.maps.places.Autocomplete(this.input, options);
         this.autocomplete.addListener('place_changed', this.updateInput);
-        (0, _helpers.enableEnterKey)(this.input);
-        (0, _helpers.tagAutoCompleteContainer)(this.input);
+        (0, _helpers.enableEnterKey)(this.input, this.autocomplete);
       }
     }
   }, {

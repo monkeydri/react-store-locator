@@ -3,7 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var enableEnterKey = exports.enableEnterKey = function enableEnterKey(input) {
+exports.enableEnterKey = undefined;
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var enableEnterKey = exports.enableEnterKey = function enableEnterKey(input, autocomplete) {
 	var originalAddEventListener = input.addEventListener;
 
 	var addEventListenerWrapper = function addEventListenerWrapper(type, listener) {
@@ -11,7 +19,7 @@ var enableEnterKey = exports.enableEnterKey = function enableEnterKey(input) {
 			var originalListener = listener;
 			listener = function listener(event) {
 				// 0. get autocomplete div corresponing to input field
-				var pacContainer = getAutoCompleteContainer(input);
+				var pacContainer = getAutoCompleteContainer(autocomplete);
 				if (pacContainer) {
 					// 1. check if it is visible
 					// WAY 1 : check size > 0 (like jQuery isVisible() does) const suggestionsVisible = pacContainerArray.length > 0 ? pacContainerArray[0].offsetWidth > 0 : false;
@@ -49,7 +57,7 @@ var enableEnterKey = exports.enableEnterKey = function enableEnterKey(input) {
 							}
 						// else if suggestions not visible do not prevent default (ex submit)
 					}
-				}
+				} else console.warn('could not find google autocomplete container');
 
 				// 6. sent (original) return key press event
 				originalListener.apply(input, [event]);
@@ -61,30 +69,21 @@ var enableEnterKey = exports.enableEnterKey = function enableEnterKey(input) {
 	input.addEventListener = addEventListenerWrapper;
 };
 
-var hasId = function hasId(element) {
-	if (typeof element.id === 'string') {
-		return element.id.length > 0;
-	} else return false;
-};
+var getAutoCompleteContainer = function getAutoCompleteContainer(autocomplete) {
+	if (autocomplete && autocomplete.gm_accessors_) {
+		var place = autocomplete.gm_accessors_.place;
 
-var getAutoCompleteContainer = function getAutoCompleteContainer(input) {
-	var autocompleteContainers = Array.prototype.filter.call(document.getElementsByClassName('pac-container'), function (autocompleteContainer) {
-		return autocompleteContainer.id === input.id;
-	});
+		var placeKey = Object.keys(place).find(function (value) {
+			return (0, _typeof3.default)(place[value]) === 'object' && place[value].hasOwnProperty('gm_accessors_');
+		});
 
-	if (autocompleteContainers.length === 1) return autocompleteContainers[0];else if (autocompleteContainers.length > 1) console.warn('found more than one corresponding google autcomplete container found');else console.warn('could not find any corresponding google autocomplete container');
-};
+		var input = place[placeKey].gm_accessors_.input[placeKey];
 
-var tagAutoCompleteContainer = exports.tagAutoCompleteContainer = function tagAutoCompleteContainer(input) {
-	var id = (Math.random() + 1).toString(36).substring(7);
-	input.id = id;
+		var inputKey = Object.keys(input).find(function (value) {
+			return input[value].classList && input[value].classList.contains('pac-container');
+		});
 
-	// find google autocomplete input which is not tagged yet
-	var untaggedAutocompleteContainers = Array.prototype.filter.call(document.getElementsByClassName('pac-container'), function (untaggedAutocompleteContainer) {
-		return !hasId(untaggedAutocompleteContainer);
-	});
-
-	// tag it (if found only one)
-	if (untaggedAutocompleteContainers.length === 1) untaggedAutocompleteContainers[0].id = id;else if (untaggedAutocompleteContainers.length > 1) console.warn('found more than one untagged google autcomplete container');else console.warn('could not find any untagged google autocomplete container');
+		return input[inputKey];
+	} else console.warn('could not find google autocomplete container : incomplete autocomplete object');
 };
 //# sourceMappingURL=helpers.js.map

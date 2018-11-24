@@ -434,8 +434,7 @@ var Map = function (_Component) {
       }
       this.searchBox = new google.maps.places.Autocomplete(input, options);
       this.searchBox.addListener('place_changed', this.onPlaceChanged);
-      (0, _helpers.enableEnterKey)(input);
-      (0, _helpers.tagAutoCompleteContainer)(input);
+      (0, _helpers.enableEnterKey)(input, this.searchBox);
 
       var defaultZoom = 8,
           defaultCenter = { lat: 0, lng: 180 };

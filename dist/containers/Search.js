@@ -70,8 +70,7 @@ function initSearch(google, options, getValue) {
         }
       }
     });
-    (0, _helpers.enableEnterKey)(input);
-    (0, _helpers.tagAutoCompleteContainer)(input);
+    (0, _helpers.enableEnterKey)(input, searchBox);
   }
 }
 
