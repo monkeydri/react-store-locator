@@ -70,6 +70,8 @@ var _statable = require('statable');
 
 var _state = require('../state');
 
+var _helpers = require('../helpers');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function findLocationIndex(id, locations) {
@@ -430,8 +432,10 @@ var Map = function (_Component) {
       if (this.props.initSearch) {
         input.value = this.props.initSearch;
       }
-      this.searchBox = new google.maps.places.Autocomplete(this.input, options);
+      this.searchBox = new google.maps.places.Autocomplete(input, options);
       this.searchBox.addListener('place_changed', this.onPlaceChanged);
+      (0, _helpers.enableEnterKey)(input);
+      (0, _helpers.tagAutoCompleteContainer)(input);
 
       var defaultZoom = 8,
           defaultCenter = { lat: 0, lng: 180 };

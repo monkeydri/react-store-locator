@@ -14,8 +14,6 @@ var _state = require('../state');
 
 var _helpers = require('../helpers');
 
-var _helpers2 = _interopRequireDefault(_helpers);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function initSearch(google, options, getValue) {
@@ -72,7 +70,8 @@ function initSearch(google, options, getValue) {
         }
       }
     });
-    (0, _helpers2.default)(input);
+    (0, _helpers.enableEnterKey)(input);
+    (0, _helpers.tagAutoCompleteContainer)(input);
   }
 }
 
