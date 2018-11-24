@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { GoogleApiWrapper } from 'google-maps-react'
-import enableEnterKey from '../helpers'
+import { tagAutoCompleteContainer, enableEnterKey } from '../helpers'
 
 class AutoComplete extends Component {
  constructor(props) {
@@ -8,7 +8,6 @@ class AutoComplete extends Component {
   this.state = {
    place: null
   }
-
   this.updateInput = this.updateInput.bind(this)
  }
 
@@ -22,7 +21,8 @@ class AutoComplete extends Component {
    }
    this.autocomplete = new google.maps.places.Autocomplete(this.input, options)
    this.autocomplete.addListener('place_changed', this.updateInput)
-   enableEnterKey(this.input); 
+   enableEnterKey(this.input);
+   tagAutoCompleteContainer(this.input);
   }
  }
 

@@ -9,6 +9,7 @@ import infoStyle from './InfoStyle'
 import searchStyle from './SearchStyle'
 import { Subscribe } from 'statable'
 import { mapState } from '../state'
+import { tagAutoCompleteContainer, enableEnterKey } from '../helpers'
 
 function findLocationIndex(id, locations) {
  for (let i = locations.length; i--; ) {
@@ -338,8 +339,10 @@ export default class Map extends Component {
   if (this.props.initSearch) {
    input.value = this.props.initSearch
   }
-  this.searchBox = new google.maps.places.Autocomplete(this.input, options)
+  this.searchBox = new google.maps.places.Autocomplete(input, options)
   this.searchBox.addListener('place_changed', this.onPlaceChanged)
+  enableEnterKey(input);
+  tagAutoCompleteContainer(input);
 
   let defaultZoom = 8,
    defaultCenter = { lat: 0, lng: 180 }
