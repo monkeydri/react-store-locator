@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
-import { tagAutoCompleteContainer, enableEnterKey } from '../helpers'
+import { enableEnterKey } from '../helpers'
 
 function initSearch(google, options, getValue) {
   const input = document.querySelector('.storeLocatorSearchInput');
@@ -56,8 +56,7 @@ function initSearch(google, options, getValue) {
         }
       }
     });
-    enableEnterKey(input);
-    tagAutoCompleteContainer(input);
+    enableEnterKey(input, searchBox);
   }
 }
 

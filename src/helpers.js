@@ -1,4 +1,4 @@
-export const enableEnterKey = (input) =>
+export const enableEnterKey = (input, autocomplete) =>
 {
 	const originalAddEventListener = input.addEventListener;
 
@@ -10,7 +10,7 @@ export const enableEnterKey = (input) =>
 			listener = (event) =>
 			{
 				// 0. get autocomplete div corresponing to input field
-				const pacContainer = getAutoCompleteContainer(input);
+				const pacContainer = getAutoCompleteContainer(autocomplete);
 				if (pacContainer)
 				{
 					// 1. check if it is visible
@@ -54,6 +54,7 @@ export const enableEnterKey = (input) =>
 						// else if suggestions not visible do not prevent default (ex submit)
 					}
 				}
+				else console.warn('could not find google autocomplete container');
 
 				// 6. sent (original) return key press event
 				originalListener.apply(input, [event])
@@ -65,38 +66,23 @@ export const enableEnterKey = (input) =>
 	input.addEventListener = addEventListenerWrapper;
 };
 
-const hasId = (element) =>
+const getAutoCompleteContainer = (autocomplete) =>
 {
-	if (typeof element.id === 'string')
+	if (autocomplete && autocomplete.gm_accessors_)
 	{
-		return element.id.length > 0;
+		const place = autocomplete.gm_accessors_.place;
+
+		const placeKey = Object.keys(place).find((value) => (
+			 (typeof(place[value]) === 'object') && (place[value].hasOwnProperty('gm_accessors_'))
+		));
+	
+		const input = place[placeKey].gm_accessors_.input[placeKey];
+	
+		const inputKey = Object.keys(input).find((value) => (
+			(input[value].classList && input[value].classList.contains('pac-container'))
+		));
+	
+		return input[inputKey];
 	}
-	else return false;
-}
-
-const getAutoCompleteContainer = (input) =>
-{
-	const autocompleteContainers = Array.prototype.filter.call(document.getElementsByClassName('pac-container'), (autocompleteContainer) => autocompleteContainer.id === input.id);
-
-	if (autocompleteContainers.length === 1) return autocompleteContainers[0];
-
-	else if (autocompleteContainers.length > 1) console.warn('found more than one corresponding google autcomplete container found')
-
-	else console.warn('could not find any corresponding google autocomplete container');
-}
-
-export const tagAutoCompleteContainer = (input) =>
-{
-	const id = (Math.random() + 1).toString(36).substring(7);
-	input.id = id;
-
-	// find google autocomplete input which is not tagged yet
-	const untaggedAutocompleteContainers = Array.prototype.filter.call(document.getElementsByClassName('pac-container'), (untaggedAutocompleteContainer) => !hasId(untaggedAutocompleteContainer));
-
-	// tag it (if found only one)
-	if (untaggedAutocompleteContainers.length === 1) untaggedAutocompleteContainers[0].id = id;
-
-	else if (untaggedAutocompleteContainers.length > 1) console.warn('found more than one untagged google autcomplete container')
-
-	else console.warn('could not find any untagged google autocomplete container');
+	else console.warn('could not find google autocomplete container : incomplete autocomplete object')
 }
