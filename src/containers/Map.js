@@ -60,8 +60,7 @@ export default class Map extends Component {
     )
    })
   }
-  if (!this.state.mapLoaded) return
-
+  if (!props && !this.state.mapLoaded) return
   foundLocations.map(location => {
    const distanceMeters = geolib.getDistance(props.center, {
     lat: location.lat,
@@ -76,10 +75,8 @@ export default class Map extends Component {
   }
   if (this.props.onChange) {
    // this prevents empty array being passed before map has loaded
-   if (this.state.mapLoaded) {
+   if ((props || this.state.mapLoaded) && foundLocations) {
     this.props.onChange(foundLocations)
-   } else {
-    this.props.onChange(null)
    }
   }
  }
@@ -179,8 +176,6 @@ export default class Map extends Component {
  }
 
  componentDidMount() {
-  this.changeMap()
-
   if (mapState.state) {
    mapState.subscribe(this.updateMapState)
   }
