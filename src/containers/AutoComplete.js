@@ -87,6 +87,7 @@ class AutoComplete extends Component {
 
   return (
    <input
+    aria-label={updatedInput.placeholder || updatedInput.name}
     type={this.props.type || 'text'}
     ref={ref => (this.input = ref)}
     className="storeLocatorAutocomplete"
