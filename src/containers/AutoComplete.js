@@ -86,14 +86,14 @@ class AutoComplete extends Component {
   delete updatedInput['loaded']
 
   return (
-    <input
-      aria-label={updatedInput.placeholder || updatedInput.name}
-      type={this.props.type || 'text'}
-      ref={ref => (this.input = ref)}
-      className="storeLocatorAutocomplete"
-      onChange={this.updateInput}
-      {...updatedInput}
-    />
+   <input
+    aria-label={updatedInput.placeholder || updatedInput.name}
+    type={this.props.type || 'text'}
+    ref={ref => (this.input = ref)}
+    className="storeLocatorAutocomplete"
+    onChange={this.updateInput}
+    {...updatedInput}
+   />
   )
  }
 }
