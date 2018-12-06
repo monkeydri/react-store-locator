@@ -372,7 +372,7 @@ import { LocationClose } from 'react-store-locator'
 
 const myFunc = (key, query, locations) => {
 	const nearestLocation = LocationClose({
-		apiKey: apiKey,
+		apiKey: key,
 		query: query,
 		locations: locations
 	}).then(res => res)
@@ -383,7 +383,7 @@ const myFunc = (key, query, locations) => {
 // async/await
 const myFunc = async (key, query, locations) =>
 	await LocationClose({
-		apiKey: apiKey,
+		apiKey: key,
 		query: query,
 		locations: locations
 	})
