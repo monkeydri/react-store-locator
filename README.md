@@ -130,18 +130,18 @@ import { Info } from 'react-store-locator'
 //...
 
 return (
- <Map locations={locations}>
-  {(location, closeLocation) => {
-   return (
-    <Info show={location.show}>
-     <div style={{ background: 'red' }}>
-      {location.name}
-      <div onClick={() => closeLocation(location.id)}>[x]</div>
-     </div>
-    </Info>
-   )
-  }}
- </Map>
+	<Map locations={locations}>
+		{(location, closeLocation) => {
+			return (
+				<Info show={location.show}>
+					<div style={{ background: 'red' }}>
+						{location.name}
+						<div onClick={() => closeLocation(location.id)}>[x]</div>
+					</div>
+				</Info>
+			)
+		}}
+	</Map>
 )
 ```
 
@@ -354,4 +354,37 @@ function myFunc() {
 //...
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
+```
+
+### Get nearest location promise
+
+You can now import a function to get the nearest location without having to load up the map. The query should be a zip code. As of now the default country is set to US.
+
+```jsx
+//...
+import { LocationClose } from 'react-store-locator'
+
+// takes an object
+
+// locations must have lat and lng keys on them
+
+// query should be a zip code to get proper results
+
+const myFunc = (key, query, locations) => {
+	const nearestLocation = LocationClose({
+		apiKey: apiKey,
+		query: query,
+		locations: locations
+	}).then(res => res)
+
+	return nearestLocation
+}
+
+// async/await
+const myFunc = async (key, query, locations) =>
+	await LocationClose({
+		apiKey: apiKey,
+		query: query,
+		locations: locations
+	})
 ```
