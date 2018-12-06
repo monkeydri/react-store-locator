@@ -297,6 +297,8 @@ This will not update the map at all. This input is strictly for returning a loca
 
 All the props are listed below. You can also use pure css to style if you wish by targeting the class `storeLocatorAutocomplete`.
 
+`customOptions` can be used to set custom options, check [google Autocomplete doc](https://developers.google.com/maps/documentation/javascript/places-autocomplete#add_autocomplete) for available options.
+
 Note: This is a seperate component from the map so you should pass your api key in here as well if you wish to use this.
 
 ```jsx
@@ -314,6 +316,7 @@ render(){
         getValue={this.myFunc.bind(this)}
         googleApiKey={'googleapikey'}
         placeholder="My placeholder string"
+        customOptions={{componentRestrictions: {country: 'fr'}}}
       />
     </div>
   )

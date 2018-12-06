@@ -13,10 +13,11 @@ class AutoComplete extends Component {
 
  componentDidMount() {
   if (this.props.loaded) {
-   const { google } = this.props
+   const { google, customOptions } = this.props
    // Try using differnet types options. Or just look at search comp and copy directly
    const options = {
-    types: [`address`]
+    types: [`address`],
+    ...customOptions
    }
    this.autocomplete = new google.maps.places.Autocomplete(this.input, options)
    this.autocomplete.addListener('place_changed', this.updateInput)
@@ -96,6 +97,7 @@ class AutoComplete extends Component {
 
   return (
    <input
+    aria-label={updatedInput.placeholder || updatedInput.name}
     type={this.props.type || 'text'}
     ref={ref => (this.input = ref)}
     className="storeLocatorAutocomplete"
