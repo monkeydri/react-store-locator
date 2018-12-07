@@ -1,41 +1,40 @@
 {
-	"name": "react-store-locator",
-	"version": "0.14.5",
-	"keywords": [
-		"react",
-		"map",
-		"store",
-		"locator"
-	],
-	"main": "dist/index.js",
-	"author": "Taylor Austin <taustin@escaladesports.com>",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/escaladesports/react-store-locator"
-	},
-	"license": "MIT",
-	"scripts": {
-		"analyze": "esca-scripts analyze --react --component --input ./src/index.js",
-		"build": "esca-scripts build --react --component --babel --input src --output dist --multiple",
-		"dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
-		"prepublishOnly": "npm run build",
-		"reset": "esca-scripts reset",
-		"test": "echo 'no test'",
-		"travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
-	},
-	"devDependencies": {
-		"esca-scripts": "^0.14.7",
-		"opn-cli": "^3.1.0",
-		"react": "^16.1.1",
-		"react-dom": "^16.1.1"
-	},
-	"dependencies": {
-		"geolib": "^2.0.24",
-		"google-map-react": "^0.34.0",
-		"google-maps-react": "^2.0.2",
-		"react-icons": "^2.2.7",
-		"react-store-locator": "^0.13.2",
-		"statable": "^0.2.3",
-		"supercluster": "^5.0.0"
-	}
+  "name": "react-store-locator",
+  "version": "0.13.12",
+  "keywords": [
+    "react",
+    "map",
+    "store",
+    "locator"
+  ],
+  "main": "dist/index.js",
+  "author": "Taylor Austin <taustin@escaladesports.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/escaladesports/react-store-locator"
+  },
+  "license": "MIT",
+  "scripts": {
+    "analyze": "esca-scripts analyze --react --component --input ./src/index.js",
+    "build": "esca-scripts build --react --component --babel --input src --output dist --multiple",
+    "dev": "esca-scripts dev ---input './dev/dev.js, ./dev/index.html' --react --browser",
+    "prepublishOnly": "npm run build",
+    "reset": "esca-scripts reset",
+    "test": "echo 'no test'",
+    "travis": "opn https://travis-ci.org/escaladesports/react-component-boilerplate/branches"
+  },
+  "devDependencies": {
+    "esca-scripts": "^0.14.7",
+    "opn-cli": "^3.1.0",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
+  "dependencies": {
+    "geolib": "^2.0.24",
+    "google-map-react": "^0.34.0",
+    "google-maps-react": "^2.0.2",
+    "react-icons": "^2.2.7",
+    "react-store-locator": "^0.13.2",
+    "statable": "^0.2.3"
+  }
 }

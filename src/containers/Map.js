@@ -27,12 +27,14 @@ export default class Map extends Component {
 			center: null,
 			zoom: null,
 			places: null,
-			mapLoaded: false
+			mapLoaded: false,
+			props: null
 		}
 	}
 
 	changeMap(props) {
 		if (!props) return
+
 		const {
 			bounds: { ne, nw, se, sw }
 		} = props
@@ -58,7 +60,7 @@ export default class Map extends Component {
 				)
 			})
 		}
-		if (!this.state.mapLoaded) return
+
 		foundLocations.map(location => {
 			const distanceMeters = geolib.getDistance(props.center, {
 				lat: location.lat,
@@ -315,7 +317,7 @@ export default class Map extends Component {
 					/>
 				</div>
 				<GoogleMap
-					// ref={ref => (this.map = ref)}
+					ref={ref => (this.map = ref)}
 					onGoogleApiLoaded={this.handleMapLoad}
 					yesIWantToUseGoogleMapApiInternals
 					center={this.props.center || center}
