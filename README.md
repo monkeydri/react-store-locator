@@ -130,18 +130,18 @@ import { Info } from 'react-store-locator'
 //...
 
 return (
-	<Map locations={locations}>
-		{(location, closeLocation) => {
-			return (
-				<Info show={location.show}>
-					<div style={{ background: 'red' }}>
-						{location.name}
-						<div onClick={() => closeLocation(location.id)}>[x]</div>
-					</div>
-				</Info>
-			)
-		}}
-	</Map>
+ <Map locations={locations}>
+  {(location, closeLocation) => {
+   return (
+    <Info show={location.show}>
+     <div style={{ background: 'red' }}>
+      {location.name}
+      <div onClick={() => closeLocation(location.id)}>[x]</div>
+     </div>
+    </Info>
+   )
+  }}
+ </Map>
 )
 ```
 
@@ -297,8 +297,6 @@ This will not update the map at all. This input is strictly for returning a loca
 
 All the props are listed below. You can also use pure css to style if you wish by targeting the class `storeLocatorAutocomplete`.
 
-`customOptions` can be used to set custom options, check [google Autocomplete doc](https://developers.google.com/maps/documentation/javascript/places-autocomplete#add_autocomplete) for available options.
-
 Note: This is a seperate component from the map so you should pass your api key in here as well if you wish to use this.
 
 ```jsx
@@ -316,7 +314,6 @@ render(){
         getValue={this.myFunc.bind(this)}
         googleApiKey={'googleapikey'}
         placeholder="My placeholder string"
-        customOptions={{componentRestrictions: {country: 'fr'}}}
       />
     </div>
   )
@@ -354,37 +351,4 @@ function myFunc() {
 //...
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
-```
-
-### Get nearest location promise
-
-You can now import a function to get the nearest location without having to load up the map. The query should be a zip code. As of now the default country is set to US.
-
-```jsx
-//...
-import { LocationClose } from 'react-store-locator'
-
-// takes an object
-
-// locations must have lat and lng keys on them
-
-// query should be a zip code to get proper results
-
-const myFunc = (key, query, locations) => {
-	const nearestLocation = LocationClose({
-		apiKey: key,
-		query: query,
-		locations: locations
-	}).then(res => res)
-
-	return nearestLocation
-}
-
-// async/await
-const myFunc = async (key, query, locations) =>
-	await LocationClose({
-		apiKey: key,
-		query: query,
-		locations: locations
-	})
 ```
