@@ -5131,6 +5131,19 @@ react-store-locator@^0.14.8:
     statable "^0.2.3"
     supercluster "^5.0.0"
 
+react-store-locator@^0.14.9:
+  version "0.14.9"
+  resolved "https://registry.yarnpkg.com/react-store-locator/-/react-store-locator-0.14.9.tgz#3ff1133f2deb143a367e4e37c91bb6f104d5f288"
+  dependencies:
+    emotion "^10.0.4"
+    geolib "^2.0.24"
+    google-map-react "^0.34.0"
+    google-maps-react "^2.0.2"
+    react-icons "^2.2.7"
+    react-store-locator "^0.14.8"
+    statable "^0.2.3"
+    supercluster "^5.0.0"
+
 react@^16.1.1:
   version "16.1.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.1.1.tgz#d5c4ef795507e3012282dd51261ff9c0e824fe1f"
