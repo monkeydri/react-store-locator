@@ -9,6 +9,7 @@ import Info from './Info'
 import infoStyle from './InfoStyle'
 import searchStyle from './SearchStyle'
 import { createClusters } from '../utils/clustering'
+import { objectsAreEqual } from '../utils/objects'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -22,35 +23,55 @@ export default class Map extends Component {
 		this.handleMapLoad = this.handleMapLoad.bind(this)
 
 		this.state = {
-			updatedLocations: props.locations,
-			foundLocations: [],
+			updatedLocations: this.props.locations,
 			center: null,
 			zoom: null,
 			places: null,
 			mapLoaded: false,
-			props: null
+			props: null,
+			prevBounds: null
 		}
 	}
 
 	changeMap(props) {
 		if (!props) return
+		const { prevBounds } = this.state
+		let sameBounds = true
+
+		if (prevBounds) {
+			Object.keys(prevBounds).forEach(k => {
+				if (!objectsAreEqual(prevBounds[k], props.bounds[k])) {
+					sameBounds = false
+				}
+			})
+		} else {
+			this.setState({ prevBounds: props.bounds })
+			sameBounds = false
+		}
+
+		if (!this.state.mapLoaded) return
+		if (sameBounds) return
 
 		const {
 			bounds: { ne, nw, se, sw }
 		} = props
 		const { locations } = this.props
+
 		// locations within the map bounds
 		const foundLocations = locations.filter(location => {
+			const lat = parseFloat(location.lat)
+			const lng = parseFloat(location.lng)
 			if (
-				location.lat > se.lat &&
+				lat > se.lat &&
 				sw.lat &&
-				(location.lat < ne.lat && nw.lat) &&
-				(location.lng > nw.lng && sw.lng) &&
-				(location.lng < ne.lng && se.lng)
+				(lat < ne.lat && nw.lat) &&
+				(lng > nw.lng && sw.lng) &&
+				(lng < ne.lng && se.lng)
 			) {
 				return location
 			}
 		})
+
 		// if clusterMarkers is enabled create clusters and set them to the state
 		if (this.props.clusterMarkers) {
 			this.setState({
@@ -61,6 +82,7 @@ export default class Map extends Component {
 			})
 		}
 
+		// find the distance from the center for each location
 		foundLocations.map(location => {
 			const distanceMeters = geolib.getDistance(props.center, {
 				lat: location.lat,
@@ -70,11 +92,12 @@ export default class Map extends Component {
 			location.distanceFromCenter = distanceMiles
 			return { ...location }
 		})
+
 		if (!this.props.clusterMarkers) {
 			this.setState({ updatedLocations: foundLocations })
 		}
+
 		if (this.props.onChange) {
-			// this prevents empty array being passed before map has loaded
 			if (foundLocations) {
 				this.props.onChange(foundLocations)
 			}
@@ -186,6 +209,7 @@ export default class Map extends Component {
 					}
 				}
 				const { center, zoom } = fitBounds(newBounds, size)
+
 				defaultZoom = zoom
 				defaultCenter = center
 			}
@@ -280,11 +304,53 @@ export default class Map extends Component {
 				}
 			)
 		}
+
 		if (this.props.mapLoaded) {
 			this.props.mapLoaded()
 		}
 
 		this.setState({ mapLoaded: true })
+
+		if (this.props.locations.length > 0) {
+			const bounds = new google.maps.LatLngBounds()
+			this.props.locations.map(location => {
+				bounds.extend(
+					new google.maps.LatLng(
+						parseFloat(location.lat),
+						parseFloat(location.lng)
+					)
+				)
+			})
+			const center = {
+				lat: bounds.getCenter().lat(),
+				lng: bounds.getCenter().lng()
+			}
+			const { zoom } = this.map.props
+			let size = {
+				width: this.mapEl.offsetWidth,
+				height: this.mapEl.offsetHeight
+			}
+			// set bounds pass through changeMap
+			const newBounds = {
+				ne: {
+					lat: bounds.getNorthEast().lat(),
+					lng: bounds.getNorthEast().lng()
+				},
+				nw: {
+					lat: bounds.getNorthEast().lat(),
+					lng: bounds.getSouthWest().lng()
+				},
+				se: {
+					lat: bounds.getSouthWest().lat(),
+					lng: bounds.getNorthEast().lng()
+				},
+				sw: {
+					lat: bounds.getSouthWest().lat(),
+					lng: bounds.getSouthWest().lng()
+				}
+			}
+			this.changeMap({ bounds: newBounds, center, zoom, size })
+		}
 	}
 
 	render() {
