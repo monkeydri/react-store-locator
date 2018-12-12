@@ -10,6 +10,7 @@ import infoStyle from './InfoStyle'
 import searchStyle from './SearchStyle'
 import { createClusters } from '../utils/clustering'
 import { objectsAreEqual } from '../utils/objects'
+import { strToFixed } from '../utils/string'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -77,22 +78,20 @@ export default class Map extends Component {
 			bounds: { ne, nw, se, sw }
 		} = props
 		const { locations } = this.props
-
 		// locations within the map bounds
 		const foundLocations = locations.filter(location => {
-			const lat = parseFloat(location.lat)
-			const lng = parseFloat(location.lng)
+			const lat = strToFixed(location.lat, 6)
+			const lng = strToFixed(location.lng, 6)
 			if (
-				lat > se.lat &&
-				sw.lat &&
-				(lat < ne.lat && nw.lat) &&
-				(lng > nw.lng && sw.lng) &&
-				(lng < ne.lng && se.lng)
+				lat >= strToFixed(se.lat, 6) &&
+				strToFixed(sw.lat, 6) &&
+				(lat <= strToFixed(ne.lat, 6) && strToFixed(nw.lat, 6)) &&
+				(lng >= strToFixed(nw.lng, 6) && strToFixed(sw.lng, 6)) &&
+				(lng <= strToFixed(ne.lng, 6) && strToFixed(se.lng, 6))
 			) {
 				return location
 			}
 		})
-
 		// if enableClusters is enabled create clusters and set them to the state
 		if (this.props.enableClusters) {
 			this.setState({
@@ -342,10 +341,17 @@ export default class Map extends Component {
 					)
 				)
 			})
-			const center = {
+			let center = {
 				lat: bounds.getCenter().lat(),
 				lng: bounds.getCenter().lng()
 			}
+			if (this.props.locations.length === 1) {
+				center = {
+					lat: parseFloat(this.props.locations[0].lat),
+					lng: parseFloat(this.props.locations[0].lng)
+				}
+			}
+
 			const { zoom } = this.map.props
 			let size = {
 				width: this.mapEl.offsetWidth,
