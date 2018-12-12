@@ -21,15 +21,36 @@ export default class Map extends Component {
 		this.closeLocation = this.closeLocation.bind(this)
 		this.onPlacesChanged = this.onPlacesChanged.bind(this)
 		this.handleMapLoad = this.handleMapLoad.bind(this)
+		this.onClusterClick = this.onClusterClick.bind(this)
 
 		this.state = {
 			updatedLocations: this.props.locations,
-			center: null,
-			zoom: null,
+			center: { lat: 0, lng: 0 },
+			zoom: 6,
 			places: null,
 			mapLoaded: false,
 			props: null,
 			prevBounds: null
+		}
+	}
+
+	onClusterClick({ zoom, center }) {
+		if (zoom && center) {
+			this.setState({ zoom, center })
+		} else if (!zoom || !center) {
+			console.warn(
+				`Must include zoom: ${zoom} and center: ${JSON.stringify(
+					center
+				)} to update map properly. Try using the updateMap function passed through this.props. 
+				Example:
+				onClick={() => {
+					updateMap({
+						zoom: this.props.getZoom(this.props.cluster_id)
+						center: { lat: this.props.lat, lng: this.props.lng }
+					})
+				}}
+				`
+			)
 		}
 	}
 
@@ -73,7 +94,7 @@ export default class Map extends Component {
 		})
 
 		// if clusterMarkers is enabled create clusters and set them to the state
-		if (this.props.clusterMarkers) {
+		if (this.props.clusterMarkers.active) {
 			this.setState({
 				updatedLocations: createClusters(
 					props,
@@ -93,7 +114,7 @@ export default class Map extends Component {
 			return { ...location }
 		})
 
-		if (!this.props.clusterMarkers) {
+		if (!this.props.clusterMarkers.active) {
 			this.setState({ updatedLocations: foundLocations })
 		}
 
@@ -355,6 +376,8 @@ export default class Map extends Component {
 
 	render() {
 		let Pin = this.props.pin.component || this.props.pin
+		let ClusterPin =
+			this.props.clusterMarkers.component || this.props.clusterPin
 		const { updatedLocations, zoom, center } = this.state
 		return (
 			<div
@@ -385,6 +408,7 @@ export default class Map extends Component {
 				<GoogleMap
 					ref={ref => (this.map = ref)}
 					onGoogleApiLoaded={this.handleMapLoad}
+					bootstrapURLKeys={{ key: this.props.googleApiKey }}
 					yesIWantToUseGoogleMapApiInternals
 					center={this.props.center || center}
 					zoom={this.props.zoom || zoom}
@@ -398,8 +422,9 @@ export default class Map extends Component {
 									key={location.id}
 									lat={location.lat}
 									lng={location.lng}
+									updateMap={updates => this.onClusterClick(updates)}
 									{...location}
-									pinProps={this.props.pin.pinProps || null}
+									pinProps={this.props.clusterMarkers.pinProps || null}
 								/>
 							)
 						}
@@ -459,6 +484,7 @@ export default class Map extends Component {
 
 Map.defaultProps = {
 	pin: Pin,
+	clusterPin: ClusterPin,
 	mapStyle: {},
 	height: '800px',
 	width: '100%'

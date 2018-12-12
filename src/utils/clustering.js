@@ -2,7 +2,7 @@ import supercluster from 'supercluster'
 
 const createClusters = (mapProps, markers) => {
 	const { bounds, zoom } = mapProps
-	const index = supercluster({
+	const index = new supercluster({
 		radius: 60,
 		extent: 256,
 		nodeSize: 256

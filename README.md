@@ -2,6 +2,8 @@
 
 If you find any bugs/issues please tag me in them :D. Also feel free to recommend something you want or do a PR and inlcude a demo or testing of some sort and I'll accept it. Try not to break the main func of the module though.
 
+Newest features will be added to the bottom of the readme for now. If you would like to re-write and update readme please let me know. Demos also need to be updated as well. I believe there are issues in the github if you wish to tackle them just do a PR :D.
+
 ## Demo
 
 [Demo](https://react-store-locator-demo.netlify.com/)
@@ -130,18 +132,18 @@ import { Info } from 'react-store-locator'
 //...
 
 return (
- <Map locations={locations}>
-  {(location, closeLocation) => {
-   return (
-    <Info show={location.show}>
-     <div style={{ background: 'red' }}>
-      {location.name}
-      <div onClick={() => closeLocation(location.id)}>[x]</div>
-     </div>
-    </Info>
-   )
-  }}
- </Map>
+	<Map locations={locations}>
+		{(location, closeLocation) => {
+			return (
+				<Info show={location.show}>
+					<div style={{ background: 'red' }}>
+						{location.name}
+						<div onClick={() => closeLocation(location.id)}>[x]</div>
+					</div>
+				</Info>
+			)
+		}}
+	</Map>
 )
 ```
 
@@ -351,4 +353,99 @@ function myFunc() {
 //...
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
+```
+
+### Cluster Markers
+
+default clusters:
+
+![cluster-example](cluster-example.png)
+
+This one is pretty simple to do as you already have almost all the knowledge of what to do. You will simply pass an object through the prop `clusterMarkers` and yes you can use your own react component for each of the clusters. There is a default however if you choose to opt that direction. Below is an example.
+
+```jsx
+<Map
+	clusterMarkers={{
+		active: true, // this is all you have to pass to get clustering! Of course it will use the default comp
+		pinProps: { prop: `value` }, // just like in the pin these will be passed to your comp
+		component: MyClusterPin // just like in the pin this is your custom comp
+	}}
+	//...
+/>
+```
+
+If you choose to not go with the default (I would recommend creating your own cluster pin), then you will have to create a react comp and do a tiny bit of maintence to get the map to work correctly. I will break everything down so there are no loose ends.
+
+```jsx
+import React from 'react'
+
+// Note this could be a class based comp or func comp
+// I do believe react is going away from class based comp so we will use a func comp for this one
+
+export default props => {
+const {
+	point_count, // amount of points in a cluster
+	getZoom, // func to access the updated zoom of the cluster once clicked
+	cluster_id, // cluster_id needed to pass to getZoom
+	lat,
+	lng,
+	updateMap, // func to update the map
+	pinProps // props passed to the comp by user
+} = props
+
+console.log(pinProps) // ==> will return {prop: `value`}
+
+const size = point_count > 30 `large` : point_count > 20 ? `medium` : `small` // changing style of cluster
+const styles = {
+	cluster: {
+		cursor: `pointer`,
+		borderRadius: `50%`
+	},
+	large: {
+		background: `#ccffcc`,
+		border: `2px solid #00b200`,
+		color: `#00b200`,
+		height: `45px`,
+		width: `45px`
+	},
+	medium: {
+		background: `#ffedcc`,
+		border: `2px solid #ffa500`,
+		color: `#ffa500`,
+		height: `40px`,
+		width: `40px`
+	},
+	small: {
+		background: `#ffdbdb`,
+		border: `2px solid #ff4c4c`,
+		color: `#ff4c4c`,
+		height: `35px`,
+		width: `35px`
+	},
+	pointCount: {
+			position: `relative`,
+			top: `50%`,
+			transform: `translateY(-50%)`,
+			textAlign: `center`,
+			fontWeight: `600`
+		}
+}
+return (
+	<div
+		style={{ ...styles.cluster, ...styles[size] }}
+		onClick={() => {
+			// updating the map to the correct zoom and center
+			// THIS IS REQUIRED FOR THE MAP TO UPDATE CORRECTLY!!!
+
+			updateMap({
+				zoom: getZoom(cluster_id),
+				center: { lat, lng }
+			})
+		}}
+	>
+   <div style={styles.pointCount}>{point_count}</div>
+	</div>
+	)
+}
+
 ```

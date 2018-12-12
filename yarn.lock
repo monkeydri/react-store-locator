@@ -2611,7 +2611,7 @@ faye-websocket@~0.11.0:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fbjs@^0.8.16, fbjs@^0.8.3:
+fbjs@^0.8.16:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -2921,13 +2921,12 @@ globby@^7.1.1:
     pify "^3.0.0"
     slash "^1.0.0"
 
-google-map-react@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-0.34.0.tgz#c645f8b9a7b3b030547dae2964ff79fc00a402b3"
+google-map-react@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-1.1.1.tgz#ffff4f21cf15bc25696ee523c614793054bb9b20"
   dependencies:
     "@mapbox/point-geometry" "^0.1.0"
     eventemitter3 "^1.1.0"
-    fbjs "^0.8.3"
     scriptjs "^2.5.7"
 
 google-maps-react@^2.0.2:
@@ -5108,41 +5107,6 @@ react-icons@^2.2.7:
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-2.2.7.tgz#d7860826b258557510dac10680abea5ca23cf650"
   dependencies:
     react-icon-base "2.1.0"
-
-react-store-locator@^0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/react-store-locator/-/react-store-locator-0.13.2.tgz#34988b49c6d6707c37cb54f4dd5ee2aab3d7dfe0"
-  dependencies:
-    geolib "^2.0.24"
-    google-map-react "^0.34.0"
-    google-maps-react "^2.0.2"
-    react-icons "^2.2.7"
-    statable "^0.2.3"
-
-react-store-locator@^0.14.8:
-  version "0.14.8"
-  resolved "https://registry.yarnpkg.com/react-store-locator/-/react-store-locator-0.14.8.tgz#983169bed10a29f9c7787dc9d2fb91eadad6b32a"
-  dependencies:
-    geolib "^2.0.24"
-    google-map-react "^0.34.0"
-    google-maps-react "^2.0.2"
-    react-icons "^2.2.7"
-    react-store-locator "^0.13.2"
-    statable "^0.2.3"
-    supercluster "^5.0.0"
-
-react-store-locator@^0.14.9:
-  version "0.14.9"
-  resolved "https://registry.yarnpkg.com/react-store-locator/-/react-store-locator-0.14.9.tgz#3ff1133f2deb143a367e4e37c91bb6f104d5f288"
-  dependencies:
-    emotion "^10.0.4"
-    geolib "^2.0.24"
-    google-map-react "^0.34.0"
-    google-maps-react "^2.0.2"
-    react-icons "^2.2.7"
-    react-store-locator "^0.14.8"
-    statable "^0.2.3"
-    supercluster "^5.0.0"
 
 react@^16.1.1:
   version "16.1.1"
