@@ -361,12 +361,13 @@ default clusters:
 
 ![cluster-example](cluster-example.png)
 
-This one is pretty simple to do as you already have almost all the knowledge of what to do. You will simply pass an object through the prop `clusterMarkers` and yes you can use your own react component for each of the clusters. There is a default however if you choose to opt that direction. Below is an example.
+This one is pretty simple to do as you already have almost all the knowledge of what to do. You will simply pass an object through the prop `clusterPin` and yes you can use your own react component for each of the clusters. There is a default however if you choose to opt that direction. Below is an example.
 
 ```jsx
 <Map
-	clusterMarkers={{
-		active: true, // this is all you have to pass to get clustering! Of course it will use the default comp
+	enableClusters={true} // this enables clusters to be used
+	// clusterPin is how to pass a custom comp through
+	clusterPin={{
 		pinProps: { prop: `value` }, // just like in the pin these will be passed to your comp
 		component: MyClusterPin // just like in the pin this is your custom comp
 	}}

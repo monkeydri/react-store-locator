@@ -93,8 +93,8 @@ export default class Map extends Component {
 			}
 		})
 
-		// if clusterMarkers is enabled create clusters and set them to the state
-		if (this.props.clusterMarkers.active) {
+		// if enableClusters is enabled create clusters and set them to the state
+		if (this.props.enableClusters) {
 			this.setState({
 				updatedLocations: createClusters(
 					props,
@@ -114,7 +114,7 @@ export default class Map extends Component {
 			return { ...location }
 		})
 
-		if (!this.props.clusterMarkers.active) {
+		if (!this.props.enableClusters) {
 			this.setState({ updatedLocations: foundLocations })
 		}
 
@@ -376,8 +376,8 @@ export default class Map extends Component {
 
 	render() {
 		let Pin = this.props.pin.component || this.props.pin
-		let ClusterPin =
-			this.props.clusterMarkers.component || this.props.clusterPin
+		let ClusterPin = this.props.clusterPin.component || this.props.clusterPin
+
 		const { updatedLocations, zoom, center } = this.state
 		return (
 			<div
@@ -424,7 +424,7 @@ export default class Map extends Component {
 									lng={location.lng}
 									updateMap={updates => this.onClusterClick(updates)}
 									{...location}
-									pinProps={this.props.clusterMarkers.pinProps || null}
+									pinProps={this.props.clusterPin.pinProps || null}
 								/>
 							)
 						}
