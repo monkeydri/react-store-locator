@@ -536,6 +536,7 @@ export default class Map extends Component {
      // ref={ref => (this.map = ref)}
      onGoogleApiLoaded={this.handleMapLoad}
      yesIWantToUseGoogleMapApiInternals
+     onTilesLoaded={this.props.tilesRendered}
      center={this.props.center || this.state.center}
      zoom={this.props.zoom || this.state.zoom}
      options={this.createMapOptions}
