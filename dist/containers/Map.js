@@ -654,6 +654,7 @@ var Map = function (_Component) {
           ,
           { onGoogleApiLoaded: this.handleMapLoad,
             yesIWantToUseGoogleMapApiInternals: true,
+            onTilesLoaded: this.props.tilesRendered,
             center: this.props.center || this.state.center,
             zoom: this.props.zoom || this.state.zoom,
             options: this.createMapOptions,
