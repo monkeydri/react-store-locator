@@ -20,7 +20,7 @@ export default class Map extends Component {
 		this.changeMap = this.changeMap.bind(this)
 		this.toggleLocation = this.toggleLocation.bind(this)
 		this.closeLocation = this.closeLocation.bind(this)
-		this.onPlacesChanged = this.onPlacesChanged.bind(this)
+		this.onPlaceChanged = this.onPlaceChanged.bind(this)
 		this.handleMapLoad = this.handleMapLoad.bind(this)
 		this.onClusterClick = this.onClusterClick.bind(this)
 
@@ -28,7 +28,7 @@ export default class Map extends Component {
 			updatedLocations: this.props.locations,
 			center: { lat: 0, lng: 0 },
 			zoom: 6,
-			places: null,
+			place: null,
 			mapLoaded: false,
 			props: null,
 			prevBounds: null
@@ -146,14 +146,14 @@ export default class Map extends Component {
 		}
 	}
 
-	onPlacesChanged() {
-		let places = this.searchBox.getPlaces()
-		if (places === this.state.places) places = undefined
-		if (places) {
+	onPlaceChanged() {
+		let place = this.searchBox.getPlace()
+		if (place === this.state.place) place = undefined
+		if (place) {
 			if (this.props.submitSearch) {
 				this.props.submitSearch()
 			}
-			this.setState({ places })
+			this.setState({ place })
 			if (places.length > 0) {
 				const firstLocation = places[0]
 				const { geometry } = firstLocation
@@ -185,13 +185,13 @@ export default class Map extends Component {
 	}
 
 	componentDidMount() {
-		const { google } = this.props
+		const { google, options } = this.props
 		if (this.props.initSearch) {
 			this.searchInput.value = this.props.initSearch
 		}
 		if (this.searchInput) {
-			this.searchBox = new google.maps.places.SearchBox(this.searchInput)
-			this.searchBox.addListener('places_changed', this.onPlacesChanged)
+			this.searchBox = new google.maps.places.Autocomplete(this.searchInput, options)
+			this.searchBox.addListener('place_changed', this.onPlaceChanged)
 		}
 		let defaultZoom = 8,
 			defaultCenter = { lat: 0, lng: 180 }
@@ -405,7 +405,7 @@ export default class Map extends Component {
 					<input
 						className="storeLocatorInput"
 						style={searchStyle.searchInput}
-						onChange={this.onPlacesChanged}
+						onChange={this.onPlaceChanged}
 						ref={input => (this.searchInput = input)}
 						type="text"
 						placeholder="Enter Your Location..."
