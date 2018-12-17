@@ -75,19 +75,19 @@ export default class Map extends Component {
 		if (sameBounds) return
 
 		const {
-			bounds: { ne, nw, se, sw }
+			bounds: { ne, sw }
 		} = props
 		const { locations } = this.props
 		// locations within the map bounds
+
 		const foundLocations = locations.filter(location => {
 			const lat = strToFixed(location.lat, 6)
 			const lng = strToFixed(location.lng, 6)
 			if (
-				lat >= strToFixed(se.lat, 6) &&
-				strToFixed(sw.lat, 6) &&
-				(lat <= strToFixed(ne.lat, 6) && strToFixed(nw.lat, 6)) &&
-				(lng >= strToFixed(nw.lng, 6) && strToFixed(sw.lng, 6)) &&
-				(lng <= strToFixed(ne.lng, 6) && strToFixed(se.lng, 6))
+				lat >= strToFixed(sw.lat, 6) &&
+				lat <= strToFixed(ne.lat, 6) &&
+				lng >= strToFixed(sw.lng, 6) &&
+				lng <= strToFixed(ne.lng, 6)
 			) {
 				return location
 			}
@@ -361,14 +361,6 @@ export default class Map extends Component {
 			const newBounds = {
 				ne: {
 					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getNorthEast().lng()
-				},
-				nw: {
-					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getSouthWest().lng()
-				},
-				se: {
-					lat: bounds.getSouthWest().lat(),
 					lng: bounds.getNorthEast().lng()
 				},
 				sw: {
