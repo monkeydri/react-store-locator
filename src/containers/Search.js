@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
 
-function initSearch(google) {
+function initSearch(google, options) {
   const input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
-    const searchBox = new google.maps.places.SearchBox(input);
+    const searchBox = new google.maps.places.Autocomplete(input);
 
-    searchBox.addListener('places_changed', function() {
-      const places = searchBox.getPlaces();
-      places.forEach(place => {
+    searchBox.addListener('place_changed', function() {
+      const place = searchBox.getPlace();
+      if (place)
+      {
         if (!place.geometry) {
           console.warn('Returned place contains no geometry');
           return;
@@ -27,7 +28,7 @@ function initSearch(google) {
           }
         };
         mapState.setState({ newBounds });
-      });
+      };
     });
   }
 }
