@@ -331,44 +331,46 @@ export default class Map extends Component {
 
 		this.setState({ mapLoaded: true })
 
-		if (this.props.locations.length > 0) {
-			const bounds = new google.maps.LatLngBounds()
-			this.props.locations.map(location => {
-				bounds.extend(
-					new google.maps.LatLng(
-						parseFloat(location.lat),
-						parseFloat(location.lng)
+		if (!this.props.initSearch) {
+			if (this.props.locations.length > 0) {
+				const bounds = new google.maps.LatLngBounds()
+				this.props.locations.map(location => {
+					bounds.extend(
+						new google.maps.LatLng(
+							parseFloat(location.lat),
+							parseFloat(location.lng)
+						)
 					)
-				)
-			})
-			let center = {
-				lat: bounds.getCenter().lat(),
-				lng: bounds.getCenter().lng()
-			}
-			if (this.props.locations.length === 1) {
-				center = {
-					lat: parseFloat(this.props.locations[0].lat),
-					lng: parseFloat(this.props.locations[0].lng)
+				})
+				let center = {
+					lat: bounds.getCenter().lat(),
+					lng: bounds.getCenter().lng()
 				}
-			}
+				if (this.props.locations.length === 1) {
+					center = {
+						lat: parseFloat(this.props.locations[0].lat),
+						lng: parseFloat(this.props.locations[0].lng)
+					}
+				}
 
-			const { zoom } = this.map.props
-			let size = {
-				width: this.mapEl.offsetWidth,
-				height: this.mapEl.offsetHeight
-			}
-			// set bounds pass through changeMap
-			const newBounds = {
-				ne: {
-					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getNorthEast().lng()
-				},
-				sw: {
-					lat: bounds.getSouthWest().lat(),
-					lng: bounds.getSouthWest().lng()
+				const { zoom } = this.map.props
+				let size = {
+					width: this.mapEl.offsetWidth,
+					height: this.mapEl.offsetHeight
 				}
+				// set bounds pass through changeMap
+				const newBounds = {
+					ne: {
+						lat: bounds.getNorthEast().lat(),
+						lng: bounds.getNorthEast().lng()
+					},
+					sw: {
+						lat: bounds.getSouthWest().lat(),
+						lng: bounds.getSouthWest().lng()
+					}
+				}
+				this.changeMap({ bounds: newBounds, center, zoom, size })
 			}
-			this.changeMap({ bounds: newBounds, center, zoom, size })
 		}
 	}
 
