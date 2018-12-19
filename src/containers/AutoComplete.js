@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { GoogleApiWrapper } from 'google-maps-react'
 
 import { parsePlace } from '../utils/parse-place'
+import { enableEnterKey } from '../utils/suggestion-event'
 
 class AutoComplete extends Component {
  constructor(props) {
@@ -23,6 +24,7 @@ class AutoComplete extends Component {
    }
    this.autocomplete = new google.maps.places.Autocomplete(this.input, options)
    this.autocomplete.addListener('place_changed', this.updateInput)
+   enableEnterKey(this.input, this.autocomplete)
   }
  }
 
@@ -55,7 +57,7 @@ class AutoComplete extends Component {
     }
    }
   } else if (!place) {
-   if (this.props.getValue) {
+   if (this.props.getValue && e) {
     this.props.getValue(e.target.value)
    }
   }
