@@ -3,7 +3,7 @@ import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
 
 import { parsePlace } from '../utils/parse-place'
-import { tagAutoCompleteContainer, enableEnterKey } from '../utils/suggestion-event'
+import { enableEnterKey } from '../utils/suggestion-event'
 
 function initSearch(google, options, getValue) {
   const input = document.querySelector('.storeLocatorSearchInput');
@@ -38,8 +38,7 @@ function initSearch(google, options, getValue) {
         }
       };
     });
-    enableEnterKey(input);
-    tagAutoCompleteContainer(input); 
+    enableEnterKey(input, searchBox)
   }
 }
 
