@@ -11,6 +11,7 @@ import searchStyle from './SearchStyle'
 import { createClusters } from '../utils/clustering'
 import { objectsAreEqual } from '../utils/objects'
 import { strToFixed } from '../utils/string'
+import { parsePlace } from '../utils/parse-place'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -146,40 +147,44 @@ export default class Map extends Component {
 		}
 	}
 
+	moveMap(place) {
+		this.setState({ place })
+		const { geometry } = place
+		const newBounds = {
+			ne: {
+				lat: geometry.viewport.getNorthEast().lat(),
+				lng: geometry.viewport.getNorthEast().lng()
+			},
+			sw: {
+				lat: geometry.viewport.getSouthWest().lat(),
+				lng: geometry.viewport.getSouthWest().lng()
+			}
+		}
+		let size = {}
+		if (this.mapEl) {
+			size = {
+				width: this.mapEl.offsetWidth,
+				height: this.mapEl.offsetHeight
+			}
+		}
+		const { center, zoom } = fitBounds(newBounds, size)
+		this.setState({
+			center: center,
+			zoom: zoom.toString().length > 1 ? 9 : zoom
+		})
+	}
+
 	onPlaceChanged() {
 		let place = this.searchBox.getPlace()
-		if (place === this.state.place) place = undefined
-		if (place) {
+		if (place && place !== this.state.place) {
 			if (this.props.submitSearch) {
 				this.props.submitSearch()
 			}
-			this.setState({ place })
-			if (places.length > 0) {
-				const firstLocation = places[0]
-				const { geometry } = firstLocation
-				const newBounds = {
-					ne: {
-						lat: geometry.viewport.getNorthEast().lat(),
-						lng: geometry.viewport.getNorthEast().lng()
-					},
-					sw: {
-						lat: geometry.viewport.getSouthWest().lat(),
-						lng: geometry.viewport.getSouthWest().lng()
-					}
-				}
-				let size = {}
-				if (this.mapEl) {
-					size = {
-						width: this.mapEl.offsetWidth,
-						height: this.mapEl.offsetHeight
-					}
-				}
+			this.moveMap(place)
 
-				const { center, zoom } = fitBounds(newBounds, size)
-				this.setState({
-					center: center,
-					zoom: zoom.toString().length > 1 ? 9 : zoom
-				})
+			const updatedAddress = parsePlace(place)
+			if (this.props.getValue) {
+				this.props.getValue(updatedAddress)
 			}
 		}
 	}
@@ -240,6 +245,15 @@ export default class Map extends Component {
 			center: defaultCenter
 		})
 	}
+
+	componentDidUpdate(prevProps, prevState) 
+	{
+		const place = this.props.place;
+
+		if (place && prevProps.place !== place && place !== this.state.place) { 
+			this.moveMap(place); 
+		} 
+	} 
 
 	handleMapLoad({ map }) {
 		this.map = map
