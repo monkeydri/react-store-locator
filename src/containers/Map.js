@@ -427,6 +427,7 @@ export default class Map extends Component {
 					onGoogleApiLoaded={this.handleMapLoad}
 					bootstrapURLKeys={{ key: this.props.googleApiKey }}
 					yesIWantToUseGoogleMapApiInternals
+					onTilesLoaded={this.props.tilesRendered} 
 					center={this.props.center || center}
 					zoom={this.props.zoom || zoom}
 					options={this.createMapOptions}
