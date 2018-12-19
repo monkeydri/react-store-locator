@@ -378,13 +378,25 @@ function myFunc() {
 <Map submitSearch={myFunc}>
 ```
 
-### Map Loaded callback added
+### Map Loaded callback
+
+This function is called when the map has finished loading.
 
 ```jsx
 //...
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
 ```
+
+### Tiles Loaded callback 
+ 
+This function is called when the visible tiles are rendered. 
+ 
+```jsx 
+//... 
+ 
+<Map tilesRendered={() => console.log('Tiles Rendered')}> 
+``` 
 
 ### Cluster Markers
 
