@@ -12,6 +12,7 @@ import { createClusters } from '../utils/clustering'
 import { objectsAreEqual } from '../utils/objects'
 import { strToFixed } from '../utils/string'
 import { parsePlace } from '../utils/parse-place'
+import { tagAutoCompleteContainer, enableEnterKey } from '../utils/suggestion-event'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -191,12 +192,15 @@ export default class Map extends Component {
 
 	componentDidMount() {
 		const { google, options } = this.props
+		const input = this.searchInput
 		if (this.props.initSearch) {
-			this.searchInput.value = this.props.initSearch
+			input.value = this.props.initSearch
 		}
 		if (this.searchInput) {
-			this.searchBox = new google.maps.places.Autocomplete(this.searchInput, options)
+			this.searchBox = new google.maps.places.Autocomplete(input, options)
 			this.searchBox.addListener('place_changed', this.onPlaceChanged)
+			enableEnterKey(input);
+			tagAutoCompleteContainer(input); 
 		}
 		let defaultZoom = 8,
 			defaultCenter = { lat: 0, lng: 180 }
