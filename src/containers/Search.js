@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
 
-function initSearch(google, options) {
+import { parsePlace } from '../utils/parse-place'
+
+function initSearch(google, options, getValue) {
   const input = document.querySelector('.storeLocatorSearchInput');
   if (input) {
-    const searchBox = new google.maps.places.Autocomplete(input);
+    const searchBox = new google.maps.places.Autocomplete(input, options);
 
     searchBox.addListener('place_changed', function() {
       const place = searchBox.getPlace();
@@ -28,6 +30,11 @@ function initSearch(google, options) {
           }
         };
         mapState.setState({ newBounds });
+
+        const updatedAddress = parsePlace(place)
+        if (getValue) {
+          getValue(updatedAddress)
+        }
       };
     });
   }
@@ -35,7 +42,7 @@ function initSearch(google, options) {
 
 export default props => {
   if (props.google) {
-    initSearch(props.google);
+    initSearch(props.google, props.options || {}, props.getValue); 
   }
 
   return (

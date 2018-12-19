@@ -11,6 +11,7 @@ import searchStyle from './SearchStyle'
 import { createClusters } from '../utils/clustering'
 import { objectsAreEqual } from '../utils/objects'
 import { strToFixed } from '../utils/string'
+import { parsePlace } from '../utils/parse-place'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -180,6 +181,11 @@ export default class Map extends Component {
 				this.props.submitSearch()
 			}
 			this.moveMap(place)
+
+			const updatedAddress = parsePlace(place)
+			if (this.props.getValue) {
+				this.props.getValue(updatedAddress)
+			}
 		}
 	}
 
