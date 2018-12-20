@@ -214,13 +214,23 @@ render(){
 
 ### Initial map location
 
+By default the map is initially centered on provided `locations` or at default location (`{ lat: 0, lng: 180 }`) if none given.
+
+This can be overriden by setting either `initSearch` (any search string) or `place` prop ([Google Maps API Place PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)).
+
 ```jsx
-import { Map } from 'react-store-locator';
-//...
 <Map
-  initSearch={'Any search string here'} // Can take any search string and will load map with this value
+  initSearch={'Any search string here'}
 >
 ```
+
+```jsx
+<Map
+  place={{}}
+>
+```
+
+*Note: when using `initSearch` prop there will be a delay between the map is rendered at desired location, due to the Google API load time and the Google PlacesService response time (used to get location from search string). In the meantime map will be centered on provided `locations` or at default location if none given.*
 
 ### Adding Map styles
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { fitBounds } from 'google-map-react/utils';
 import { mapState } from '../state';
 
-import { parsePlace } from '../utils/parse-place'
+import { addressFromPlace } from '../utils/parse-place'
 import { enableEnterKey } from '../utils/suggestion-event'
 
 function initSearch(google, options, getValue) {
@@ -32,7 +32,7 @@ function initSearch(google, options, getValue) {
         };
         mapState.setState({ newBounds });
 
-        const updatedAddress = parsePlace(place)
+        const updatedAddress = addressFromPlace(place)
         if (getValue) {
           getValue(updatedAddress)
         }

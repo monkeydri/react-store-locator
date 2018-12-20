@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { GoogleApiWrapper } from 'google-maps-react'
 
-import { parsePlace } from '../utils/parse-place'
+import { addressFromPlace } from '../utils/parse-place'
 import { enableEnterKey } from '../utils/suggestion-event'
 
 class AutoComplete extends Component {
@@ -37,7 +37,7 @@ class AutoComplete extends Component {
   let place = this.autocomplete.getPlace()
   if (place === this.state.place) place = undefined
   if (place) {
-   const updatedAddress = parsePlace(place)
+   const updatedAddress = addressFromPlace(place)
 
    this.props.getValue(updatedAddress)
 
