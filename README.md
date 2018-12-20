@@ -226,11 +226,24 @@ This can be overriden by setting either `initSearch` (any search string) or `pla
 
 ```jsx
 <Map
-  place={{}}
+  place={placeResultObject}
 >
 ```
 
 *Note: when using `initSearch` prop there will be a delay between the map is rendered at desired location, due to the Google API load time and the Google PlacesService response time (used to get location from search string). In the meantime map will be centered on provided `locations` or at default location if none given.*
+
+### Default map location
+
+If inital map location is not set, map will be centered on `defaultCenter` at `defaultZoom`.
+
+```jsx
+<Map
+  defaultCenter={{ lat: 48.86270031970851, lng: 2.329703619708539 }}
+  defaultZoom={9}
+>
+```
+
+*default values are `defaultCenter`: `{ lat: 0, lng: 180 }` and `defaultZoom`: `8`.*
 
 ### Adding Map styles
 

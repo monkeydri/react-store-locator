@@ -172,8 +172,7 @@ export default class Map extends Component {
 		}
 	}
 
-	viewportFromPlace(place)
-	{
+	viewportFromPlace(place) {
 		const { geometry } = place
 		const newBounds = {
 			ne: {
@@ -196,8 +195,6 @@ export default class Map extends Component {
 	}
 
 	viewportFromLocations(keepZoom = false) {
-
-		const defaultCenter = { lat: 0, lng: 180 }, defaultZoom = 8
 		let newCenter = {}, newZoom, size = {}, newBounds
 
 		if (this.props.locations.length === 1) {
@@ -241,8 +238,8 @@ export default class Map extends Component {
 		}
 
 		return ({
-			center: newCenter || defaultCenter,
-			zoom: keepZoom ? this.map.props.zoom : newZoom  || defaultZoom,
+			center: newCenter || this.props.defaultCenter,
+			zoom: keepZoom ? this.map.props.zoom : newZoom  || this.props.defaultZoom,
 			size,
 			bounds: newBounds
 		})
@@ -262,8 +259,8 @@ export default class Map extends Component {
 		}
 
 		// set default map location
-		let defaultZoom = 8,
-			defaultCenter = { lat: 0, lng: 180 }
+		let defaultZoom = this.props.defaultZoom,
+			defaultCenter = this.props.defaultCenter
 
 		// if initial location set by place => center map on it
 		if (this.props.place) {
@@ -476,5 +473,7 @@ Map.defaultProps = {
 	clusterPin: ClusterPin,
 	mapStyle: {},
 	height: '800px',
-	width: '100%'
+	width: '100%',
+	defaultCenter: { lat: 0, lng: 180 },
+	defaultZoom: 8
 }
