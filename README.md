@@ -212,11 +212,22 @@ render(){
 }
 ```
 
-### Initial map location
+### Initial map location (position and zoom)
 
-By default the map is initially centered on provided `locations` or at default location (`{ lat: 0, lng: 180 }`) if none given.
+By default the map is initially centered on provided `locations` or at default location [Default map location](#default-map-location) if none given.
 
-This can be overriden by setting either `initSearch` (any search string) or `place` prop ([Google Maps API Place PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)).
+This can be overriden by setting by three different props, listed by precedence :
+
+- `initialCenter` (object with `lat` and `lng`) & `initialZoom` (number)
+- `initSearch` (any search string)
+- `place` ([Google Maps API Place PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)).
+
+
+```jsx
+<Map
+  initialCenter={{ lat: 3.86270031970851, lng: 12.329703619708539 }}
+  initialZoom={12}
+```
 
 ```jsx
 <Map
@@ -234,7 +245,7 @@ This can be overriden by setting either `initSearch` (any search string) or `pla
 
 ### Default map location
 
-If inital map location is not set, map will be centered on `defaultCenter` at `defaultZoom`.
+If inital map location is not set (via one of the 3 methods above) and no `locations` are given, map will be centered on `defaultCenter` at `defaultZoom`.
 
 ```jsx
 <Map
