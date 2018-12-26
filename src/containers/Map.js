@@ -11,7 +11,7 @@ import searchStyle from './SearchStyle'
 import { createClusters } from '../utils/clustering'
 import { objectsAreEqual } from '../utils/objects'
 import { strToFixed } from '../utils/string'
-import { parsePlace } from '../utils/parse-place'
+import { addressFromPlace } from '../utils/parse-place'
 import { enableEnterKey } from '../utils/suggestion-event'
 
 export default class Map extends Component {
@@ -23,7 +23,7 @@ export default class Map extends Component {
 		this.toggleLocation = this.toggleLocation.bind(this)
 		this.closeLocation = this.closeLocation.bind(this)
 		this.onPlaceChanged = this.onPlaceChanged.bind(this)
-		this.handleMapLoad = this.handleMapLoad.bind(this)
+		this.handleGoogleMapApiLoad = this.handleGoogleMapApiLoad.bind(this)
 		this.onClusterClick = this.onClusterClick.bind(this)
 
 		this.state = {
@@ -150,6 +150,30 @@ export default class Map extends Component {
 
 	moveMap(place) {
 		this.setState({ place })
+		const { center, zoom } = this.viewportFromPlace(place)
+		this.setState({
+			center: center,
+			zoom: zoom.toString().length > 1 ? 9 : zoom
+		})
+	}
+
+	onPlaceChanged() {
+		let place = this.searchBox.getPlace()
+		if (place && place !== this.state.place) {
+			if (this.props.submitSearch) {
+				this.props.submitSearch()
+			}
+			this.moveMap(place)
+
+			const updatedAddress = addressFromPlace(place)
+			if (this.props.getValue) {
+				this.props.getValue(updatedAddress)
+			}
+		}
+	}
+
+	viewportFromPlace(place)
+	{
 		const { geometry } = place
 		const newBounds = {
 			ne: {
@@ -168,29 +192,64 @@ export default class Map extends Component {
 				height: this.mapEl.offsetHeight
 			}
 		}
-		const { center, zoom } = fitBounds(newBounds, size)
-		this.setState({
-			center: center,
-			zoom: zoom.toString().length > 1 ? 9 : zoom
+		return fitBounds(newBounds, size)
+	}
+
+	viewportFromLocations(keepZoom = false) {
+
+		const defaultCenter = { lat: 0, lng: 180 }, defaultZoom = 8
+		let newCenter = {}, newZoom, size = {}, newBounds
+
+		if (this.props.locations.length === 1) {
+			center = {
+				lat: parseFloat(this.props.locations[0].lat),
+				lng: parseFloat(this.props.locations[0].lng)
+			}
+		}
+		else if (this.props.locations.length > 1) {
+			const bounds = new google.maps.LatLngBounds()
+			this.props.locations.map(location => {
+				bounds.extend(new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng)))
+			})
+
+			newBounds = {
+				ne: {
+					lat: bounds.getNorthEast().lat(),
+					lng: bounds.getNorthEast().lng()
+				},
+				sw: {
+					lat: bounds.getSouthWest().lat(),
+					lng: bounds.getSouthWest().lng()
+				}
+			}
+
+			if (this.mapEl) {
+				size = {
+					width: this.mapEl.offsetWidth,
+					height: this.mapEl.offsetHeight
+				}
+			}
+
+			if (keepZoom) {
+				newCenter = { lat: bounds.getCenter().lat(), lng: bounds.getCenter().lng() }
+			}
+			else {
+				const newView = fitBounds(newBounds, size)
+				newCenter = newView.center
+				newZoom = newView.zoom
+			}
+		}
+
+		return ({
+			center: newCenter || defaultCenter,
+			zoom: keepZoom ? this.map.props.zoom : newZoom  || defaultZoom,
+			size,
+			bounds: newBounds
 		})
 	}
 
-	onPlaceChanged() {
-		let place = this.searchBox.getPlace()
-		if (place && place !== this.state.place) {
-			if (this.props.submitSearch) {
-				this.props.submitSearch()
-			}
-			this.moveMap(place)
-
-			const updatedAddress = parsePlace(place)
-			if (this.props.getValue) {
-				this.props.getValue(updatedAddress)
-			}
-		}
-	}
-
 	componentDidMount() {
+		console.log('componentDidMount')
 		const { google, options } = this.props
 		const input = this.searchInput
 		if (this.props.initSearch) {
@@ -201,46 +260,23 @@ export default class Map extends Component {
 			this.searchBox.addListener('place_changed', this.onPlaceChanged)
 			enableEnterKey(input, this.searchBox)
 		}
+
+		// set default map location
 		let defaultZoom = 8,
 			defaultCenter = { lat: 0, lng: 180 }
-		if (
-			!this.props.initSearch &&
-			(this.props.locations && this.props.locations.length > 0)
-		) {
-			if (this.props.locations.length === 1) {
-				defaultCenter = {
-					lat: parseFloat(this.props.locations[0].lat),
-					lng: parseFloat(this.props.locations[0].lng)
-				}
-			}
-			if (this.props.locations.length > 1) {
-				const bounds = new google.maps.LatLngBounds()
-				this.props.locations.map(location => {
-					bounds.extend(new google.maps.LatLng(location.lat, location.lng))
-				})
-				const newBounds = {
-					ne: {
-						lat: bounds.getNorthEast().lat(),
-						lng: bounds.getNorthEast().lng()
-					},
-					sw: {
-						lat: bounds.getSouthWest().lat(),
-						lng: bounds.getSouthWest().lng()
-					}
-				}
 
-				let size = {}
-				if (this.mapEl) {
-					size = {
-						width: this.mapEl.offsetWidth,
-						height: this.mapEl.offsetHeight
-					}
-				}
-				const { center, zoom } = fitBounds(newBounds, size)
+		// if initial location set by place => center map on it
+		if (this.props.place) {
+			const { center, zoom } = this.viewportFromPlace(this.props.place)
+			defaultZoom = zoom
+			defaultCenter = center
+		}
 
-				defaultZoom = zoom
-				defaultCenter = center
-			}
+		// if initial location not set (by initSearch or place) and location(s) given => center map on location(s)
+		else if (!this.props.initSearch && (this.props.locations && this.props.locations.length > 0))	{
+			const { center, zoom } = this.viewportFromLocations()
+			defaultZoom = zoom
+			defaultCenter = center
 		}
 
 		this.setState({
@@ -249,17 +285,21 @@ export default class Map extends Component {
 		})
 	}
 
-	componentDidUpdate(prevProps, prevState) 
+	componentDidUpdate(prevProps, prevState)
 	{
 		const place = this.props.place;
 
-		if (place && prevProps.place !== place && place !== this.state.place) { 
-			this.moveMap(place); 
-		} 
-	} 
+		if (place && prevProps.place !== place && place !== this.state.place) {
+			this.moveMap(place)
+		}
+	}
 
-	handleMapLoad({ map }) {
+	handleGoogleMapApiLoad({ map }) {
 		this.map = map
+
+		console.log('googleApiLoad')
+
+		// if initial location set by search string => get location from it and center on it
 		if (this.props.initSearch) {
 			const service = new google.maps.places.PlacesService(map)
 			service.findPlaceFromQuery(
@@ -276,35 +316,16 @@ export default class Map extends Component {
 				},
 				(results, status) => {
 					const result = results ? results[0] : null
+
+					// no or invalid result from google PlacesService => center map on defaultCenter or locations
 					if (!result || results.length < 1) {
 						console.warn('No locations with given query')
 						let defaultZoom = 8,
 							defaultCenter = { lat: 0, lng: 180 }
+
+						// center map on locations if any
 						if (this.props.locations && this.props.locations.length > 0) {
-							const bounds = new google.maps.LatLngBounds()
-							this.props.locations.map(location => {
-								bounds.extend(
-									new google.maps.LatLng(location.lat, location.lng)
-								)
-							})
-							const newBounds = {
-								ne: {
-									lat: bounds.getNorthEast().lat(),
-									lng: bounds.getNorthEast().lng()
-								},
-								sw: {
-									lat: bounds.getSouthWest().lat(),
-									lng: bounds.getSouthWest().lng()
-								}
-							}
-							let size = {}
-							if (this.mapEl) {
-								size = {
-									width: this.mapEl.offsetWidth,
-									height: this.mapEl.offsetHeight
-								}
-							}
-							const { center, zoom } = fitBounds(newBounds, size)
+							const { center, zoom } = this.viewportFromLocations()
 							defaultZoom = zoom
 							defaultCenter = center
 						}
@@ -313,30 +334,15 @@ export default class Map extends Component {
 							center: defaultCenter,
 							mapLoaded: true
 						})
-					} else {
-						if (status == google.maps.places.PlacesServiceStatus.OK) {
-							const { geometry } = result
-							const newBounds = {
-								ne: {
-									lat: geometry.viewport.getNorthEast().lat(),
-									lng: geometry.viewport.getNorthEast().lng()
-								},
-								sw: {
-									lat: geometry.viewport.getSouthWest().lat(),
-									lng: geometry.viewport.getSouthWest().lng()
-								}
-							}
-							const size = {
-								width: this.mapEl.offsetWidth,
-								height: this.mapEl.offsetHeight
-							}
-							const { center, zoom } = fitBounds(newBounds, size)
-							this.setState({
-								center: center,
-								zoom: zoom.toString().length > 1 ? 9 : zoom,
-								mapLoaded: true
-							})
-						}
+					}
+					// correct result from google PlacesService => set map location to it
+					else if (status == google.maps.places.PlacesServiceStatus.OK) {
+						const { center, zoom } = this.viewportFromPlace(result)
+						this.setState({
+							center: center,
+							zoom: zoom.toString().length > 1 ? 9 : zoom,
+							mapLoaded: true
+						})
 					}
 				}
 			)
@@ -348,46 +354,11 @@ export default class Map extends Component {
 
 		this.setState({ mapLoaded: true })
 
-		if (!this.props.initSearch) {
-			if (this.props.locations.length > 0) {
-				const bounds = new google.maps.LatLngBounds()
-				this.props.locations.map(location => {
-					bounds.extend(
-						new google.maps.LatLng(
-							parseFloat(location.lat),
-							parseFloat(location.lng)
-						)
-					)
-				})
-				let center = {
-					lat: bounds.getCenter().lat(),
-					lng: bounds.getCenter().lng()
-				}
-				if (this.props.locations.length === 1) {
-					center = {
-						lat: parseFloat(this.props.locations[0].lat),
-						lng: parseFloat(this.props.locations[0].lng)
-					}
-				}
-
-				const { zoom } = this.map.props
-				let size = {
-					width: this.mapEl.offsetWidth,
-					height: this.mapEl.offsetHeight
-				}
-				// set bounds pass through changeMap
-				const newBounds = {
-					ne: {
-						lat: bounds.getNorthEast().lat(),
-						lng: bounds.getNorthEast().lng()
-					},
-					sw: {
-						lat: bounds.getSouthWest().lat(),
-						lng: bounds.getSouthWest().lng()
-					}
-				}
-				this.changeMap({ bounds: newBounds, center, zoom, size })
-			}
+		// if no initial location set and locations given => center map around given locations
+		if (!this.props.initSearch && !this.props.place
+			&& this.props.locations && this.props.locations.length > 0) {
+			const { center, zoom, size, bounds } = this.viewportFromLocations(true);
+			this.changeMap({ center, zoom, size, bounds })
 		}
 	}
 
@@ -424,7 +395,7 @@ export default class Map extends Component {
 				</div>
 				<GoogleMap
 					ref={ref => (this.map = ref)}
-					onGoogleApiLoaded={this.handleMapLoad}
+					onGoogleApiLoaded={this.handleGoogleMapApiLoad}
 					bootstrapURLKeys={{ key: this.props.googleApiKey }}
 					yesIWantToUseGoogleMapApiInternals
 					onTilesLoaded={this.props.tilesRendered} 

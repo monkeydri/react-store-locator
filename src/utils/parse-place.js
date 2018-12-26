@@ -1,4 +1,4 @@
-const parsePlace = (place) => {
+const addressFromPlace = (place) => {
 	let updatedAddress = {}
 	if (place.address_components) {
 		place.address_components.map(comp => {
@@ -35,4 +35,4 @@ const parsePlace = (place) => {
 	return updatedAddress;
 }
 
-export { parsePlace }
+export { addressFromPlace }
