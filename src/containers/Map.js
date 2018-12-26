@@ -19,7 +19,7 @@ export default class Map extends Component {
 		super(props)
 
 		this.createMapOptions = this.createMapOptions.bind(this)
-		this.changeMap = this.changeMap.bind(this)
+		this.onMapChanged = this.onMapChanged.bind(this)
 		this.toggleLocation = this.toggleLocation.bind(this)
 		this.closeLocation = this.closeLocation.bind(this)
 		this.onPlaceChanged = this.onPlaceChanged.bind(this)
@@ -57,7 +57,8 @@ export default class Map extends Component {
 		}
 	}
 
-	changeMap(props) {
+	// update visible locations on map change
+	onMapChanged(props) {
 		if (!props) return
 		const { prevBounds } = this.state
 		let sameBounds = true
@@ -150,7 +151,7 @@ export default class Map extends Component {
 
 	moveMap(place) {
 		this.setState({ place })
-		const { center, zoom } = this.viewportFromPlace(place)
+		const { center, zoom } = this.getPlaceViewport(place)
 		this.setState({
 			center: center,
 			zoom: zoom.toString().length > 1 ? 9 : zoom
@@ -172,17 +173,15 @@ export default class Map extends Component {
 		}
 	}
 
-	viewportFromPlace(place)
-	{
-		const { geometry } = place
+	viewPortWithBounds(bounds) {
 		const newBounds = {
 			ne: {
-				lat: geometry.viewport.getNorthEast().lat(),
-				lng: geometry.viewport.getNorthEast().lng()
+				lat: bounds.getNorthEast().lat(),
+				lng: bounds.getNorthEast().lng()
 			},
 			sw: {
-				lat: geometry.viewport.getSouthWest().lat(),
-				lng: geometry.viewport.getSouthWest().lng()
+				lat: bounds.getSouthWest().lat(),
+				lng: bounds.getSouthWest().lng()
 			}
 		}
 		let size = {}
@@ -195,10 +194,13 @@ export default class Map extends Component {
 		return fitBounds(newBounds, size)
 	}
 
-	viewportFromLocations(keepZoom = false) {
+	getPlaceViewport(place) {
+		const { geometry } = place
+		return viewPortWithBounds(geometry.viewport)
+	}
 
-		const defaultCenter = { lat: 0, lng: 180 }, defaultZoom = 8
-		let newCenter = {}, newZoom, size = {}, newBounds
+	getLocationsViewport() {
+		let center, zoom
 
 		if (this.props.locations.length === 1) {
 			center = {
@@ -206,43 +208,77 @@ export default class Map extends Component {
 				lng: parseFloat(this.props.locations[0].lng)
 			}
 		}
-		else if (this.props.locations.length > 1) {
+
+		else
+		{
 			const bounds = new google.maps.LatLngBounds()
 			this.props.locations.map(location => {
 				bounds.extend(new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng)))
 			})
+			const viewport = viewPortWithBounds(bounds)
+			center = viewport.center
+			zoom = viewport.zoom
+		}
 
-			newBounds = {
-				ne: {
-					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getNorthEast().lng()
-				},
-				sw: {
-					lat: bounds.getSouthWest().lat(),
-					lng: bounds.getSouthWest().lng()
-				}
-			}
+		return ({
+			center: center || this.props.defaultCenter,
+			zoom: zoom || this.props.defaultZoom,
+		})
+	}
 
-			if (this.mapEl) {
-				size = {
-					width: this.mapEl.offsetWidth,
-					height: this.mapEl.offsetHeight
-				}
-			}
+	getCurrentArea()
+	{
+		const bounds = new google.maps.LatLngBounds()
+		this.props.locations.map(location => {
+			bounds.extend(
+				new google.maps.LatLng(
+					parseFloat(location.lat),
+					parseFloat(location.lng)
+				)
+			)
+		})
 
-			if (keepZoom) {
-				newCenter = { lat: bounds.getCenter().lat(), lng: bounds.getCenter().lng() }
+		let center
+		if (this.props.locations.length === 1) {
+			center = {
+				lat: parseFloat(this.props.locations[0].lat),
+				lng: parseFloat(this.props.locations[0].lng)
 			}
-			else {
-				const newView = fitBounds(newBounds, size)
-				newCenter = newView.center
-				newZoom = newView.zoom
+		}
+		else {
+			center = {
+				lat: bounds.getCenter().lat(),
+				lng: bounds.getCenter().lng()
+			}
+		}
+
+		let size = {
+			width: this.mapEl.offsetWidth,
+			height: this.mapEl.offsetHeight
+		}
+
+		const newBounds = {
+			ne: {
+				lat: bounds.getNorthEast().lat(),
+				lng: bounds.getNorthEast().lng()
+			},
+			nw: {
+				lat: bounds.getNorthEast().lat(),
+				lng: bounds.getSouthWest().lng()
+			},
+			se: {
+				lat: bounds.getSouthWest().lat(),
+				lng: bounds.getNorthEast().lng()
+			},
+			sw: {
+				lat: bounds.getSouthWest().lat(),
+				lng: bounds.getSouthWest().lng()
 			}
 		}
 
 		return ({
-			center: newCenter || defaultCenter,
-			zoom: keepZoom ? this.map.props.zoom : newZoom  || defaultZoom,
+			center: center,
+			zoom: this.map.props.zoom,
 			size,
 			bounds: newBounds
 		})
@@ -262,26 +298,29 @@ export default class Map extends Component {
 		}
 
 		// set default map location
-		let defaultZoom = 8,
-			defaultCenter = { lat: 0, lng: 180 }
-
-		// if initial location set by place => center map on it
-		if (this.props.place) {
-			const { center, zoom } = this.viewportFromPlace(this.props.place)
-			defaultZoom = zoom
-			defaultCenter = center
+		let initialCenter, initialZoom
+		// if initial location set by initSearch (D), location will be changed in handleGoogleMapApiLoad
+		if (!this.props.initSearch)
+		{
+			// A. if initial location set by initialCenter and initialZoom
+			if (this.props.initialCenter) { initialCenter = this.props.initialCenter }
+			if (this.props.initialZoom) { initialZoom = this.props.initialZoom }
+			// B. if initial location set by place => center map on it
+			if (this.props.place) {
+				const { center, zoom } = this.getPlaceViewport(this.props.place)
+				initialCenter = center
+				initialZoom = zoom
+			}
+			// C. if initial location not set => center map on location(s) if any
+			else if (this.props.locations && this.props.locations.length > 0) {
+				const { center, zoom } = this.getLocationsViewport()
+				initialCenter = center
+				initialZoom = zoom
+			}
 		}
-
-		// if initial location not set (by initSearch or place) and location(s) given => center map on location(s)
-		else if (!this.props.initSearch && (this.props.locations && this.props.locations.length > 0))	{
-			const { center, zoom } = this.viewportFromLocations()
-			defaultZoom = zoom
-			defaultCenter = center
-		}
-
 		this.setState({
-			zoom: defaultZoom,
-			center: defaultCenter
+			zoom: initialZoom || this.props.defaultZoom,
+			center: initialCenter || this.props.defaultCenter
 		})
 	}
 
@@ -297,9 +336,7 @@ export default class Map extends Component {
 	handleGoogleMapApiLoad({ map }) {
 		this.map = map
 
-		console.log('googleApiLoad')
-
-		// if initial location set by search string => get location from it and center on it
+		// D. if initial location set by initSearch => get location from it and center on it
 		if (this.props.initSearch) {
 			const service = new google.maps.places.PlacesService(map)
 			service.findPlaceFromQuery(
@@ -320,27 +357,24 @@ export default class Map extends Component {
 					// no or invalid result from google PlacesService => center map on defaultCenter or locations
 					if (!result || results.length < 1) {
 						console.warn('No locations with given query')
-						let defaultZoom = 8,
-							defaultCenter = { lat: 0, lng: 180 }
+						let locationsViewport
 
 						// center map on locations if any
 						if (this.props.locations && this.props.locations.length > 0) {
-							const { center, zoom } = this.viewportFromLocations()
-							defaultZoom = zoom
-							defaultCenter = center
+							locationsViewport = this.getLocationsViewport()
 						}
 						this.setState({
-							zoom: defaultZoom,
-							center: defaultCenter,
+							center: locationsViewport.center || this.props.defaultCenter,
+							zoom: locationsViewport.zoom || this.props.defaultZoom,
 							mapLoaded: true
 						})
 					}
 					// correct result from google PlacesService => set map location to it
 					else if (status == google.maps.places.PlacesServiceStatus.OK) {
-						const { center, zoom } = this.viewportFromPlace(result)
+						const { center, zoom } = this.getPlaceViewport(result)
 						this.setState({
 							center: center,
-							zoom: zoom.toString().length > 1 ? 9 : zoom,
+							zoom: zoom.toString().length > 1 ? 9 : zoom, // limit zoom to 9
 							mapLoaded: true
 						})
 					}
@@ -354,11 +388,13 @@ export default class Map extends Component {
 
 		this.setState({ mapLoaded: true })
 
-		// if no initial location set and locations given => center map around given locations
-		if (!this.props.initSearch && !this.props.place
-			&& this.props.locations && this.props.locations.length > 0) {
-			const { center, zoom, size, bounds } = this.viewportFromLocations(true);
-			this.changeMap({ center, zoom, size, bounds })
+		// if initial location was set before map was loaded in componentDidMount (case A, B or C), callback onMapChanged with correct view data to update visible locations 
+		// this is not needed for case D because onMapChanged is automatically called when map is loaded
+		if (!this.props.initSearch) {
+			if (this.props.locations && this.props.locations.length > 0) {
+				const { center, zoom, size, bounds } = this.getCurrentArea();
+				this.onMapChanged({ center, zoom, size, bounds })
+			}
 		}
 	}
 
@@ -402,7 +438,7 @@ export default class Map extends Component {
 					center={this.props.center || center}
 					zoom={this.props.zoom || zoom}
 					options={this.createMapOptions}
-					onChange={this.changeMap}
+					onChange={this.onMapChanged}
 				>
 					{updatedLocations.map(location => {
 						if (location.cluster_id) {
@@ -476,5 +512,7 @@ Map.defaultProps = {
 	clusterPin: ClusterPin,
 	mapStyle: {},
 	height: '800px',
-	width: '100%'
+	width: '100%',
+	defaultCenter: { lat: 0, lng: 180 },
+	defaultZoom: 8
 }
