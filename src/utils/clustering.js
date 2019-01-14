@@ -17,7 +17,7 @@ const createClusters = (mapProps, markers) => {
 			})
 		)
 		.getClusters(
-			[bounds.nw.lng, bounds.se.lat, bounds.se.lng, bounds.nw.lat],
+			[bounds.sw.lng, bounds.sw.lat, bounds.ne.lng, bounds.ne.lat],
 			zoom
 		)
 		.map(cluster =>
