@@ -212,15 +212,49 @@ render(){
 }
 ```
 
-### Initial map location
+### Initial map location (position and zoom)
+
+By default the map is initially centered on provided `locations` or at default location [Default map location](#default-map-location) if none given.
+
+This can be overriden by setting by three different props, listed by precedence :
+
+- `initialCenter` (object with `lat` and `lng`) & `initialZoom` (number)
+- `initSearch` (any search string)
+- `place` ([Google Maps API Place PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)).
+
 
 ```jsx
-import { Map } from 'react-store-locator';
-//...
 <Map
-  initSearch={'Any search string here'} // Can take any search string and will load map with this value
+  initialCenter={{ lat: 3.86270031970851, lng: 12.329703619708539 }}
+  initialZoom={12}
+```
+
+```jsx
+<Map
+  initSearch={'Any search string here'}
 >
 ```
+
+```jsx
+<Map
+  place={placeResultObject}
+>
+```
+
+*Note: when using `initSearch` prop there will be a delay between the map is rendered at desired location, due to the Google API load time and the Google PlacesService response time (used to get location from search string). In the meantime map will be centered on provided `locations` or at default location if none given.*
+
+### Default map location
+
+If inital map location is not set (via one of the 3 methods above) and no `locations` are given, map will be centered on `defaultCenter` at `defaultZoom`.
+
+```jsx
+<Map
+  defaultCenter={{ lat: 48.86270031970851, lng: 2.329703619708539 }}
+  defaultZoom={9}
+>
+```
+
+*default values are `defaultCenter`: `{ lat: 0, lng: 180 }` and `defaultZoom`: `8`.*
 
 ### Adding Map styles
 
@@ -378,13 +412,25 @@ function myFunc() {
 <Map submitSearch={myFunc}>
 ```
 
-### Map Loaded callback added
+### Map Loaded callback
+
+This function is called when the map has finished loading.
 
 ```jsx
 //...
 
 <Map mapLoaded={() => console.log('Map Loaded')}>
 ```
+
+### Tiles Loaded callback 
+ 
+This function is called when the visible tiles are rendered. 
+ 
+```jsx 
+//... 
+ 
+<Map tilesRendered={() => console.log('Tiles Rendered')}> 
+``` 
 
 ### Cluster Markers
 
