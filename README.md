@@ -222,7 +222,6 @@ This can be overriden by setting by three different props, listed by precedence 
 - `initSearch` (any search string)
 - `place` ([Google Maps API Place PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)).
 
-
 ```jsx
 <Map
   initialCenter={{ lat: 3.86270031970851, lng: 12.329703619708539 }}
@@ -241,7 +240,7 @@ This can be overriden by setting by three different props, listed by precedence 
 >
 ```
 
-*Note: when using `initSearch` prop there will be a delay between the map is rendered at desired location, due to the Google API load time and the Google PlacesService response time (used to get location from search string). In the meantime map will be centered on provided `locations` or at default location if none given.*
+_Note: when using `initSearch` prop there will be a delay between the map is rendered at desired location, due to the Google API load time and the Google PlacesService response time (used to get location from search string). In the meantime map will be centered on provided `locations` or at default location if none given._
 
 ### Default map location
 
@@ -254,7 +253,7 @@ If inital map location is not set (via one of the 3 methods above) and no `locat
 >
 ```
 
-*default values are `defaultCenter`: `{ lat: 0, lng: 180 }` and `defaultZoom`: `8`.*
+_default values are `defaultCenter`: `{ lat: 0, lng: 180 }` and `defaultZoom`: `8`._
 
 ### Adding Map styles
 
@@ -386,7 +385,6 @@ render(){
 }
 ```
 
-
 ### Center Marker on Move
 
 This will put a marker in the center of the map when you move the map. If no props are passed it will default to the default marker.
@@ -422,15 +420,15 @@ This function is called when the map has finished loading.
 <Map mapLoaded={() => console.log('Map Loaded')}>
 ```
 
-### Tiles Loaded callback 
- 
-This function is called when the visible tiles are rendered. 
- 
-```jsx 
-//... 
- 
-<Map tilesRendered={() => console.log('Tiles Rendered')}> 
-``` 
+### Tiles Loaded callback
+
+This function is called when the visible tiles are rendered.
+
+```jsx
+//...
+
+<Map tilesRendered={() => console.log('Tiles Rendered')}>
+```
 
 ### Cluster Markers
 
@@ -438,15 +436,20 @@ default clusters:
 
 ![cluster-example](cluster-example.png)
 
-This one is pretty simple to do as you already have almost all the knowledge of what to do. You will simply pass an object through the prop `clusterPin` and yes you can use your own react component for each of the clusters. There is a default however if you choose to opt that direction. Below is an example.
+This one is pretty simple to do as you already have almost all the knowledge of what to do. You will simply pass an object through the prop `cluster` and yes you can use your own react component for each of the clusters. There is a default however if you choose to opt that direction. Below is an example.
 
 ```jsx
 <Map
 	enableClusters={true} // this enables clusters to be used
-	// clusterPin is how to pass a custom comp through
-	clusterPin={{
+	// cluster is how to pass a custom comp through
+	cluster={{
 		pinProps: { prop: `value` }, // just like in the pin these will be passed to your comp
-		component: MyClusterPin // just like in the pin this is your custom comp
+		component: MyClusterPin, // just like in the pin this is your custom comp
+		radius: 40, // default, Cluster radius, in pixels.
+		extent: 512, // default, (Tiles) Tile extent. Radius is calculated relative to this value.
+		nodeSize: 64, // default, Size of the KD-tree leaf node. Affects performance.
+		minZoom: 0, // default, Minimum zoom level at which clusters are generated.
+		maxZoom: 16 // default, Maximum zoom level at which clusters are generated.
 	}}
 	//...
 />
@@ -461,69 +464,69 @@ import React from 'react'
 // I do believe react is going away from class based comp so we will use a func comp for this one
 
 export default props => {
-const {
-	point_count, // amount of points in a cluster
-	getZoom, // func to access the updated zoom of the cluster once clicked
-	cluster_id, // cluster_id needed to pass to getZoom
-	lat,
-	lng,
-	updateMap, // func to update the map
-	pinProps // props passed to the comp by user
-} = props
+	const {
+		point_count, // amount of points in a cluster
+		getZoom, // func to access the updated zoom of the cluster once clicked
+		cluster_id, // cluster_id needed to pass to getZoom
+		lat,
+		lng,
+		updateMap, // func to update the map
+		pinProps // props passed to the comp by user
+	} = props
 
-console.log(pinProps) // ==> will return {prop: `value`}
+	console.log(pinProps) // ==> will return {prop: `value`}
 
-const size = point_count > 30 `large` : point_count > 20 ? `medium` : `small` // changing style of cluster
-const styles = {
-	cluster: {
-		cursor: `pointer`,
-		borderRadius: `50%`
-	},
-	large: {
-		background: `#ccffcc`,
-		border: `2px solid #00b200`,
-		color: `#00b200`,
-		height: `45px`,
-		width: `45px`
-	},
-	medium: {
-		background: `#ffedcc`,
-		border: `2px solid #ffa500`,
-		color: `#ffa500`,
-		height: `40px`,
-		width: `40px`
-	},
-	small: {
-		background: `#ffdbdb`,
-		border: `2px solid #ff4c4c`,
-		color: `#ff4c4c`,
-		height: `35px`,
-		width: `35px`
-	},
-	pointCount: {
+	const size =
+		point_count > 30 ? `large` : point_count > 20 ? `medium` : `small` // changing style of cluster
+	const styles = {
+		cluster: {
+			cursor: `pointer`,
+			borderRadius: `50%`
+		},
+		large: {
+			background: `#ccffcc`,
+			border: `2px solid #00b200`,
+			color: `#00b200`,
+			height: `45px`,
+			width: `45px`
+		},
+		medium: {
+			background: `#ffedcc`,
+			border: `2px solid #ffa500`,
+			color: `#ffa500`,
+			height: `40px`,
+			width: `40px`
+		},
+		small: {
+			background: `#ffdbdb`,
+			border: `2px solid #ff4c4c`,
+			color: `#ff4c4c`,
+			height: `35px`,
+			width: `35px`
+		},
+		pointCount: {
 			position: `relative`,
 			top: `50%`,
 			transform: `translateY(-50%)`,
 			textAlign: `center`,
 			fontWeight: `600`
 		}
-}
-return (
-	<div
-		style={{ ...styles.cluster, ...styles[size] }}
-		onClick={() => {
-			// updating the map to the correct zoom and center
-			// THIS IS REQUIRED FOR THE MAP TO UPDATE CORRECTLY!!!
+	}
+	return (
+		<div
+			style={{ ...styles.cluster, ...styles[size] }}
+			onClick={() => {
+				// updating the map to the correct zoom and center
+				// THIS IS REQUIRED FOR THE MAP TO UPDATE CORRECTLY!!!
 
-			updateMap({
-				zoom: getZoom(cluster_id),
-				center: { lat, lng }
-			})
-		}}
-	>
-   <div style={styles.pointCount}>{point_count}</div>
-	</div>
+				updateMap({
+					zoom: getZoom(cluster_id),
+					center: { lat, lng }
+				})
+			}}
+		>
+			<div style={styles.pointCount}>{point_count}</div>
+		</div>
 	)
 }
-
 ```
