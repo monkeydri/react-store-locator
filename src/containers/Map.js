@@ -438,6 +438,7 @@ export default class Map extends Component {
 						ref={input => (this.searchInput = input)}
 						type="text"
 						placeholder="Enter Your Location..."
+						aria-label="search"
 					/>
 				</div>
 				<GoogleMap
