@@ -24,6 +24,7 @@ coverage/
 .postcssrc
 webpack.config.js
 .babelrc
+package-lock.json
 
 # Temporary
 temp
