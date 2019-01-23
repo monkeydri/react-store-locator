@@ -1,6 +1,6 @@
 {
 	"name": "react-store-locator",
-	"version": "0.17.0",
+	"version": "0.17.1",
 	"keywords": [
 		"react",
 		"map",
@@ -36,6 +36,7 @@
 		"google-map-react": "^1.1.1",
 		"google-maps-react": "^2.0.2",
 		"react-icons": "^2.2.7",
+		"react-load-script": "^0.0.6",
 		"statable": "^0.2.3"
 	}
 }

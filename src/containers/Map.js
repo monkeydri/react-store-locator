@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import GoogleMap from 'google-map-react'
 import { fitBounds } from 'google-map-react/utils'
 import geolib from 'geolib'
+import Script from 'react-load-script'
 
 import Pin from './Pin'
 import ClusterPin from './ClusterPin'
@@ -441,6 +442,7 @@ export default class Map extends Component {
 						aria-label="search"
 					/>
 				</div>
+				{this.props.enableClusters && <Script url="https://unpkg.com/kdbush@3.0.0/kdbush.min.js" />}
 				<GoogleMap
 					ref={ref => (this.map = ref)}
 					onGoogleApiLoaded={this.handleGoogleMapApiLoad}
