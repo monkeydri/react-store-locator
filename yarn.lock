@@ -2934,9 +2934,9 @@ globby@^7.1.1:
     pify "^3.0.0"
     slash "^1.0.0"
 
-google-map-react@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-1.1.1.tgz#ffff4f21cf15bc25696ee523c614793054bb9b20"
+google-map-react@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-1.1.2.tgz#9ec9cbee88bf043dd24ce6c5953663e636461a71"
   dependencies:
     "@mapbox/point-geometry" "^0.1.0"
     eventemitter3 "^1.1.0"
@@ -5120,7 +5120,6 @@ react-icons@^2.2.7:
 react-load-script@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/react-load-script/-/react-load-script-0.0.6.tgz#db6851236aaa25bb622677a2eb51dad4f8d2c258"
-  integrity sha512-aRGxDGP9VoLxcsaYvKWIW+LRrMOzz2eEcubTS4NvQPPugjk2VvMhow0wWTkSl7RxookomD1MwcP4l5UStg5ShQ==
 
 react@^16.1.1:
   version "16.1.1"

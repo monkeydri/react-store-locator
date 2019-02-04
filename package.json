@@ -33,7 +33,7 @@
 		"axios": "^0.18.0",
 		"emotion": "^10.0.4",
 		"geolib": "^2.0.24",
-		"google-map-react": "^1.1.1",
+		"google-map-react": "^1.1.2",
 		"google-maps-react": "^2.0.2",
 		"react-icons": "^2.2.7",
 		"react-load-script": "^0.0.6",

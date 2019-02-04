@@ -151,8 +151,12 @@ export default class Map extends Component {
 	}
 
 	createMapOptions() {
+		const { mapStyle } = this.props
+		const { styles } = this.props.mapOptions
+		console.log(this.props.mapOptions)
 		return {
-			styles: this.props.mapStyle
+			styles: styles || mapStyle,
+			...this.props.mapOptions
 		}
 	}
 
@@ -442,7 +446,9 @@ export default class Map extends Component {
 						aria-label="search"
 					/>
 				</div>
-				{this.props.enableClusters && <Script url="https://unpkg.com/kdbush@3.0.0/kdbush.min.js" />}
+				{this.props.enableClusters && (
+					<Script url="https://unpkg.com/kdbush@3.0.0/kdbush.min.js" />
+				)}
 				<GoogleMap
 					ref={ref => (this.map = ref)}
 					onGoogleApiLoaded={this.handleGoogleMapApiLoad}
@@ -453,6 +459,7 @@ export default class Map extends Component {
 					zoom={this.props.zoom || zoom}
 					options={this.createMapOptions}
 					onChange={this.onMapChanged}
+					gestureHandling={this.props.gestureHandling || `cooperative`}
 				>
 					{updatedLocations.map(location => {
 						if (location.cluster_id) {
