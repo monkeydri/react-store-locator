@@ -98,16 +98,17 @@ export default class Map extends Component {
 		})
 		// if enableClusters is enabled create clusters and set them to the state
 		if (this.props.enableClusters) {
-			const { radius, extent, nodeSize, minZoom, maxZoom } = this.props.cluster
+			const { cluster } = this.props
+			console.log(cluster)
 			this.setState({
 				updatedLocations: createClusters(
 					props,
 					foundLocations.length > 0 ? foundLocations : locations,
-					radius,
-					extent,
-					nodeSize,
-					minZoom,
-					maxZoom
+					cluster && cluster.radius,
+					cluster && cluster.extent,
+					cluster && cluster.nodeSize,
+					cluster && cluster.minZoom,
+					cluster && cluster.maxZoom
 				)
 			})
 		}
@@ -153,7 +154,6 @@ export default class Map extends Component {
 	createMapOptions() {
 		const { mapStyle } = this.props
 		const { styles } = this.props.mapOptions
-		console.log(this.props.mapOptions)
 		return {
 			styles: styles || mapStyle,
 			...this.props.mapOptions
