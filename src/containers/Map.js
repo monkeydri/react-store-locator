@@ -99,7 +99,6 @@ export default class Map extends Component {
 		// if enableClusters is enabled create clusters and set them to the state
 		if (this.props.enableClusters) {
 			const { cluster } = this.props
-			console.log(cluster)
 			this.setState({
 				updatedLocations: createClusters(
 					props,
@@ -470,7 +469,9 @@ export default class Map extends Component {
 									lng={location.lng}
 									updateMap={updates => this.onClusterClick(updates)}
 									{...location}
-									pinProps={this.props.cluster.pinProps || null}
+									pinProps={
+										(this.props.cluster && this.props.cluster.pinProps) || null
+									}
 								/>
 							)
 						}
