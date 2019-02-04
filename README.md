@@ -530,3 +530,9 @@ export default props => {
 	)
 }
 ```
+
+## Map Options
+
+```js
+<Map mapOptions={{ ...anyGoogleMapOptions }} />
+```
