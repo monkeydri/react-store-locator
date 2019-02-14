@@ -1,5 +1,11 @@
 const objectsAreEqual = (a, b) => {
 	let areEqual = true
+	if (a === null && b !== null) {
+		areEqual = false
+	}
+	if (a !== null && b === null) {
+		areEqual = false
+	}
 	for (let aKey in a) {
 		for (let bKey in b) {
 			if (!a.hasOwnProperty(bKey)) {
