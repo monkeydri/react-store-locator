@@ -90,6 +90,7 @@ export default class Map extends Component {
 		const { ne, sw } = bounds
 		const { locations } = this.props
 		// locations within the map bounds
+
 		const foundLocations = locations.filter(location => {
 			const lat = strToFixed(location.lat, 6)
 			const lng = strToFixed(location.lng, 6)
@@ -306,18 +307,20 @@ export default class Map extends Component {
 		}
 	}
 
+	componentWillUnmount() {
+		google.maps.event.clearInstanceListeners(this.searchBox)
+	}
+
 	componentDidMount() {
 		const { google, options } = this.props
 		const input = this.searchInput
+		if (this.props.initSearch) {
+			input.value = this.props.initSearch
+		}
 		if (input) {
 			this.searchBox = new google.maps.places.Autocomplete(input, options)
 			this.searchBox.addListener('place_changed', this.onPlaceChanged)
 			enableEnterKey(input, this.searchBox)
-		}
-		if (this.props.initSearch) {
-			this.setState({
-				searchInput: this.props.initSearch
-			})
 		}
 
 		// set default map location
@@ -346,21 +349,13 @@ export default class Map extends Component {
 		}
 		this.setState({
 			zoom: initialZoom || this.props.defaultZoom,
-			center: initialCenter || this.props.defaultCenter,
-			mapLoaded: true
+			center: initialCenter || this.props.defaultCenter
 		})
-
-		if (this.props.mapLoaded) {
-			this.props.mapLoaded()
-		}
-	}
-
-	componentWillUnmount() {
-		google.maps.event.clearInstanceListeners(this.searchBox)
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		const place = this.props.place
+
 		if (place && prevProps.place !== place && place !== this.state.place) {
 			this.moveMap(place)
 		}
@@ -368,6 +363,7 @@ export default class Map extends Component {
 
 	handleGoogleMapApiLoad({ map }) {
 		this.map = map
+
 		// D. if initial location set by initSearch => get location from it and center on it
 		if (this.props.initSearch) {
 			const service = new google.maps.places.PlacesService(map)
@@ -385,30 +381,40 @@ export default class Map extends Component {
 				},
 				(results, status) => {
 					const result = results ? results[0] : null
+
 					// no or invalid result from google PlacesService => center map on defaultCenter or locations
 					if (!result || results.length < 1) {
+						console.warn('No locations with given query')
 						let locationsViewport
+
 						// center map on locations if any
 						if (this.props.locations && this.props.locations.length > 0) {
 							locationsViewport = this.getLocationsViewport()
 						}
 						this.setState({
 							center: locationsViewport.center || this.props.defaultCenter,
-							zoom: locationsViewport.zoom || this.props.defaultZoom
+							zoom: locationsViewport.zoom || this.props.defaultZoom,
+							mapLoaded: true
 						})
-						console.warn('No locations with given query')
 					}
 					// correct result from google PlacesService => set map location to it
 					else if (status == google.maps.places.PlacesServiceStatus.OK) {
 						const { center, zoom } = this.getPlaceViewport(result)
 						this.setState({
-							center,
-							zoom: zoom.toString().length > 1 ? 9 : zoom // limit zoom to 9
+							center: center,
+							zoom: zoom.toString().length > 1 ? 9 : zoom, // limit zoom to 9
+							mapLoaded: true
 						})
 					}
 				}
 			)
 		}
+
+		if (this.props.mapLoaded) {
+			this.props.mapLoaded()
+		}
+
+		this.setState({ mapLoaded: true })
 
 		// if initial location was set before map was loaded in componentDidMount (case A, B or C), callback onMapChanged with correct view data to update visible locations
 		// this is not needed for case D because onMapChanged is automatically called when map is loaded
