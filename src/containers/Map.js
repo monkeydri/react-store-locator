@@ -176,9 +176,14 @@ export default class Map extends Component {
 	}
 
 	onPlaceChanged(e) {
-		this.setState({
-			searchInput: e.target.value
-		})
+		if (e) {
+			if (e.target.value) {
+				this.setState({
+					searchInput: e.target.value
+				})
+			}
+		}
+
 		let place = this.searchBox.getPlace()
 		if (place && place !== this.state.place) {
 			if (this.props.submitSearch) {
