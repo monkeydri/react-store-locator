@@ -14,6 +14,7 @@ import { objectsAreEqual } from '../utils/objects'
 import { strToFixed } from '../utils/string'
 import { addressFromPlace } from '../utils/parse-place'
 import { enableEnterKey } from '../utils/suggestion-event'
+import { mapState } from '../state'
 
 export default class Map extends Component {
 	constructor(props) {
@@ -26,6 +27,8 @@ export default class Map extends Component {
 		this.onPlaceChanged = this.onPlaceChanged.bind(this)
 		this.handleGoogleMapApiLoad = this.handleGoogleMapApiLoad.bind(this)
 		this.onClusterClick = this.onClusterClick.bind(this)
+		this.onMapStateChange = this.onMapStateChange.bind(this)
+		this.searchByQuery = this.searchByQuery.bind(this)
 
 		this.state = {
 			updatedLocations: this.props.locations,
@@ -187,7 +190,7 @@ export default class Map extends Component {
 		let place = this.searchBox.getPlace()
 		if (place && place !== this.state.place) {
 			if (this.props.submitSearch) {
-				this.props.submitSearch()
+				this.props.submitSearch(place)
 			}
 			this.moveMap(place)
 
@@ -306,17 +309,29 @@ export default class Map extends Component {
 
 		return {
 			center: center,
-			zoom: this.map.props.zoom,
+			zoom: this.googleMapRef.props.zoom,
 			size,
 			bounds: newBounds
 		}
 	}
 
+	onMapStateChange(state) {
+		const { newBounds, place } = state
+		if (place) {
+			this.setState({ place })
+		}
+		if (newBounds) {
+			this.setState({ newBounds })
+		}
+	}
+
 	componentWillUnmount() {
 		google.maps.event.clearInstanceListeners(this.searchBox)
+		mapState.unsubscribe(this.onMapStateChange)
 	}
 
 	componentDidMount() {
+		mapState.subscribe(this.onMapStateChange)
 		const { google, options } = this.props
 		const input = this.searchInput
 		if (this.props.initSearch) {
@@ -359,60 +374,71 @@ export default class Map extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const place = this.props.place
-
+		const { initSearch, place } = this.props
 		if (place && prevProps.place !== place && place !== this.state.place) {
 			this.moveMap(place)
 		}
+		if (this.state.place && this.state.place !== prevState.place) {
+			this.moveMap(this.state.place)
+		}
+		if (initSearch && prevProps.initSearch !== initSearch) {
+			this.searchByQuery(initSearch)
+		}
+	}
+
+	searchByQuery(query) {
+		const service = new google.maps.places.PlacesService(this.map)
+		service.findPlaceFromQuery(
+			{
+				query: query,
+				fields: [
+					'photos',
+					'formatted_address',
+					'name',
+					'rating',
+					'opening_hours',
+					'geometry'
+				]
+			},
+			(results, status) => {
+				const result = results ? results[0] : null
+
+				// no or invalid result from google PlacesService => center map on defaultCenter or locations
+				if (!result || results.length < 1) {
+					console.warn('No locations with given query')
+					let locationsViewport
+
+					// center map on locations if any
+					if (this.props.locations && this.props.locations.length > 0) {
+						locationsViewport = this.getLocationsViewport()
+					}
+					this.setState({
+						center: locationsViewport.center || this.props.defaultCenter,
+						zoom: locationsViewport.zoom || this.props.defaultZoom,
+						mapLoaded: true
+					})
+				}
+				// correct result from google PlacesService => set map location to it
+				else if (status == google.maps.places.PlacesServiceStatus.OK) {
+					const { center, zoom } = this.getPlaceViewport(result)
+					this.setState({
+						center: center,
+						zoom: zoom.toString().length > 1 ? 9 : zoom, // limit zoom to 9
+						mapLoaded: true
+					})
+				}
+			}
+		)
 	}
 
 	handleGoogleMapApiLoad({ map }) {
 		this.map = map
 
 		// D. if initial location set by initSearch => get location from it and center on it
-		if (this.props.initSearch) {
-			const service = new google.maps.places.PlacesService(map)
-			service.findPlaceFromQuery(
-				{
-					query: this.props.initSearch,
-					fields: [
-						'photos',
-						'formatted_address',
-						'name',
-						'rating',
-						'opening_hours',
-						'geometry'
-					]
-				},
-				(results, status) => {
-					const result = results ? results[0] : null
-
-					// no or invalid result from google PlacesService => center map on defaultCenter or locations
-					if (!result || results.length < 1) {
-						console.warn('No locations with given query')
-						let locationsViewport
-
-						// center map on locations if any
-						if (this.props.locations && this.props.locations.length > 0) {
-							locationsViewport = this.getLocationsViewport()
-						}
-						this.setState({
-							center: locationsViewport.center || this.props.defaultCenter,
-							zoom: locationsViewport.zoom || this.props.defaultZoom,
-							mapLoaded: true
-						})
-					}
-					// correct result from google PlacesService => set map location to it
-					else if (status == google.maps.places.PlacesServiceStatus.OK) {
-						const { center, zoom } = this.getPlaceViewport(result)
-						this.setState({
-							center: center,
-							zoom: zoom.toString().length > 1 ? 9 : zoom, // limit zoom to 9
-							mapLoaded: true
-						})
-					}
-				}
-			)
+		if (!mapState.state.place) {
+			if (this.props.initSearch) {
+				this.searchByQuery(this.props.initSearch)
+			}
 		}
 
 		if (this.props.mapLoaded) {
@@ -462,7 +488,6 @@ export default class Map extends Component {
 						style={searchStyle.searchInput}
 						onChange={this.onPlaceChanged}
 						ref={input => (this.searchInput = input)}
-						value={this.state.searchInput}
 						type="text"
 						placeholder="Enter Your Location..."
 						aria-label="search"
@@ -472,7 +497,7 @@ export default class Map extends Component {
 					<Script url="https://unpkg.com/kdbush@3.0.0/kdbush.min.js" />
 				)}
 				<GoogleMap
-					ref={ref => (this.map = ref)}
+					ref={ref => (this.googleMapRef = ref)}
 					onGoogleApiLoaded={this.handleGoogleMapApiLoad}
 					bootstrapURLKeys={{ key: this.props.googleApiKey }}
 					yesIWantToUseGoogleMapApiInternals
