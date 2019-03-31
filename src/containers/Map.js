@@ -46,7 +46,6 @@ export default class Map extends Component {
 
 		this.state = {
 			updatedLocations: props.locations, // locations + show state (toggled on/off)
-			bounds: getLocationsBounds(props.locations), // depends on how the inital location is set
 			center: { lat: 0, lng: 0 },
 			zoom: 6,
 			place: null,
@@ -147,12 +146,8 @@ export default class Map extends Component {
 					cluster && cluster.nodeSize,
 					cluster && cluster.minZoom,
 					cluster && cluster.maxZoom
-				),
-				bounds
+				)
 			})
-		}
-		else {
-			this.setState({ bounds })
 		}
 
 		// find the distance from the center for each location
@@ -382,8 +377,7 @@ export default class Map extends Component {
 		}
 		this.setState({
 			zoom: initialZoom || this.props.defaultZoom,
-			center: initialCenter || this.props.defaultCenter,
-			// bounds
+			center: initialCenter || this.props.defaultCenter
 		})
 	}
 
@@ -502,9 +496,9 @@ export default class Map extends Component {
 			? this.props.clusterPin.component
 			: this.props.defaultClusterPin
 
-		const { bounds, zoom, center } = this.state
+		const { zoom, center, updatedLocations } = this.state
 
-		const updatedLocationsInBounds = this.updatedLocationsInBounds(bounds);
+		const updatedLocationsInBounds = this.map ? this.updatedLocationsInBounds(this.map.getBounds) : updatedLocations;
 
 		return (
 			<div
