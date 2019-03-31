@@ -30,6 +30,19 @@ const getLocationsBounds = (locations) => {
 	return bounds
 }
 
+// adds distance from the center for each location
+const locationsWithDistance = (locations, center) => {
+	return locations.map(location => {
+		const distanceMeters = geolib.getDistance(center, {
+			lat: location.lat,
+			lng: location.lng
+		})
+		const distanceMiles = (distanceMeters * 0.000621371).toFixed(2)
+		location.distanceFromCenter = distanceMiles
+		return { ...location }
+	})
+}
+
 export default class Map extends Component {
 	constructor(props) {
 		super(props)
@@ -77,12 +90,10 @@ export default class Map extends Component {
 	}
 
 	// state locations (including show state) within map bounds
-	updatedLocationsInBounds({ne, sw})
-	{
-		const { updatedLocations } = this.state;
-
-		if (ne && sw) {
-			return updatedLocations.filter(location => {
+	locationsInBounds(locations, bounds) {
+		if (bounds && bounds.ne && bounds.sw) {
+			const { ne, sw } = bounds;
+			return locations.filter(location => {
 				const lat = strToFixed(location.lat, 6)
 				const lng = strToFixed(location.lng, 6)
 				if (
@@ -96,12 +107,21 @@ export default class Map extends Component {
 			})
 		}
 		else {
-			console.error(`invalid bounds : (${JSON.stringify(ne)},${JSON.stringify(sw)})`)
-			return updatedLocations;
+			console.error('invalid bounds')
+			return locations;
 		}
 	}
 
-	// update visible locations on map change
+	// callback on locations in bounds change, either on map change (zoom, center) or locations change
+	callBackOnChange (updatedLocations, bounds, center) {
+		const updatedLocationsInBounds = this.locationsInBounds(updatedLocations, bounds);
+		const updatedLocationsInBoundsWithDistance = locationsWithDistance(updatedLocationsInBounds, center);
+		if (this.props.onChange && updatedLocationsInBoundsWithDistance) {
+			this.props.onChange(updatedLocationsInBoundsWithDistance)
+		}
+	}
+
+	// update clusters + callback onChange with locations currently visible
 	onMapChanged(props) {
 		if (!props || !this.state.mapLoaded) return
 		const bounds = {},
@@ -131,12 +151,12 @@ export default class Map extends Component {
 		}
 
 		// locations within the map bounds
-		const updatedLocationsInBounds = this.updatedLocationsInBounds(bounds);
+		const { updatedLocations } = this.state
+		const updatedLocationsInBounds = this.locationsInBounds(updatedLocations, bounds);
 
 		// if enableClusters is enabled create clusters and set them to the state
 		if (this.props.enableClusters) {
 			const { cluster } = this.props
-			const { updatedLocations } = this.state
 			this.setState({
 				updatedLocations: createClusters(
 					props,
@@ -146,25 +166,12 @@ export default class Map extends Component {
 					cluster && cluster.nodeSize,
 					cluster && cluster.minZoom,
 					cluster && cluster.maxZoom
-				)
+				),
+				center
 			})
 		}
 
-		// find the distance from the center for each location
-		const updatedLocationsInBoundsWithDistance = updatedLocationsInBounds.map(location => {
-			const distanceMeters = geolib.getDistance(center, {
-				lat: location.lat,
-				lng: location.lng
-			})
-			const distanceMiles = (distanceMeters * 0.000621371).toFixed(2)
-			location.distanceFromCenter = distanceMiles
-			return { ...location }
-		})
-
-
-		if (this.props.onChange && updatedLocationsInBoundsWithDistance) {
-			this.props.onChange(updatedLocationsInBoundsWithDistance)
-		}
+		this.callBackOnChange(updatedLocations, bounds, center);
 	}
 
 	toggleLocation(id) {
@@ -384,7 +391,7 @@ export default class Map extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		const { initSearch: propsInitSearch, place: propsPlace, locations: propsLocations } = this.props
 		const { initSearch: prevPropsInitSearch, place: prevPropsPlace, locations: prevPropsLocations } = prevProps
-		const { place: statePlace, updatedLocations: stateUpdatedLocations } = this.state
+		const { place: statePlace, updatedLocations: stateUpdatedLocations, center } = this.state
 		const { place: prevStatePlace, updatedLocations: prevStateUpdatedLocations } = prevState
 
 		// add or remove any new or deleted location
@@ -402,6 +409,7 @@ export default class Map extends Component {
 				// update state immutably (merge & filter) - keep show state of existing locations
 				const updatedLocations = [...stateUpdatedLocations, ...addedLocations].filter(location => !removedLocations.map(loc => loc.id).includes(location.id))
 				this.setState({ updatedLocations });
+				this.callBackOnChange(updatedLocations, this.map && this.map.getBounds(), center);
 			}
 		}
 	
@@ -498,7 +506,7 @@ export default class Map extends Component {
 
 		const { zoom, center, updatedLocations } = this.state
 
-		const updatedLocationsInBounds = this.map ? this.updatedLocationsInBounds(this.map.getBounds) : updatedLocations;
+		const updatedLocationsInBounds = this.locationsInBounds(updatedLocations, this.map && this.map.getBounds());
 
 		return (
 			<div
